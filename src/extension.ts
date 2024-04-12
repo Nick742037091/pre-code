@@ -1,28 +1,46 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from 'vscode'
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  // This line of code will only be executed once when your extension is activated
-  console.log('Congratulations, your extension "pre-code" is now active!');
+  let disposable = vscode.commands.registerCommand('pre-code.start', () => {
+    // Create and show a new webview
+    const panel = vscode.window.createWebviewPanel(
+      'tablePage',
+      'table page',
+      vscode.ViewColumn.One,
+      {
+        enableScripts: true
+      }
+    )
+    panel.webview.html = getWebviewContent()
+  })
 
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with registerCommand
-  // The commandId parameter must match the command field in package.json
-  let disposable = vscode.commands.registerCommand(
-    'pre-code.start',
-    () => {
-      // The code you place here will be executed every time your command is executed
-      // Display a message box to the user
-      vscode.window.showInformationMessage('Hello World from pre-code!');
-    }
-  );
-
-  context.subscriptions.push(disposable);
+  context.subscriptions.push(disposable)
 }
 
-// This method is called when your extension is deactivated
+function getWebviewContent() {
+  // 本地开发需要使用本地连接，并处理好热更新
+  return `<!doctype html>
+  <html lang="en">
+    <head>
+      <script type="module">import { injectIntoGlobalHook } from "http://localhost:5173/@react-refresh";
+      injectIntoGlobalHook(window);
+      window.$RefreshReg$ = () => {};
+      window.$RefreshSig$ = () => (type) => type;</script>
+
+      <script type="module" src="http://localhost:5173/@vite/client"></script>
+      <script>
+        window.vscode = acquireVsCodeApi();
+      </script>
+      <meta charset="UTF-8" />
+      <link rel="icon" type="image/svg+xml" href="http://localhost:5173/vite.svg" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Vite + React + TS</title>
+    </head>
+    <body>
+    <div id="root"></div>
+    <script type="module" src="http://localhost:5173/src/main.tsx"></script>
+    </body>
+  </html>`
+}
+
 export function deactivate() {}
