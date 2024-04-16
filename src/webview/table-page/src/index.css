@@ -1,5 +1,4 @@
-:root {
+body {
+  padding: 0;
   @apply bg-white;
 }
-
-

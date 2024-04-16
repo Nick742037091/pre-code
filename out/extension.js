@@ -22,16 +22,26 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deactivate = exports.activate = void 0;
 const vscode = __importStar(require("vscode"));
+const handlebars_1 = __importDefault(require("handlebars"));
 function activate(context) {
     let disposable = vscode.commands.registerCommand('pre-code.start', () => {
-        // Create and show a new webview
-        const panel = vscode.window.createWebviewPanel('tablePage', 'table page', vscode.ViewColumn.One, {
+        const panel = vscode.window.createWebviewPanel('tablePage', '生成表格页面', vscode.ViewColumn.One, {
             enableScripts: true
         });
         panel.webview.html = getWebviewContent();
+        panel.webview.onDidReceiveMessage((message) => {
+            switch (message.command) {
+                case 'generateCode':
+                    const template = handlebars_1.default.compile('Name: {{name}}');
+                    vscode.window.showErrorMessage(template({ name: '张三' }));
+            }
+        });
     });
     context.subscriptions.push(disposable);
 }

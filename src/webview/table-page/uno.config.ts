@@ -1,14 +1,17 @@
-import { defineConfig, presetIcons, presetAttributify } from 'unocss'
-import presetUno from '@unocss/preset-uno'
+import {
+  defineConfig,
+  presetIcons,
+  presetMini,
+  presetAttributify
+} from 'unocss'
 import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders'
 import transformerDirectives from '@unocss/transformer-directives'
 import transformerAttributifyJsx from '@unocss/transformer-attributify-jsx'
 
 export default defineConfig({
   presets: [
-    presetUno(),
+    presetMini(),
     // 内置样式
-    presetUno(),
     // 支持iconify
     presetIcons({
       collections: {

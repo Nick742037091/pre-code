@@ -1,17 +1,24 @@
 import * as vscode from 'vscode'
+import handlebars from 'handlebars'
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand('pre-code.start', () => {
-    // Create and show a new webview
     const panel = vscode.window.createWebviewPanel(
       'tablePage',
-      'table page',
+      '生成表格页面',
       vscode.ViewColumn.One,
       {
         enableScripts: true
       }
     )
     panel.webview.html = getWebviewContent()
+    panel.webview.onDidReceiveMessage((message) => {
+      switch (message.command) {
+        case 'generateCode':
+          const template = handlebars.compile('Name: {{name}}')
+          vscode.window.showErrorMessage(template({ name: '张三' }))
+      }
+    })
   })
 
   context.subscriptions.push(disposable)
