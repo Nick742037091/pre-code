@@ -51,6 +51,7 @@ function getWebviewContent() {
     return `<!doctype html>
   <html lang="en">
     <head>
+
       <script type="module">import { injectIntoGlobalHook } from "http://localhost:5173/@react-refresh";
       injectIntoGlobalHook(window);
       window.$RefreshReg$ = () => {};
@@ -63,7 +64,7 @@ function getWebviewContent() {
       <meta charset="UTF-8" />
       <link rel="icon" type="image/svg+xml" href="http://localhost:5173/vite.svg" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Vite + React + TS</title>
+      <title>Pre Code</title>
     </head>
     <body>
     <div id="root"></div>
@@ -73,4 +74,4 @@ function getWebviewContent() {
 }
 function deactivate() { }
 exports.deactivate = deactivate;
-//# sourceMappingURL=extension.js.map
+//# sourceMappingURL=index.js.map

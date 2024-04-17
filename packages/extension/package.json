@@ -1,0 +1,44 @@
+{
+  "name": "extension",
+  "displayName": "pre-code",
+  "description": "a vscode extension to generate template code ",
+  "version": "0.0.1",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.88.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/index.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "pre-code.start",
+        "title": "Pre Code",
+        "icon": "./assets/icons/logo.svg"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "pre-code.start",
+          "group": "navigation",
+          "title": "preCode"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@typescript-eslint/parser": "^7.4.0"
+  },
+  "dependencies": {}
+}

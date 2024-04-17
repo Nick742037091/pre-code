@@ -1,7 +1,7 @@
 {
-  "name": "vite-react",
-  "private": true,
-  "version": "0.0.0",
+  "name": "table-page",
+  "version": "0.0.1",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,11 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "antd": "^5.16.1",
-    "dayjs": "^1.11.10",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "use-immer": "^0.9.0"
+    "antd": "^5.16.1"
   },
   "devDependencies": {
     "@iconify/utils": "^2.1.22",
@@ -27,10 +23,8 @@
     "@unocss/transformer-attributify-jsx": "^0.59.1",
     "@unocss/transformer-directives": "^0.59.1",
     "@vitejs/plugin-react-swc": "^3.5.0",
-    "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
-    "typescript": "^5.2.2",
     "unocss": "^0.59.1",
     "vite": "^5.2.0"
   }
