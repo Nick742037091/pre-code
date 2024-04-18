@@ -1,15 +1,20 @@
 import { useImmer } from 'use-immer'
 import './App.css'
 import { Button, Input, Switch, Table } from 'antd'
+import SelectTemplate from './components/SelectTemplate/index'
+import GenerateCode from './components/GenerateCode'
+import { nanoid } from 'nanoid'
 
-interface TableColumnProp {
-  cname: string | null
-  name: string | null
-  custom: boolean | null
-  width: number | null
+export interface TableColumnProp {
+  id: string
+  cname?: string
+  name: string
+  custom?: boolean
+  width?: number
 }
 
 function App() {
+  const [template, setTemplate] = useImmer('')
   const createInputRender = (props: keyof TableColumnProp) => {
     return (text: string, record: TableColumnProp, index: number) => {
       return (
@@ -71,14 +76,14 @@ function App() {
       }
     }
   ]
-  const [dataSource, setDataSource] = useImmer<TableColumnProp[]>([])
+  const [tableDataList, setTableDataList] = useImmer<TableColumnProp[]>([])
 
   const onChangeValue = (
     value: string | boolean,
     index: number,
     props: keyof TableColumnProp
   ) => {
-    setDataSource((draft) => {
+    setTableDataList((draft) => {
       draft.splice(index, 1, {
         ...draft[index],
         [props]: value
@@ -86,41 +91,40 @@ function App() {
     })
   }
   const handleDeleteCol = (index: number) => {
-    setDataSource((draft) => {
+    setTableDataList((draft) => {
       draft.splice(index, 1)
     })
   }
   const handleAddCol = () => {
-    setDataSource((draft) => {
+    setTableDataList((draft) => {
       draft.push({
+        id: nanoid(),
         cname: '',
         name: '',
         custom: false,
-        width: null
+        width: undefined
       })
     })
   }
-  const handleGenerateCode = () => {
-    window.vscode.postMessage({
-      command: 'generateCode',
-      text: '🐛  generateCode'
-    })
-  }
-  // FIXME flex属性报错
+
+  // TODO 输入组件名称
+  // TODO 选择保存路径
   return (
-    <div p-20px>
-      <div flex items-center color-black mb-15px>
-        <span text-24px font-bold>
-          配置表格页面
-        </span>
-        <Button ml-auto onClick={handleAddCol}>
+    <div className="p-20px">
+      <SelectTemplate onChangeTemplate={(val) => setTemplate(val)} />
+      <div className="flex items-center color-black mb-15px">
+        <span className="text-24px font-bold">配置表格页面</span>
+        <Button className="ml-auto" onClick={handleAddCol}>
           添加表头
         </Button>
-        <Button ml-10px type="primary" onClick={handleGenerateCode}>
-          生成代码
-        </Button>
+        <GenerateCode tableDataList={tableDataList} template={template} />
       </div>
-      <Table dataSource={dataSource} columns={columns} pagination={false} />
+      <Table
+        rowKey="id"
+        dataSource={tableDataList}
+        columns={columns}
+        pagination={false}
+      />
     </div>
   )
 }

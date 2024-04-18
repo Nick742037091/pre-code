@@ -1,4 +1,4 @@
 body {
   padding: 0;
-  @apply bg-white;
+  @apply bg-white color-black;
 }

@@ -22,13 +22,43 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deactivate = exports.activate = void 0;
 const vscode = __importStar(require("vscode"));
-const handlebars_1 = __importDefault(require("handlebars"));
+const fs = __importStar(require("fs"));
+const pickFile = async (message, webview) => {
+    const fileUri = await vscode.window.showOpenDialog({
+        canSelectFiles: true, // 是否可以选择文件
+        canSelectFolders: false, // 是否可以选择文件夹
+        canSelectMany: false, // 是否可以多选
+        openLabel: 'Select File' // 选择文件时的标签
+    });
+    if (fileUri && fileUri[0]) {
+        const file = fileUri && fileUri[0];
+        fs.readFile(file.fsPath, 'utf-8', (err, data) => {
+            if (err) {
+                return;
+            }
+            webview.postMessage({
+                command: 'callbackResult',
+                commandId: message.commandId,
+                path: fileUri[0].fsPath,
+                content: data
+            });
+        });
+    }
+};
+const generateCode = (message, webview) => {
+    // TODO 提取保存文件路径参数
+    fs.writeFile('/Users/nick/Documents/project/hand-wirte/templates/table.vue', message.code, {}, (err) => {
+        if (err) {
+            vscode.window.showErrorMessage('生成代码失败');
+        }
+        else {
+            vscode.window.showInformationMessage('生成代码成功');
+        }
+    });
+};
 function activate(context) {
     let disposable = vscode.commands.registerCommand('pre-code.start', () => {
         const panel = vscode.window.createWebviewPanel('tablePage', '生成表格页面', vscode.ViewColumn.One, {
@@ -37,9 +67,12 @@ function activate(context) {
         panel.webview.html = getWebviewContent();
         panel.webview.onDidReceiveMessage((message) => {
             switch (message.command) {
+                case 'pickFile':
+                    pickFile(message, panel.webview);
+                    return;
                 case 'generateCode':
-                    const template = handlebars_1.default.compile('Name: {{name}}');
-                    vscode.window.showErrorMessage(template({ name: '张三' }));
+                    generateCode(message, panel.webview);
+                    return;
             }
         });
     });
