@@ -14,7 +14,9 @@ export interface TableColumnProp {
 }
 
 function App() {
-  const [template, setTemplate] = useImmer('')
+  const [template, setTemplate] = useImmer(
+    '/Users/nick/Documents/project/hand-wirte/templates/table.hbs'
+  )
   const createInputRender = (props: keyof TableColumnProp) => {
     return (text: string, record: TableColumnProp, index: number) => {
       return (
@@ -76,7 +78,14 @@ function App() {
       }
     }
   ]
-  const [tableDataList, setTableDataList] = useImmer<TableColumnProp[]>([])
+  const [tableDataList, setTableDataList] = useImmer<TableColumnProp[]>([
+    {
+      id: nanoid(),
+      cname: '名称',
+      name: 'name',
+      custom: false
+    }
+  ])
 
   const onChangeValue = (
     value: string | boolean,
@@ -107,17 +116,31 @@ function App() {
     })
   }
 
-  // TODO 输入组件名称
-  // TODO 选择保存路径
+  const [fileName, setFileName] = useImmer('')
+
   return (
     <div className="p-20px">
       <SelectTemplate onChangeTemplate={(val) => setTemplate(val)} />
+      <div className="flex items-center mb-10px">
+        <div className="text-18px flex-shrink-0 mr-10px">页面名称</div>
+        <div w-300px>
+          <Input
+            addonAfter=".vue"
+            value={fileName}
+            onChange={(e) => setFileName(e.target.value)}
+          />
+        </div>
+      </div>
       <div className="flex items-center color-black mb-15px">
         <span className="text-24px font-bold">配置表格页面</span>
         <Button className="ml-auto" onClick={handleAddCol}>
           添加表头
         </Button>
-        <GenerateCode tableDataList={tableDataList} template={template} />
+        <GenerateCode
+          fileName={fileName}
+          tableDataList={tableDataList}
+          template={template}
+        />
       </div>
       <Table
         rowKey="id"

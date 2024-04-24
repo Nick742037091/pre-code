@@ -3,11 +3,16 @@ import { TableColumnProp } from '../../App'
 import handlebars from 'handlebars'
 
 function GenerateCode(props: {
+  fileName: string
   tableDataList: TableColumnProp[]
   template: string
 }) {
   const [messageApi, contextHolder] = message.useMessage()
   const handleGenerateCode = () => {
+    if (!props.fileName) {
+      messageApi.error('请输入页面名称')
+      return
+    }
     if (!props.template) {
       messageApi.error('请选择模板')
       return
@@ -27,8 +32,10 @@ function GenerateCode(props: {
     })
     const template = handlebars.compile(props.template)
     const code = template({ columnList: columnList })
+    debugger
     window.vscode.postMessage({
       command: 'generateCode',
+      fileName: props.fileName,
       code
     })
   }
