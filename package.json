@@ -6,13 +6,13 @@
   "license": "MIT",
   "scripts": {
     "dev": "run-p dev:*",
-    "dev:extension": "pnpm run -F extension watch",
+    "dev:extension": "pnpm run -F pre-code watch",
     "dev:table-page": "pnpm run -F table-page dev",
-    "build": "run-p build:* && pnpm run package",
-    "build:extension": "pnpm run -F extension compile",
+    "build": "run-p build:* && pnpm run package:extension",
+    "build:extension": "pnpm run -F pre-code compile",
     "build:table-page": "pnpm run -F table-page build",
-    "package": "pnpm run -F extension package",
-    "publish": "pnpm run -F extension publish"
+    "package:extension": "pnpm run -F pre-code package",
+    "publish:extension": "pnpm run -F pre-code publish"
   },
   "dependencies": {
     "dayjs": "^1.11.10",
