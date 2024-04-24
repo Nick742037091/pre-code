@@ -78,14 +78,7 @@ function App() {
       }
     }
   ]
-  const [tableDataList, setTableDataList] = useImmer<TableColumnProp[]>([
-    {
-      id: nanoid(),
-      cname: '名称',
-      name: 'name',
-      custom: false
-    }
-  ])
+  const [tableDataList, setTableDataList] = useImmer<TableColumnProp[]>([])
 
   const onChangeValue = (
     value: string | boolean,

@@ -8,9 +8,11 @@
     "dev": "run-p dev:*",
     "dev:extension": "pnpm run -F extension watch",
     "dev:table-page": "pnpm run -F table-page dev",
-    "build": "run-p build:*",
+    "build": "run-p build:* && pnpm run package",
     "build:extension": "pnpm run -F extension compile",
-    "build:table-page": "pnpm run -F table-page build"
+    "build:table-page": "pnpm run -F table-page build",
+    "package": "pnpm run -F extension package",
+    "publish": "pnpm run -F extension publish"
   },
   "dependencies": {
     "dayjs": "^1.11.10",
