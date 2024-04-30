@@ -50,7 +50,8 @@ export function activate(context: vscode.ExtensionContext) {
       '生成表格页面',
       vscode.ViewColumn.One,
       {
-        enableScripts: true
+        enableScripts: true,
+        retainContextWhenHidden: true // 切换窗口时保持webview状态
       }
     )
     panel.webview.html = getWebviewContent(context, panel.webview)
