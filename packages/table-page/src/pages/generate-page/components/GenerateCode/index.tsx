@@ -1,5 +1,5 @@
 import { Button, message } from 'antd'
-import { TableColumnProp } from '../../App'
+import { TableColumnProp } from '../../index'
 import handlebars from 'handlebars'
 
 function GenerateCode(props: {

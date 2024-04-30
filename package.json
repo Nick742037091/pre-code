@@ -2,7 +2,7 @@
   "name": "pre-code",
   "displayName": "pre-code",
   "description": "a vscode extension to generate template code ",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "scripts": {
     "dev": "run-p dev:*",
@@ -23,11 +23,11 @@
     "use-immer": "^0.9.0"
   },
   "devDependencies": {
-    "vite": "^5.2.0",
     "@types/node": "18.x",
     "@types/vscode": "^1.88.0",
     "eslint": "^8.57.0",
     "npm-run-all": "^4.1.5",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vite": "^5.2.0"
   }
 }

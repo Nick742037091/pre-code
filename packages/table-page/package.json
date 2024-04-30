@@ -10,9 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "antd": "^5.16.1"
+    "@ant-design/icons": "^5.3.6",
+    "@emotion/react": "^11.11.4",
+    "antd": "^5.16.1",
+    "react-router-dom": "^6.23.0"
   },
   "devDependencies": {
+    "@emotion/babel-plugin": "^11.11.0",
     "@iconify/utils": "^2.1.22",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",

@@ -43,6 +43,23 @@ const generateCode = async (message: any, webview: vscode.Webview) => {
   }
 }
 
+// 添加模板
+const addTemplate = async (message: any, webview: vscode.Webview) => {
+  const { templateName, templatePath } = message
+  const config = vscode.workspace.getConfiguration()
+  const templateList = config.get('pre-code.templateList') as []
+  await vscode.workspace
+    .getConfiguration()
+    .update('pre-code.templateList', [
+      ...templateList,
+      { templateName, templatePath }
+    ])
+  webview.postMessage({
+    command: 'callbackResult',
+    commandId: message.commandId
+  })
+}
+
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand('pre-code.start', () => {
     const panel = vscode.window.createWebviewPanel(
@@ -62,6 +79,9 @@ export function activate(context: vscode.ExtensionContext) {
           return
         case 'generateCode':
           generateCode(message, panel.webview)
+          return
+        case 'addTemplate':
+          addTemplate(message, panel.webview)
           return
       }
     })
