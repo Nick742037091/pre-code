@@ -1,64 +1,6 @@
 import * as vscode from 'vscode'
-import * as fs from 'fs'
 import { isDev } from './utils'
-
-const pickFile = async (message: any, webview: vscode.Webview) => {
-  const fileUri = await vscode.window.showOpenDialog({
-    canSelectFiles: true, // 是否可以选择文件
-    canSelectFolders: false, // 是否可以选择文件夹
-    canSelectMany: false, // 是否可以多选
-    openLabel: '选择文件' // 选择文件时的标签
-  })
-  if (fileUri && fileUri[0]) {
-    const file = fileUri && fileUri[0]
-    fs.readFile(file.fsPath, 'utf-8', (err, data) => {
-      if (err) {
-        return
-      }
-      webview.postMessage({
-        command: 'callbackResult',
-        commandId: message.commandId,
-        path: fileUri[0].fsPath,
-        content: data
-      })
-    })
-  }
-}
-
-const generateCode = async (message: any, webview: vscode.Webview) => {
-  const { fileName, code } = message
-  const uri = await vscode.window.showOpenDialog({
-    canSelectFolders: true,
-    canSelectFiles: false,
-    openLabel: '选择文件夹'
-  })
-  if (uri && uri[0]) {
-    fs.writeFile(`${uri[0].fsPath}/${fileName}.vue`, code, {}, (err) => {
-      if (err) {
-        vscode.window.showErrorMessage('生成代码失败')
-      } else {
-        vscode.window.showInformationMessage('生成代码成功')
-      }
-    })
-  }
-}
-
-// 添加模板
-const addTemplate = async (message: any, webview: vscode.Webview) => {
-  const { templateName, templatePath } = message
-  const config = vscode.workspace.getConfiguration()
-  const templateList = config.get('pre-code.templateList') as []
-  await vscode.workspace
-    .getConfiguration()
-    .update('pre-code.templateList', [
-      ...templateList,
-      { templateName, templatePath }
-    ])
-  webview.postMessage({
-    command: 'callbackResult',
-    commandId: message.commandId
-  })
-}
+import * as bridges from './bridges/index'
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand('pre-code.start', () => {
@@ -73,16 +15,11 @@ export function activate(context: vscode.ExtensionContext) {
     )
     panel.webview.html = getWebviewContent(context, panel.webview)
     panel.webview.onDidReceiveMessage((message) => {
-      switch (message.command) {
-        case 'pickFile':
-          pickFile(message, panel.webview)
-          return
-        case 'generateCode':
-          generateCode(message, panel.webview)
-          return
-        case 'addTemplate':
-          addTemplate(message, panel.webview)
-          return
+      const bridge = bridges[message.command as keyof typeof bridges]
+      if (bridge) {
+        bridge(message, panel.webview)
+      } else {
+        console.error(`${message.command}桥接不存在`)
       }
     })
   })

@@ -1,15 +1,34 @@
-import { Button, Form, Input, Modal, message } from 'antd'
-import { nanoid } from 'nanoid'
-import { useState } from 'react'
+import { nativeCommond } from '@/utils/bridge'
+import { Button, Form, Input, InputRef, Modal, message } from 'antd'
+import { useEffect, useRef, useState } from 'react'
 
-export const useAddTemplate = () => {
+export const useAddTemplate = (props: { updateList: () => void }) => {
   const [messageApi, msgContextHolder] = message.useMessage()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const showModal = () => {
+  const [type, setType] = useState<'add' | 'edit'>('add')
+  const showModal = (
+    showType: typeof type = 'add',
+    templateData?: { templateName: string; templatePath: string }
+  ) => {
+    setType(showType)
+    if (showType === 'add') {
+      setTemplateName('')
+      setTemplatePath('')
+    } else {
+      setTemplateName(templateData!.templateName)
+      setTemplatePath(templateData!.templatePath)
+    }
     setIsModalOpen(true)
   }
+  useEffect(() => {
+    if (isModalOpen) {
+      setTimeout(() => {
+        templateNameInput.current?.focus()
+      }, 100)
+    }
+  }, [isModalOpen])
 
-  const handleOk = () => {
+  const handleOk = async () => {
     if (!templateName) {
       messageApi.error('模板名称不能为空')
       return
@@ -19,41 +38,27 @@ export const useAddTemplate = () => {
       return
     }
 
-    const commandId = nanoid()
-    window.vscode.postMessage({
-      command: 'addTemplate',
-      commandId: commandId,
-      templateName,
-      templatePath
+    await nativeCommond({
+      command: type === 'add' ? 'addTemplate' : 'editTemplate',
+      params: {
+        templateName,
+        templatePath
+      }
     })
-    // TODO 封装成桥接函数，传入回调，自动完成添加注册和取消注册
-    window.addEventListener('message', (event) => {
-      const message = event.data
-      if (message.command !== 'callbackResult') return
-      if (message.commandId !== commandId) return
-      setIsModalOpen(false)
-    })
+    props.updateList()
+    setIsModalOpen(false)
   }
   const handleCancel = () => {
     setIsModalOpen(false)
   }
 
   const [templateName, setTemplateName] = useState('')
-
   const [templatePath, setTemplatePath] = useState('')
-  const handleSelectTemplate = () => {
-    const commandId = nanoid()
-    window.vscode.postMessage({
-      command: 'pickFile',
-      commandId: commandId
+  const handleSelectTemplate = async () => {
+    const result = await nativeCommond<{ path: string }>({
+      command: 'pickFile'
     })
-    // TODO 封装成桥接函数，传入回调，自动完成添加注册和取消注册
-    window.addEventListener('message', (event) => {
-      const message = event.data
-      if (message.command !== 'callbackResult') return
-      if (message.commandId !== commandId) return
-      setTemplatePath(message.path)
-    })
+    setTemplatePath(result.path)
   }
 
   type FieldType = {
@@ -61,9 +66,11 @@ export const useAddTemplate = () => {
     templatePath: string
   }
 
+  const templateNameInput = useRef<InputRef>(null)
+
   const context = (
     <Modal
-      title="添加模板"
+      title={type === 'add' ? '添加模板' : '编辑模板'}
       open={isModalOpen}
       onOk={handleOk}
       onCancel={handleCancel}
@@ -75,6 +82,7 @@ export const useAddTemplate = () => {
           rules={[{ required: true, message: '请输入模板名称' }]}
         >
           <Input
+            ref={templateNameInput}
             value={templateName}
             onChange={(e) => setTemplateName(e.target.value)}
           />
@@ -86,7 +94,7 @@ export const useAddTemplate = () => {
         >
           <div className="flex flex-col items-start">
             {templatePath && (
-              <div className="h-32px line-height-32px mb-10px">
+              <div className="h-32px line-height-32px mb-10px px-10px">
                 {templatePath}
               </div>
             )}

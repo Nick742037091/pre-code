@@ -1,19 +1,18 @@
 import { Button, message } from 'antd'
 import { TableColumnProp } from '../../index'
 import handlebars from 'handlebars'
+import { nativeCommond } from '@/utils/bridge'
+import { useGenerateCodeStore } from '@/stores/generateCodeStore'
 
-function GenerateCode(props: {
-  fileName: string
-  tableDataList: TableColumnProp[]
-  template: string
-}) {
+function GenerateCode(props: { tableDataList: TableColumnProp[] }) {
   const [messageApi, contextHolder] = message.useMessage()
-  const handleGenerateCode = () => {
-    if (!props.fileName) {
+  const store = useGenerateCodeStore()
+  const handleGenerateCode = async () => {
+    if (!store.fileName) {
       messageApi.error('请输入页面名称')
       return
     }
-    if (!props.template) {
+    if (!store.templatePath) {
       messageApi.error('请选择模板')
       return
     }
@@ -30,13 +29,23 @@ function GenerateCode(props: {
         isEnd: props.tableDataList.length - 1 === index
       }
     })
-    const template = handlebars.compile(props.template)
-    const code = template({ columnList: columnList })
+    const cmdResult = await nativeCommond<{ content: string }>({
+      command: 'readFile',
+      params: {
+        filePath: store.templatePath
+      }
+    })
+    console.log(cmdResult)
     debugger
-    window.vscode.postMessage({
+    const template = handlebars.compile(cmdResult.content)
+    const code = template({ columnList: columnList })
+    nativeCommond({
       command: 'generateCode',
-      fileName: props.fileName,
-      code
+      params: {
+        fileName: store.fileName,
+        fileType: store.fileType,
+        code
+      }
     })
   }
   return (

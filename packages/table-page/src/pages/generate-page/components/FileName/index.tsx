@@ -1,33 +1,30 @@
+import { useGenerateCodeStore } from '@/stores/generateCodeStore'
 import { Input, Select } from 'antd'
-import { useState } from 'react'
 const { Option } = Select
-export type FileType = '.vue' | '.react'
 
-export const useFileName = () => {
-  const [fileName, setFileName] = useState('')
-  const [fileType, setFileType] = useState<FileType>('.vue')
+function FileName() {
+  const store = useGenerateCodeStore()
   const fileTypeList = (
     <Select
-      w-80px
-      defaultValue={fileType}
-      onChange={(val) => setFileType(val as FileType)}
+      className="w-80px"
+      defaultValue={store.fileType}
+      onChange={(val) => store.setFileType(val)}
     >
-      <Option value="vue">.vue</Option>
-      <Option value="react">.react</Option>
+      <Option value=".vue">.vue</Option>
+      <Option value=".react">.react</Option>
     </Select>
   )
-  const componentContext = (
-    <Input
-      addonAfter={fileTypeList}
-      value={fileName}
-      onChange={(e) => setFileName(e.target.value)}
-    />
+  return (
+    <div className="flex items-center">
+      <div className="flex-shrink-0 mr-10px">页面名称</div>
+      <Input
+        className="w-300px"
+        addonAfter={fileTypeList}
+        value={store.fileName}
+        onChange={(e) => store.setFileName(e.target.value)}
+      />
+    </div>
   )
-  return {
-    fileName,
-    fileType,
-    setFileName,
-    setFileType,
-    componentContext
-  }
 }
+
+export default FileName
