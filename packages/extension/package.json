@@ -18,7 +18,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "pre-code.start",
+        "command": "pre-code.openInTitle",
+        "title": "Pre Code",
+        "icon": "./assets/icons/logo.svg"
+      },
+      {
+        "command": "pre-code.openInContext",
         "title": "Pre Code",
         "icon": "./assets/icons/logo.svg"
       }
@@ -26,14 +31,14 @@
     "menus": {
       "editor/title": [
         {
-          "command": "pre-code.start",
+          "command": "pre-code.openInTitle",
           "group": "navigation",
           "title": "preCode"
         }
       ],
       "editor/context": [
         {
-          "command": "pre-code.start",
+          "command": "pre-code.openInContext",
           "group": "navigation",
           "title": "preCode"
         }

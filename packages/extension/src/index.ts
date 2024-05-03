@@ -2,34 +2,51 @@ import * as vscode from 'vscode'
 import { isDev } from './utils'
 import * as bridges from './bridges/index'
 
-export function activate(context: vscode.ExtensionContext) {
-  let disposable = vscode.commands.registerCommand('pre-code.start', () => {
-    const panel = vscode.window.createWebviewPanel(
-      'tablePage',
-      '生成表格页面',
-      vscode.ViewColumn.One,
-      {
-        enableScripts: true,
-        retainContextWhenHidden: true // 切换窗口时保持webview状态
-      }
-    )
-    panel.webview.html = getWebviewContent(context, panel.webview)
-    panel.webview.onDidReceiveMessage((message) => {
-      const bridge = bridges[message.command as keyof typeof bridges]
-      if (bridge) {
-        bridge(message, panel.webview)
-      } else {
-        console.error(`${message.command}桥接不存在`)
-      }
-    })
-  })
+const cmdPrex = 'pre-code.'
+const cmdList = ['openInTitle', 'openInContext']
 
-  context.subscriptions.push(disposable)
+export function activate(context: vscode.ExtensionContext) {
+  cmdList.forEach((cmd) => {
+    let disposable = vscode.commands.registerCommand(`${cmdPrex}${cmd}`, () =>
+      createWebviewPanel(context, cmd)
+    )
+    context.subscriptions.push(disposable)
+  })
+}
+
+function createWebviewPanel(context: vscode.ExtensionContext, command: string) {
+  const panel = vscode.window.createWebviewPanel(
+    'tablePage',
+    '生成表格页面',
+    vscode.ViewColumn.One,
+    {
+      enableScripts: true,
+      retainContextWhenHidden: true // 切换窗口时保持webview状态
+    }
+  )
+  const injectParams: Record<string, any> = {
+    command
+  }
+  if (command === 'openInContext') {
+    const activeEditor = vscode.window.activeTextEditor
+    injectParams.openFilePath = activeEditor!.document.uri.fsPath
+  }
+
+  panel.webview.html = getWebviewContent(context, panel.webview, injectParams)
+  panel.webview.onDidReceiveMessage((message) => {
+    const bridge = bridges[message.command as keyof typeof bridges]
+    if (bridge) {
+      bridge(message, panel.webview)
+    } else {
+      console.error(`${message.command}桥接不存在`)
+    }
+  })
 }
 
 function getWebviewContent(
   context: vscode.ExtensionContext,
-  webview: vscode.Webview
+  webview: vscode.Webview,
+  injectParams: Record<string, any> = {}
 ) {
   if (isDev) {
     // 本地开发需要使用本地连接，并处理好热更新
@@ -45,6 +62,7 @@ function getWebviewContent(
             <script type="module" src="http://localhost:5173/@vite/client"></script>
             <script>
               window.vscode = acquireVsCodeApi();
+              window.injectParams = ${JSON.stringify(injectParams)}
             </script>
             <meta charset="UTF-8" />
             <link rel="icon" type="image/svg+xml" href="http://localhost:5173/vite.svg" />
@@ -77,6 +95,7 @@ function getWebviewContent(
           <head>
             <script>
               window.vscode = acquireVsCodeApi();
+              window.injectParams = ${JSON.stringify(injectParams)}
             </script>
             <meta charset="UTF-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />

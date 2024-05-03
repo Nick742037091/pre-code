@@ -2,6 +2,7 @@ import { create } from 'zustand'
 export type FileType = '.vue' | '.react'
 
 interface State {
+  filePath: string
   templateName: string
   setTemplateName: (templateName: string) => void
   templatePath: string
@@ -13,7 +14,20 @@ interface State {
 }
 
 export const useGenerateCodeStore = create<State>((set, get) => {
+  let filePath = ''
+  let fileName = ''
+  let fileType = '.vue'
+  const { openFilePath } = window.injectParams
+  if (openFilePath) {
+    filePath = openFilePath
+    const pathParts = openFilePath.split('/')
+    const lastPath = pathParts[pathParts.length - 1]
+    fileName = lastPath.split('.')[0]
+    fileType = '.' + lastPath.split('.')[1]
+  }
+
   return {
+    filePath,
     templateName: '',
     setTemplateName: (templateName: string) => {
       set({ templateName })
@@ -22,11 +36,11 @@ export const useGenerateCodeStore = create<State>((set, get) => {
     setTemplatePath: (templatePath: string) => {
       set({ templatePath: templatePath })
     },
-    fileName: '',
+    fileName,
     setFileName: (fileName: string) => {
       set({ fileName })
     },
-    fileType: '.vue',
+    fileType,
     setFileType: (fileType: FileType) => {
       set({ fileType })
     }

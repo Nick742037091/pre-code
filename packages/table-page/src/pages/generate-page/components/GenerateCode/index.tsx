@@ -35,8 +35,6 @@ function GenerateCode(props: { tableDataList: TableColumnProp[] }) {
         filePath: store.templatePath
       }
     })
-    console.log(cmdResult)
-    debugger
     const template = handlebars.compile(cmdResult.content)
     const code = template({ columnList: columnList })
     nativeCommond({
@@ -44,6 +42,7 @@ function GenerateCode(props: { tableDataList: TableColumnProp[] }) {
       params: {
         fileName: store.fileName,
         fileType: store.fileType,
+        filePath: store.filePath,
         code
       }
     })

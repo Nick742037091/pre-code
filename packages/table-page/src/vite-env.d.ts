@@ -3,4 +3,8 @@
 
 interface Window {
   vscode: Webview
+  injectParams: {
+    command: string
+    openFilePath?: string
+  }
 }

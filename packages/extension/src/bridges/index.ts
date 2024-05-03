@@ -48,13 +48,20 @@ export const readFile = async (message: any, webview: vscode.Webview) => {
 // 生成页面代码
 export const generateCode = async (message: any, webview: vscode.Webview) => {
   const { fileName, fileType, code } = message.params
-  const uri = await vscode.window.showOpenDialog({
-    canSelectFolders: true,
-    canSelectFiles: false,
-    openLabel: '选择文件夹'
-  })
-  if (uri && uri[0]) {
-    fs.writeFile(`${uri[0].fsPath}/${fileName}${fileType}`, code, {}, (err) => {
+  let { filePath } = message.params
+  if (!filePath) {
+    const uri = await vscode.window.showOpenDialog({
+      canSelectFolders: true,
+      canSelectFiles: false,
+      openLabel: '选择文件夹'
+    })
+    if (uri && uri[0]) {
+      filePath = `${uri[0].fsPath}/${fileName}${fileType}`
+    }
+  }
+  console.log('generateCode', filePath)
+  if (filePath) {
+    fs.writeFile(filePath, code, {}, (err) => {
       if (err) {
         vscode.window.showErrorMessage('生成代码失败')
       } else {
