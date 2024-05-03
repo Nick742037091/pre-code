@@ -1,5 +1,5 @@
 import { useImmer } from 'use-immer'
-import { Button, Flex, Input, Switch, Table } from 'antd'
+import { Button, Input, Switch, Table } from 'antd'
 import SelectTemplate from './components/SelectTemplate/index'
 import FileName from './components/FileName/index'
 import GenerateCode from './components/GenerateCode/index'

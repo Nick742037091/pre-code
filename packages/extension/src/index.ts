@@ -36,6 +36,7 @@ function getWebviewContent(
     return `<!doctype html>
         <html lang="en">
           <head>
+            <script src="http://localhost:8097"></script>
             <script type="module">import { injectIntoGlobalHook } from "http://localhost:5173/@react-refresh";
             injectIntoGlobalHook(window);
             window.$RefreshReg$ = () => {};

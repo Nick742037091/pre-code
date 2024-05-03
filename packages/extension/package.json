@@ -1,7 +1,7 @@
 {
   "name": "pre-code",
   "publisher": "nick742037091",
-  "displayName": "pre-code",
+  "displayName": "Pre Code",
   "description": "a vscode extension to generate template code",
   "version": "0.0.3",
   "repository": "https://github.com/Nick742037091/pre-code",
@@ -30,6 +30,13 @@
           "group": "navigation",
           "title": "preCode"
         }
+      ],
+      "editor/context": [
+        {
+          "command": "pre-code.start",
+          "group": "navigation",
+          "title": "preCode"
+        }
       ]
     },
     "configuration": {
@@ -42,8 +49,8 @@
     }
   },
   "scripts": {
-    "compile": "webpack --config ./config/production.config.js",
-    "watch": "webpack --watch --config ./config/development.config.js",
+    "build": "webpack --config ./config/production.config.js",
+    "dev": "webpack --watch --config ./config/development.config.js",
     "package": "vsce package",
     "publish": "vsce publish",
     "lint": "eslint src --ext ts"

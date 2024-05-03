@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "devtools": "npx react-devtools",
     "build": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -31,6 +32,7 @@
     "@vitejs/plugin-react-swc": "^3.5.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
+    "react-devtools": "^5.1.0",
     "unocss": "^0.59.1"
   }
 }

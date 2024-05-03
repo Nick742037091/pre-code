@@ -7,7 +7,7 @@ export interface Template {
   templatePath: string
 }
 
-// TODO 抽取到共享数据
+// 抽取到共享数据
 export const useTemplateList = () => {
   const [templateList, setTemplateList] = useImmer<Template[]>([])
   async function getTemlateList() {

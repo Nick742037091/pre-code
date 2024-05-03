@@ -30,7 +30,14 @@ export default function SelectTemplate() {
     event.stopPropagation()
     await Modal.confirm({
       title: '是否删除模板？',
-      onOk: () => deleteTemplate(index)
+      onOk: () => {
+        const deleteItem = templateList[index]
+        if (deleteItem.templateName === store.templateName) {
+          store.setTemplateName('')
+          store.setTemplatePath('')
+        }
+        deleteTemplate(index)
+      }
     })
   }
   function handleSelectTemplate(val: string) {
@@ -45,7 +52,7 @@ export default function SelectTemplate() {
       {addTemplateContext}
       <div className="mr-10px">模板</div>
       <Select
-        defaultValue={store.templateName}
+        value={store.templateName}
         className="w-200px mr-10px"
         showSearch
         options={optionList}

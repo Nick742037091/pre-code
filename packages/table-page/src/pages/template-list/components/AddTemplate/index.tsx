@@ -1,11 +1,14 @@
+import { useGenerateCodeStore } from '@/stores/generateCodeStore'
 import { nativeCommond } from '@/utils/bridge'
 import { Button, Form, Input, InputRef, Modal, message } from 'antd'
 import { useEffect, useRef, useState } from 'react'
 
-export const useAddTemplate = (props: { updateList: () => void }) => {
+export const useAddTemplate = (props: { updateList: () => Promise<void> }) => {
+  const store = useGenerateCodeStore()
   const [messageApi, msgContextHolder] = message.useMessage()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [type, setType] = useState<'add' | 'edit'>('add')
+
   const showModal = (
     showType: typeof type = 'add',
     templateData?: { templateName: string; templatePath: string }
@@ -45,6 +48,8 @@ export const useAddTemplate = (props: { updateList: () => void }) => {
         templatePath
       }
     })
+    store.setTemplateName(templateName)
+    store.setTemplatePath(templatePath)
     props.updateList()
     setIsModalOpen(false)
   }

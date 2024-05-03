@@ -6,10 +6,11 @@
   "license": "MIT",
   "scripts": {
     "dev": "run-p dev:*",
-    "dev:extension": "pnpm run -F pre-code watch",
+    "dev:extension": "pnpm run -F pre-code dev",
     "dev:table-page": "pnpm run -F table-page dev",
+    "dev:devtools": "pnpm run -F table-page devtools",
     "build": "run-p build:* && pnpm run package:extension",
-    "build:extension": "pnpm run -F pre-code compile",
+    "build:extension": "pnpm run -F pre-code build",
     "build:table-page": "pnpm run -F table-page build",
     "package:extension": "pnpm run -F pre-code package",
     "publish:extension": "pnpm run -F pre-code publish"
