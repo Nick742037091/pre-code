@@ -16,7 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 function createWebviewPanel(context: vscode.ExtensionContext, command: string) {
   const panel = vscode.window.createWebviewPanel(
-    'tablePage',
+    'preCodeWebview',
     '生成表格页面',
     vscode.ViewColumn.One,
     {
@@ -65,7 +65,6 @@ function getWebviewContent(
               window.injectParams = ${JSON.stringify(injectParams)}
             </script>
             <meta charset="UTF-8" />
-            <link rel="icon" type="image/svg+xml" href="http://localhost:5173/vite.svg" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <title>Pre Code</title>
           </head>

@@ -23,10 +23,10 @@ function GenerateCode(props: { tableDataList: TableColumnProp[] }) {
 
     const columnList = props.tableDataList.map((item, index) => {
       return {
-        prop: item.name,
-        label: item.cname,
-        custom: item.custom,
-        isEnd: props.tableDataList.length - 1 === index
+        ...item,
+        // 补充字段用于判断首尾
+        isFirst: index === 0,
+        isLast: props.tableDataList.length - 1 === index
       }
     })
     const cmdResult = await nativeCommond<{ content: string }>({

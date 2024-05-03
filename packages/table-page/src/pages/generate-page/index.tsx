@@ -4,11 +4,12 @@ import SelectTemplate from './components/SelectTemplate/index'
 import FileName from './components/FileName/index'
 import GenerateCode from './components/GenerateCode/index'
 import { nanoid } from 'nanoid'
+import classnames from 'classnames'
 
 export interface TableColumnProp {
   id: string
-  cname?: string
-  name: string
+  label?: string
+  prop: string
   custom?: boolean
   width?: number
 }
@@ -39,19 +40,19 @@ function GeneratePage() {
 
   const columns = [
     {
-      title: '中文名称',
-      dataIndex: 'cname',
-      key: 'cname',
-      render: createInputRender('cname')
+      title: '列名称',
+      dataIndex: 'prop',
+      key: 'prop',
+      render: createInputRender('prop')
     },
     {
-      title: '英文名称',
-      dataIndex: 'name',
-      key: 'name',
-      render: createInputRender('name')
+      title: '列标题',
+      dataIndex: 'label',
+      key: 'label',
+      render: createInputRender('label')
     },
     {
-      title: '宽度',
+      title: '列宽度',
       dataIndex: 'width',
       key: 'width',
       render: createInputRender('width')
@@ -99,27 +100,30 @@ function GeneratePage() {
     setTableDataList((draft) => {
       draft.push({
         id: nanoid(),
-        cname: '',
-        name: '',
+        label: '',
+        prop: '',
         custom: false,
         width: undefined
       })
     })
   }
 
+  const blockStyle =
+    'm-10px p-20px rounded-10px border-1px border-solid border-slate-200'
   return (
-    <div className="m-10px rounded-10px border-1px border-solid border-slate-200">
-      <div className="p-20px">
-        <div className="text-24px font-bold mb-15px">配置表格页面</div>
-        <div className="flex items-center color-black mb-15px">
+    <div>
+      <div className={blockStyle}>
+        <div className="text-24px font-bold mb-15px">配置页面</div>
+        <div className="flex items-center color-black">
           <SelectTemplate />
           <FileName />
           <Button className="ml-auto" onClick={handleAddCol}>
-            添加表头
+            添加列
           </Button>
           <GenerateCode tableDataList={tableDataList} />
         </div>
-
+      </div>
+      <div className={classnames(blockStyle)}>
         <Table
           rowKey="id"
           dataSource={tableDataList}

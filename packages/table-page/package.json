@@ -30,6 +30,7 @@
     "@unocss/transformer-attributify-jsx": "^0.59.1",
     "@unocss/transformer-directives": "^0.59.1",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "classnames": "^2.5.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "react-devtools": "^5.1.0",
