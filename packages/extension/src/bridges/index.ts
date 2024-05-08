@@ -87,12 +87,12 @@ export const addTemplate = async (message: any, webview: vscode.Webview) => {
   if (templateList.find((item) => item.templateName === templateName)) {
     return vscode.window.showErrorMessage('模版已存在')
   }
-  await vscode.workspace
-    .getConfiguration()
-    .update('pre-code.templateList', [
-      ...templateList,
-      { templateName, templatePath }
-    ])
+
+  await config.update(
+    'pre-code.templateList',
+    [...templateList, { templateName, templatePath }],
+    vscode.ConfigurationTarget.Global
+  )
   nativeCommandCallback({
     webview,
     commandId: message.commandId
@@ -109,9 +109,11 @@ export const editTemplate = async (message: any, webview: vscode.Webview) => {
     (item) => item.templateName === templateName
   )
   templateList.splice(index, 1, { templateName, templatePath })
-  await vscode.workspace
-    .getConfiguration()
-    .update('pre-code.templateList', templateList)
+  await config.update(
+    'pre-code.templateList',
+    templateList,
+    vscode.ConfigurationTarget.Global
+  )
   nativeCommandCallback({
     webview,
     commandId: message.commandId
@@ -142,7 +144,11 @@ export const updateTemplateList = async (
   const { templateList } = message.params
   await vscode.workspace
     .getConfiguration()
-    .update('pre-code.templateList', templateList)
+    .update(
+      'pre-code.templateList',
+      templateList,
+      vscode.ConfigurationTarget.Global
+    )
   nativeCommandCallback({
     webview,
     commandId: message.commandId

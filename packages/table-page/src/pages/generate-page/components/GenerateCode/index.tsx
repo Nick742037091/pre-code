@@ -48,7 +48,7 @@ function GenerateCode(props: { tableDataList: TableColumnProp[] }) {
     })
   }
   return (
-    <div className="ml-10px">
+    <div className="ml-auto">
       {contextHolder}
       <Button type="primary" onClick={handleGenerateCode}>
         生成代码
