@@ -13,17 +13,17 @@ interface State {
   setFileType: (fileType: FileType) => void
 }
 
-export const useGenerateCodeStore = create<State>((set, get) => {
+export const useGenerateCodeStore = create<State>((set) => {
   let filePath = ''
   let fileName = ''
-  let fileType = '.vue'
+  let fileType: FileType = '.vue'
   const { openFilePath } = window.injectParams
   if (openFilePath) {
     filePath = openFilePath
     const pathParts = openFilePath.split('/')
     const lastPath = pathParts[pathParts.length - 1]
     fileName = lastPath.split('.')[0]
-    fileType = '.' + lastPath.split('.')[1]
+    fileType = ('.' + lastPath.split('.')[1]) as FileType
   }
 
   return {

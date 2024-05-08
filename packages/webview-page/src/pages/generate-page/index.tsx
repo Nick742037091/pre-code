@@ -1,19 +1,17 @@
 import { useImmer } from 'use-immer'
 import { Button, Input, Select, Switch, Table } from 'antd'
+import ConfigList from '../config-list/index'
 import SelectTemplate from './components/SelectTemplate/index'
 import FileName from './components/FileName/index'
 import GenerateCode from './components/GenerateCode/index'
 import { nanoid } from 'nanoid'
 import classnames from 'classnames'
-import {
-  ColumnAttrItem,
-  ColumnAttrType,
-  useColumnAtrr
-} from './components/ColumnAttr'
+import { ColumnAttrItem, ColumnAttrType } from './components/ColumnAttr'
 import { ColumnsType } from 'antd/es/table'
 import { ColumnType } from 'antd/lib/table'
 import { useState } from 'react'
 import ColumnAttrList from './components/ColumnAttrList'
+import { SwapOutlined } from '@ant-design/icons'
 
 export interface TableColumnProp {
   id: string
@@ -25,6 +23,10 @@ export interface TableColumnProp {
 }
 
 function GeneratePage() {
+  // const [configListVisible, setConfigListVisible] = useState(false)
+  // FIXME test
+  const [configListVisible, setConfigListVisible] = useState(true)
+
   const createInputRender = (prop: keyof TableColumnProp) => {
     return (text: string, record: TableColumnProp, index: number) => {
       return (
@@ -36,7 +38,6 @@ function GeneratePage() {
       )
     }
   }
-
   const createSwitchRender = (prop: keyof TableColumnProp) => {
     return (text: boolean, record: TableColumnProp, index: number) => {
       return (
@@ -47,7 +48,6 @@ function GeneratePage() {
       )
     }
   }
-
   const createSelectRender = (
     prop: keyof TableColumnProp,
     options: string[]
@@ -176,6 +176,10 @@ function GeneratePage() {
     'm-10px p-20px rounded-10px border-1px border-solid border-slate-200'
   return (
     <div key="columnAttr">
+      <ConfigList
+        visible={configListVisible}
+        setVisible={setConfigListVisible}
+      />
       <ColumnAttrList
         list={customColumnAttrs}
         deleteColumnAtrr={handleDeleteAttr}
@@ -185,7 +189,13 @@ function GeneratePage() {
         updateColumAttr={handleUpdateColumAttr}
       />
       <div className={blockStyle}>
-        <div className="text-24px font-bold mb-15px">配置表格页面</div>
+        <div className="text-24px font-bold mb-15px flex items-center">
+          配置表格页面
+          <SwapOutlined
+            className="text-20px ml-20px cursor-pointer"
+            onClick={() => setConfigListVisible(true)}
+          />
+        </div>
         <div className="flex items-center color-black">
           <SelectTemplate />
           <FileName />
