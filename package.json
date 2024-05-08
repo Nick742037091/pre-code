@@ -7,11 +7,11 @@
   "scripts": {
     "dev": "run-p dev:*",
     "dev:extension": "pnpm run -F pre-code dev",
-    "dev:table-page": "pnpm run -F table-page dev",
-    "dev:devtools": "pnpm run -F table-page devtools",
+    "dev:webview-page": "pnpm run -F webview-page dev",
+    "dev:devtools": "pnpm run -F webview-page devtools",
     "build": "run-p build:* && pnpm run package:extension",
     "build:extension": "pnpm run -F pre-code build",
-    "build:table-page": "pnpm run -F table-page build",
+    "build:webview-page": "pnpm run -F webview-page build",
     "package:extension": "pnpm run -F pre-code package",
     "publish:extension": "pnpm run -F pre-code publish"
   },

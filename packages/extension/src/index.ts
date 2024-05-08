@@ -77,7 +77,7 @@ function getWebviewContent(
     const scriptPathOnDisk = vscode.Uri.joinPath(
       context.extensionUri,
       'out',
-      'table-page',
+      'webview-page',
       'index.js'
     )
     const scriptUri = webview.asWebviewUri(scriptPathOnDisk)
@@ -85,7 +85,7 @@ function getWebviewContent(
     const stylePathOnDisk = vscode.Uri.joinPath(
       context.extensionUri,
       'out',
-      'table-page',
+      'webview-page',
       'index.css'
     )
     const styleUri = webview.asWebviewUri(stylePathOnDisk)

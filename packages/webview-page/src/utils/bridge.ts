@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid'
+import { Message } from 'pre-code/src/utils/message'
 
 export interface NativeCommandOptions {
   command: string
@@ -7,16 +8,7 @@ export interface NativeCommandOptions {
     [key: string]: any
   }
 }
-interface MessageEvent {
-  data: {
-    command: string
-    commandId: string
-    params?: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      [key: string]: any
-    }
-  }
-}
+
 export const nativeCommond = <T>(options: NativeCommandOptions): Promise<T> => {
   return new Promise((resolve) => {
     const { command, params } = options
@@ -26,7 +18,7 @@ export const nativeCommond = <T>(options: NativeCommandOptions): Promise<T> => {
       commandId: commandId,
       params
     })
-    const listener = (event: MessageEvent) => {
+    const listener = (event: { data: Message }) => {
       const { command, commandId, params } = event.data
       if (command !== 'nativeCallbackResult') return
       if (commandId !== commandId) return

@@ -1,5 +1,5 @@
 {
-  "name": "table-page",
+  "name": "webview-page",
   "version": "0.0.1",
   "license": "MIT",
   "type": "module",
@@ -15,6 +15,7 @@
     "@emotion/react": "^11.11.4",
     "antd": "^5.16.1",
     "immer": "^10.1.1",
+    "pre-code": "workspace:^",
     "react-router-dom": "^6.23.0",
     "zustand": "^4.5.2"
   },

@@ -1,9 +1,11 @@
 import * as vscode from 'vscode'
 import * as fs from 'fs'
 import { nativeCommandCallback } from '../utils/bridge'
+import { Message } from '@/utils/message'
+// TODO 导入webview-page问题：ESM 导入 Commonjs项目
 
 // 选择文件
-export const pickFile = async (message: any, webview: vscode.Webview) => {
+export const pickFile = async (message: Message, webview: vscode.Webview) => {
   const fileUri = await vscode.window.showOpenDialog({
     canSelectFiles: true, // 是否可以选择文件
     canSelectFolders: false, // 是否可以选择文件夹
@@ -29,8 +31,8 @@ export const pickFile = async (message: any, webview: vscode.Webview) => {
 }
 
 // 选择文件
-export const readFile = async (message: any, webview: vscode.Webview) => {
-  const { filePath } = message.params
+export const readFile = async (message: Message, webview: vscode.Webview) => {
+  const { filePath } = message.params || {}
   fs.readFile(filePath, 'utf-8', (err, data) => {
     if (err) {
       return
@@ -46,9 +48,12 @@ export const readFile = async (message: any, webview: vscode.Webview) => {
 }
 
 // 生成页面代码
-export const generateCode = async (message: any, webview: vscode.Webview) => {
-  const { fileName, fileType, code } = message.params
-  let { filePath } = message.params
+export const generateCode = async (
+  message: Message,
+  webview: vscode.Webview
+) => {
+  const { fileName, fileType, code } = message.params || {}
+  let { filePath } = message.params || {}
   if (!filePath) {
     const uri = await vscode.window.showOpenDialog({
       canSelectFolders: true,
@@ -79,8 +84,11 @@ export const generateCode = async (message: any, webview: vscode.Webview) => {
 }
 
 // 添加模板
-export const addTemplate = async (message: any, webview: vscode.Webview) => {
-  const { templateName, templatePath } = message.params
+export const addTemplate = async (
+  message: Message,
+  webview: vscode.Webview
+) => {
+  const { templateName, templatePath } = message.params || {}
   const config = vscode.workspace.getConfiguration()
   // TODO ts增强
   const templateList = config.get('pre-code.templateList') as any[]
@@ -100,8 +108,11 @@ export const addTemplate = async (message: any, webview: vscode.Webview) => {
 }
 
 //  编辑模板
-export const editTemplate = async (message: any, webview: vscode.Webview) => {
-  const { templateName, templatePath } = message.params
+export const editTemplate = async (
+  message: Message,
+  webview: vscode.Webview
+) => {
+  const { templateName, templatePath } = message.params || {}
   const config = vscode.workspace.getConfiguration()
   // TODO ts增强
   const templateList = config.get('pre-code.templateList') as any[]
@@ -122,7 +133,7 @@ export const editTemplate = async (message: any, webview: vscode.Webview) => {
 
 // 添加模板
 export const getTemplateList = async (
-  message: any,
+  message: Message,
   webview: vscode.Webview
 ) => {
   const config = vscode.workspace.getConfiguration()
@@ -138,10 +149,10 @@ export const getTemplateList = async (
 
 // 更新模板列表
 export const updateTemplateList = async (
-  message: any,
+  message: Message,
   webview: vscode.Webview
 ) => {
-  const { templateList } = message.params
+  const { templateList } = message.params || {}
   await vscode.workspace
     .getConfiguration()
     .update(
