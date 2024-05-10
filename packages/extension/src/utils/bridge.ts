@@ -15,5 +15,6 @@ export const nativeCommandCallback = (options: CallbackOptions) => {
     command: NATIVE_CALLBACK_NAME,
     commandId: options.commandId,
     params: options.params
+    // FIXME 多次回调params会合并
   })
 }

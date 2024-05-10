@@ -90,6 +90,9 @@ importers:
       zustand:
         specifier: ^4.5.2
         version: 4.5.2(@types/react@18.2.79)(immer@10.1.1)(react@18.2.0)
+      zustand-computed:
+        specifier: ^1.4.1
+        version: 1.4.1(react@18.2.0)(zustand@4.5.2)
     devDependencies:
       '@emotion/babel-plugin':
         specifier: ^11.11.0
@@ -136,6 +139,9 @@ importers:
       react-devtools:
         specifier: ^5.1.0
         version: 5.1.0
+      simple-zustand-devtools:
+        specifier: ^1.1.0
+        version: 1.1.0(@types/react-dom@18.2.25)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)(zustand@4.5.2)
       unocss:
         specifier: ^0.59.1
         version: 0.59.3(postcss@8.4.38)(vite@5.2.9)
@@ -3529,7 +3535,6 @@ packages:
 
   /immer@10.1.1:
     resolution: {integrity: sha512-s2MPrmjovJcoMaHtx6K11Ra7oD05NT97w1IC5zpMkT6Atjr7H8LjaDd81iIxUYpMKSRRNMJE703M1Fhr/TctHw==}
-    dev: false
 
   /import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
@@ -3974,7 +3979,6 @@ packages:
     hasBin: true
     dependencies:
       js-tokens: 4.0.0
-    dev: false
 
   /lowercase-keys@1.0.1:
     resolution: {integrity: sha512-G2Lj61tXDnVFFOi8VZds+SoQjtQC3dgokKdDG2mTm1tx4m50NUHBOZSBwQQHyy0V12A0JTG4icfZQH+xPyh8VA==}
@@ -5127,7 +5131,6 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
-    dev: false
 
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -5165,7 +5168,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /read-pkg@3.0.0:
     resolution: {integrity: sha512-BLq/cCO9two+lBgiTYNqD6GdtK8s4NpaWrl6/rCO9w0TUS8oJl7cmToOZfRYllKTISY6nt1U7jQ53brmKqY6BA==}
@@ -5360,7 +5362,6 @@ packages:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /schema-utils@3.3.0:
     resolution: {integrity: sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==}
@@ -5504,6 +5505,22 @@ packages:
       decompress-response: 6.0.0
       once: 1.4.0
       simple-concat: 1.0.1
+    dev: true
+
+  /simple-zustand-devtools@1.1.0(@types/react-dom@18.2.25)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)(zustand@4.5.2):
+    resolution: {integrity: sha512-Axfcfr9L3YL3kto7aschCQLY2VUlXXMnIVtaTe9Y0qWbNmPsX/y7KsNprmxBZoB0pww5ZGs1u/ohcrvQ3tE6jA==}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      '@types/react-dom': '>=18.0.0'
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
+      zustand: '>=1.0.2'
+    dependencies:
+      '@types/react': 18.2.79
+      '@types/react-dom': 18.2.25
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      zustand: 4.5.2(@types/react@18.2.79)(immer@10.1.1)(react@18.2.0)
     dev: true
 
   /sirv@2.0.4:
@@ -6083,7 +6100,6 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
       react: 18.2.0
-    dev: false
 
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
@@ -6384,6 +6400,16 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
+  /zustand-computed@1.4.1(react@18.2.0)(zustand@4.5.2):
+    resolution: {integrity: sha512-yP9Bz1kvb18cGMgSiEzVF04o/A+7NM1EUUv7oeNshnjXEJkAK8wDjSVA1zK6ZsKRgCZoKW/fvBbWuNAJusB/qQ==}
+    peerDependencies:
+      react: ^18.2.0
+      zustand: ^4.3.8
+    dependencies:
+      react: 18.2.0
+      zustand: 4.5.2(@types/react@18.2.79)(immer@10.1.1)(react@18.2.0)
+    dev: false
+
   /zustand@4.5.2(@types/react@18.2.79)(immer@10.1.1)(react@18.2.0):
     resolution: {integrity: sha512-2cN1tPkDVkwCy5ickKrI7vijSjPksFRfqS6237NzT0vqSsztTNnQdHw9mmN7uBdk3gceVXU0a+21jFzFzAc9+g==}
     engines: {node: '>=12.7.0'}
@@ -6403,4 +6429,3 @@ packages:
       immer: 10.1.1
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
-    dev: false

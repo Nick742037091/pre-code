@@ -2,7 +2,38 @@ import * as vscode from 'vscode'
 import * as fs from 'fs'
 import { nativeCommandCallback } from '../utils/bridge'
 import { Message } from '@/utils/message'
+import * as storage from '../utils/storage'
 // TODO 导入webview-page问题：ESM 导入 Commonjs项目
+
+// 查询配置列表
+export const getConfigList = async (
+  message: Message,
+  webview: vscode.Webview,
+  context: vscode.ExtensionContext
+) => {
+  const configList = storage.getConfigList(context)
+  nativeCommandCallback({
+    webview,
+    commandId: message.commandId,
+    params: {
+      configList
+    }
+  })
+}
+
+// 保存配置列表
+export const saveConfigList = async (
+  message: Message,
+  webview: vscode.Webview,
+  context: vscode.ExtensionContext
+) => {
+  const { configList } = message.params || {}
+  storage.saveConfigList(context, configList)
+  nativeCommandCallback({
+    webview,
+    commandId: message.commandId
+  })
+}
 
 // 选择文件
 export const pickFile = async (message: Message, webview: vscode.Webview) => {

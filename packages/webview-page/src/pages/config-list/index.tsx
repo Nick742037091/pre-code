@@ -3,7 +3,7 @@ import {
   CloseOutlined,
   FormOutlined
 } from '@ant-design/icons'
-import { Button, Card, Popconfirm } from 'antd'
+import { Button, Card, Popconfirm, message } from 'antd'
 import { useAddConfig } from './components/AddConfig'
 import { ConfigTypeNames, useConfigList } from '@/stores/configList'
 import classNames from 'classnames'
@@ -28,7 +28,8 @@ export default function ConfigList(props: {
   visible: boolean
   setVisible: (val: boolean) => void
 }) {
-  const { configList, deleteConfig } = useConfigList()
+  const { configList, deleteConfig, setCurrentConfigId, currentConfig } =
+    useConfigList()
   const { context: addConfigContext, showModal } = useAddConfig()
 
   const hoverIconClass =
@@ -44,7 +45,12 @@ export default function ConfigList(props: {
       {addConfigContext}
       <Header
         addTemplate={() => showModal('add')}
-        onClose={() => props.setVisible(false)}
+        onClose={() => {
+          if (!currentConfig) {
+            return message.warning('请先选择配置')
+          }
+          props.setVisible(false)
+        }}
       />
       <div className="flex flex-wrap">
         {configList.map((item, index) => {
@@ -54,7 +60,10 @@ export default function ConfigList(props: {
               key={item.configName}
               title={item.configName}
               bordered={false}
-              onClick={() => props.setVisible(false)}
+              onClick={() => {
+                setCurrentConfigId(item.id)
+                props.setVisible(false)
+              }}
               extra={
                 <div onClick={(e) => e.stopPropagation()}>
                   <FormOutlined

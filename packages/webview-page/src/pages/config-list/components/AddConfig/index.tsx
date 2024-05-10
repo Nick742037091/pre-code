@@ -1,4 +1,4 @@
-import { ConfigItem, ConfigType, useConfigList } from '@/stores/configList'
+import { Config, ConfigType, useConfigList } from '@/stores/configList'
 import { Form, Input, Modal, Select, message } from 'antd'
 import { nanoid } from 'nanoid'
 import { useState } from 'react'
@@ -7,20 +7,16 @@ export const useAddConfig = () => {
   const { addConfig, updateConfig } = useConfigList()
   const [messageApi, msgContextHolder] = message.useMessage()
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [id, setId] = useState('')
+  const [config, setConfig] = useState<Config | null>(null)
   const [type, setType] = useState<'add' | 'edit'>('add')
 
-  const showModal = (
-    showType: typeof type = 'add',
-    configData?: ConfigItem
-  ) => {
+  const showModal = (showType: typeof type = 'add', configData?: Config) => {
     setType(showType)
     if (showType === 'add') {
-      setId('')
       setConfigName('')
       setConfigType(ConfigType.Table)
     } else {
-      setId(configData!.id)
+      setConfig(configData!)
       setConfigName(configData!.configName)
       setConfigType(configData!.configType)
     }
@@ -37,11 +33,14 @@ export const useAddConfig = () => {
       addConfig({
         id: nanoid(),
         configName,
-        configType
+        configType,
+        templateList: [],
+        defaultTemplateId: '',
+        tablePropList: []
       })
     } else {
       updateConfig({
-        id,
+        ...config!,
         configName,
         configType
       })
@@ -71,8 +70,8 @@ export const useAddConfig = () => {
       onCancel={handleCancel}
       width={600}
     >
-      <Form name="basic" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
-        <Form.Item<ConfigItem>
+      <Form name="configForm" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+        <Form.Item<Config>
           label="配置名称"
           rules={[{ required: true, message: '请输入配置名称' }]}
         >
@@ -83,7 +82,7 @@ export const useAddConfig = () => {
           />
         </Form.Item>
 
-        <Form.Item<ConfigItem>
+        <Form.Item<Config>
           label="配置类型"
           rules={[{ required: true, message: '请选择配置类型' }]}
         >

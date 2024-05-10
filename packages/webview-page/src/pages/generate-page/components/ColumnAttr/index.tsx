@@ -133,7 +133,7 @@ export const useColumnAtrr = (props: {
       onCancel={handleCancel}
       width={600}
     >
-      <Form name="basic" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+      <Form name="columnAttrForm" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
         <Form.Item<ColumnAttrItem>
           label="键值"
           rules={[{ required: true, message: '请输入键值' }]}

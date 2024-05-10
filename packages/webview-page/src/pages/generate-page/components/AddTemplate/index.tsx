@@ -1,23 +1,27 @@
-import { useGenerateCodeStore } from '@/stores/generateCodeStore'
+import { useConfigList, TemplateItem } from '@/stores/configList'
 import { nativeCommond } from '@/utils/bridge'
 import { Button, Form, Input, InputRef, Modal, message } from 'antd'
+import { nanoid } from 'nanoid'
 import { useEffect, useRef, useState } from 'react'
 
-export const useAddTemplate = (props: { updateList: () => Promise<void> }) => {
-  const store = useGenerateCodeStore()
+export const useAddTemplate = () => {
+  const { addTemplate, updateTemplate, templateList } = useConfigList()
   const [messageApi, msgContextHolder] = message.useMessage()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [template, setTemplate] = useState<TemplateItem | null>(null)
   const [type, setType] = useState<'add' | 'edit'>('add')
 
   const showModal = (
     showType: typeof type = 'add',
-    templateData?: { templateName: string; templatePath: string }
+    templateData?: TemplateItem
   ) => {
     setType(showType)
     if (showType === 'add') {
+      setTemplate(null)
       setTemplateName('')
       setTemplatePath('')
     } else {
+      setTemplate(templateData!)
       setTemplateName(templateData!.templateName)
       setTemplatePath(templateData!.templatePath)
     }
@@ -40,17 +44,25 @@ export const useAddTemplate = (props: { updateList: () => Promise<void> }) => {
       messageApi.error('请选择模板')
       return
     }
-
-    await nativeCommond({
-      command: type === 'add' ? 'addTemplate' : 'editTemplate',
-      params: {
+    if (type === 'add') {
+      const isExist = templateList.find(
+        (item) => item.templateName === templateName
+      )
+      if (isExist) {
+        return messageApi.warning('该模板已存在')
+      }
+      addTemplate({
+        id: nanoid(),
         templateName,
         templatePath
-      }
-    })
-    store.setTemplateName(templateName)
-    store.setTemplatePath(templatePath)
-    props.updateList()
+      })
+    } else {
+      updateTemplate({
+        ...template!,
+        templateName,
+        templatePath
+      })
+    }
     setIsModalOpen(false)
   }
   const handleCancel = () => {
@@ -66,11 +78,6 @@ export const useAddTemplate = (props: { updateList: () => Promise<void> }) => {
     setTemplatePath(result.path)
   }
 
-  type FieldType = {
-    templateName: string
-    templatePath: string
-  }
-
   const templateNameInput = useRef<InputRef>(null)
 
   const context = (
@@ -81,8 +88,12 @@ export const useAddTemplate = (props: { updateList: () => Promise<void> }) => {
       onCancel={handleCancel}
       width={600}
     >
-      <Form name="basic" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
-        <Form.Item<FieldType>
+      <Form
+        name="templateForm"
+        labelCol={{ span: 4 }}
+        wrapperCol={{ span: 20 }}
+      >
+        <Form.Item<TemplateItem>
           label="模板名称"
           rules={[{ required: true, message: '请输入模板名称' }]}
         >
@@ -93,7 +104,7 @@ export const useAddTemplate = (props: { updateList: () => Promise<void> }) => {
           />
         </Form.Item>
 
-        <Form.Item<FieldType>
+        <Form.Item<TemplateItem>
           label="模板文件"
           rules={[{ required: true, message: '请选择文件' }]}
         >

@@ -36,7 +36,7 @@ function createWebviewPanel(context: vscode.ExtensionContext, command: string) {
   panel.webview.onDidReceiveMessage((message) => {
     const bridge = bridges[message.command as keyof typeof bridges]
     if (bridge) {
-      bridge(message, panel.webview)
+      bridge(message, panel.webview, context)
     } else {
       console.error(`${message.command}桥接不存在`)
     }
