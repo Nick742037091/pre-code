@@ -1,10 +1,10 @@
-import { Config, ConfigType, useConfigList } from '@/stores/configList'
+import { Config, ConfigType, useConfig } from '@/stores/config'
 import { Form, Input, Modal, Select, message } from 'antd'
 import { nanoid } from 'nanoid'
 import { useState } from 'react'
 
 export const useAddConfig = () => {
-  const { addConfig, updateConfig } = useConfigList()
+  const { addConfig, updateConfig } = useConfig()
   const [messageApi, msgContextHolder] = message.useMessage()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [config, setConfig] = useState<Config | null>(null)

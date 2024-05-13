@@ -1,4 +1,4 @@
-import { Config } from '@/types/config'
+import { Config, StorageData } from '@/types/config'
 import * as vscode from 'vscode'
 import fs from 'fs'
 import path from 'path'
@@ -32,6 +32,22 @@ export const saveStorage = (
   const globalStoragePath = context.globalStorageUri.fsPath
   const dataFilePath = path.join(globalStoragePath, STORAGE_FILE_NAME)
   fs.writeFileSync(dataFilePath, JSON.stringify(data), 'utf8')
+}
+
+export const getStorageData = (context: vscode.ExtensionContext) => {
+  return (
+    (readStorage(context) as StorageData) || {
+      defaultConfigId: '',
+      configList: []
+    }
+  )
+}
+
+export const saveStorageData = (
+  context: vscode.ExtensionContext,
+  data: StorageData
+) => {
+  return saveStorage(context, data)
 }
 
 export const getConfigList = (context: vscode.ExtensionContext) => {

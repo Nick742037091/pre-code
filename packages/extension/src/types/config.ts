@@ -32,3 +32,8 @@ export type Config = {
   defaultTemplateId: string
   tablePropList: ColumnAttrItem[]
 }
+
+export type StorageData = {
+  defaultConfigId: string
+  configList: Config[]
+}

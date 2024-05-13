@@ -1,11 +1,11 @@
-import { useConfigList, TemplateItem } from '@/stores/configList'
+import { useConfig, TemplateItem } from '@/stores/config'
 import { nativeCommond } from '@/utils/bridge'
 import { Button, Form, Input, InputRef, Modal, message } from 'antd'
 import { nanoid } from 'nanoid'
 import { useEffect, useRef, useState } from 'react'
 
 export const useAddTemplate = () => {
-  const { addTemplate, updateTemplate, templateList } = useConfigList()
+  const { addTemplate, updateTemplate, templateList } = useConfig()
   const [messageApi, msgContextHolder] = message.useMessage()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [template, setTemplate] = useState<TemplateItem | null>(null)

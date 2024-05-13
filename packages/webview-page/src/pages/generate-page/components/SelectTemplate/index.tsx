@@ -1,17 +1,18 @@
 import { Button, Divider, Modal, Select } from 'antd'
-import { TemplateItem } from '@/stores/configList'
+import { TemplateItem } from '@/stores/config'
 import { CloseOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { useAddTemplate } from '../AddTemplate/index'
-import { MouseEvent } from 'react'
-import { useConfigList } from '@/stores/configList'
+import { MouseEvent, useEffect } from 'react'
+import { useConfig } from '@/stores/config'
 
 export default function SelectTemplate() {
   const {
     templateList,
     currentTemplate,
     deleteTemplate,
-    setCurrentTemplateId
-  } = useConfigList()
+    setCurrentTemplateId,
+    currentTemplateId
+  } = useConfig()
 
   const optionList = templateList.map((item) => ({
     value: item.id,
@@ -40,6 +41,9 @@ export default function SelectTemplate() {
   function handleSelectTemplate(val: string) {
     setCurrentTemplateId(val)
   }
+  useEffect(() => {
+    setCurrentTemplateId(currentTemplateId)
+  }, [])
   return (
     <div className="flex items-center mr-10px">
       {addTemplateContext}

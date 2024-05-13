@@ -5,7 +5,11 @@ import { WritableDraft } from 'immer'
 import computed from 'zustand-computed'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 
-import type { Config, TemplateItem } from 'pre-code/src/types/config'
+import type {
+  Config,
+  StorageData,
+  TemplateItem
+} from 'pre-code/src/types/config'
 export type { Config, TemplateItem }
 
 export enum ConfigType {
@@ -19,6 +23,7 @@ export const ConfigTypeNames = {
 }
 
 interface State {
+  isLoaded: boolean
   configList: Config[]
   addConfig: (config: Config) => void
   updateConfig: (config: Config) => void
@@ -32,15 +37,22 @@ interface State {
   setCurrentTemplateId: (templateId: string) => void
 }
 
-export const useConfigList = create<State>()(
+export const useConfig = create<State>()(
   computed(
     immer((set) => {
+      const isLoaded = false
       const configList: Config[] = []
-      nativeCommond<{ configList: Config[] }>({
-        command: 'getConfigList'
+      nativeCommond<{ data: StorageData }>({
+        command: 'getStorageData'
       }).then((result) => {
         set((state) => {
-          state.configList = result.configList
+          console.log('getStorageData', result.data)
+          // 同步配置列表和默认配置
+          state.configList = result.data.configList || []
+          state.currentConfigId = result.data.defaultConfigId || ''
+          const currentConfig = getCurrentConfig(state)
+          state.currentTemplateId = currentConfig?.defaultTemplateId || ''
+          state.isLoaded = true
         })
       })
       const addConfig = (config: Config) => {
@@ -68,6 +80,8 @@ export const useConfigList = create<State>()(
       const setCurrentConfigId = (configId: string) => {
         set((state) => {
           state.currentConfigId = configId
+          const currentConfig = getCurrentConfig(state)
+          state.currentTemplateId = currentConfig?.defaultTemplateId || ''
         })
       }
       const getCurrentConfig = (state: WritableDraft<State>) => {
@@ -120,10 +134,14 @@ export const useConfigList = create<State>()(
       const setCurrentTemplateId = (templateId: string) => {
         set((state) => {
           state.currentTemplateId = templateId
+          const currentConfig = getCurrentConfig(state)
+          if (!currentConfig) return
+          currentConfig.defaultTemplateId = templateId
         })
       }
 
       return {
+        isLoaded,
         configList,
         addConfig,
         updateConfig,
@@ -154,18 +172,28 @@ export const useConfigList = create<State>()(
   )
 )
 
-useConfigList.subscribe((state, preState) => {
+// 监听配置更新进行，持久化
+useConfig.subscribe((state, preState) => {
   if (
-    JSON.stringify(state.configList) !== JSON.stringify(preState.configList)
+    JSON.stringify(state.configList) !== JSON.stringify(preState.configList) ||
+    JSON.stringify(state.currentConfigId) !==
+      JSON.stringify(preState.currentConfigId)
   ) {
-    console.log('subscribe configList', state.configList)
+    const data = {
+      defaultConfigId: state.currentConfigId,
+      configList: state.configList
+    }
+    if (state.configList.length === 0) {
+      data.defaultConfigId = ''
+    }
+    console.log('subscribe config', data)
     nativeCommond({
-      command: 'saveConfigList',
+      command: 'saveStorageData',
       params: {
-        configList: state.configList
+        data
       }
     })
   }
 })
 
-mountStoreDevtool('configList', useConfigList)
+mountStoreDevtool('config', useConfig)

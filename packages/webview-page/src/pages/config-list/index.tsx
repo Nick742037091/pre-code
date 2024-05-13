@@ -5,8 +5,9 @@ import {
 } from '@ant-design/icons'
 import { Button, Card, Popconfirm, message } from 'antd'
 import { useAddConfig } from './components/AddConfig'
-import { ConfigTypeNames, useConfigList } from '@/stores/configList'
+import { ConfigTypeNames, useConfig } from '@/stores/config'
 import classNames from 'classnames'
+import { useEffect } from 'react'
 
 function Header(props: { addTemplate: () => void; onClose: () => void }) {
   return (
@@ -28,9 +29,19 @@ export default function ConfigList(props: {
   visible: boolean
   setVisible: (val: boolean) => void
 }) {
-  const { configList, deleteConfig, setCurrentConfigId, currentConfig } =
-    useConfigList()
+  const {
+    isLoaded,
+    configList,
+    deleteConfig,
+    setCurrentConfigId,
+    currentConfig
+  } = useConfig()
   const { context: addConfigContext, showModal } = useAddConfig()
+  useEffect(() => {
+    if (isLoaded && configList.length === 0) {
+      showModal('add')
+    }
+  }, [isLoaded])
 
   const hoverIconClass =
     'hover:bg-blue hover:color-white hover:rounded-50% cursor-pointer  p-10px'

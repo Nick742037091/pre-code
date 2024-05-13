@@ -9,9 +9,10 @@ import classnames from 'classnames'
 import { ColumnAttrItem, ColumnAttrType } from './components/ColumnAttr'
 import { ColumnsType } from 'antd/es/table'
 import { ColumnType } from 'antd/lib/table'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ColumnAttrList from './components/ColumnAttrList'
 import { SwapOutlined } from '@ant-design/icons'
+import { useConfig } from '@/stores/config'
 
 export interface TableColumnProp {
   id: string
@@ -23,9 +24,13 @@ export interface TableColumnProp {
 }
 
 function GeneratePage() {
-  // const [configListVisible, setConfigListVisible] = useState(false)
-  // FIXME test
-  const [configListVisible, setConfigListVisible] = useState(true)
+  const [configListVisible, setConfigListVisible] = useState(false)
+  const { currentConfigId, configList, isLoaded } = useConfig()
+  useEffect(() => {
+    if (isLoaded) {
+      setConfigListVisible(configList.length === 0)
+    }
+  }, [isLoaded])
 
   const createInputRender = (prop: keyof TableColumnProp) => {
     return (text: string, record: TableColumnProp, index: number) => {
@@ -180,49 +185,53 @@ function GeneratePage() {
         visible={configListVisible}
         setVisible={setConfigListVisible}
       />
-      <ColumnAttrList
-        list={customColumnAttrs}
-        deleteColumnAtrr={handleDeleteAttr}
-        visible={columnAttrListVisible}
-        setVisible={(val: boolean) => setColumnAttrListVisible(val)}
-        addColumAttr={handleAddColumAttr}
-        updateColumAttr={handleUpdateColumAttr}
-      />
-      <div className={blockStyle}>
-        <div className="text-24px font-bold mb-15px flex items-center">
-          配置表格页面
-          <SwapOutlined
-            className="text-20px ml-20px cursor-pointer"
-            onClick={() => setConfigListVisible(true)}
+      {currentConfigId && (
+        <>
+          <ColumnAttrList
+            list={customColumnAttrs}
+            deleteColumnAtrr={handleDeleteAttr}
+            visible={columnAttrListVisible}
+            setVisible={(val: boolean) => setColumnAttrListVisible(val)}
+            addColumAttr={handleAddColumAttr}
+            updateColumAttr={handleUpdateColumAttr}
           />
-        </div>
-        <div className="flex items-center color-black">
-          <SelectTemplate />
-          <FileName />
-          <GenerateCode tableDataList={tableDataList} />
-        </div>
-      </div>
-      <div className={classnames(blockStyle)}>
-        <div className="flex items-center mb-10px">
-          表格列
-          <Button
-            className="ml-auto"
-            type="primary"
-            onClick={() => setColumnAttrListVisible(true)}
-          >
-            属性列表
-          </Button>
-          <Button className="ml-10px" type="primary" onClick={handleAddCol}>
-            添加列
-          </Button>
-        </div>
-        <Table
-          rowKey="id"
-          dataSource={tableDataList}
-          columns={columns}
-          pagination={false}
-        />
-      </div>
+          <div className={blockStyle}>
+            <div className="text-24px font-bold mb-15px flex items-center">
+              配置表格页面
+              <SwapOutlined
+                className="text-20px ml-20px cursor-pointer"
+                onClick={() => setConfigListVisible(true)}
+              />
+            </div>
+            <div className="flex items-center color-black">
+              <SelectTemplate />
+              <FileName />
+              <GenerateCode tableDataList={tableDataList} />
+            </div>
+          </div>
+          <div className={classnames(blockStyle)}>
+            <div className="flex items-center mb-10px">
+              表格列
+              <Button
+                className="ml-auto"
+                type="primary"
+                onClick={() => setColumnAttrListVisible(true)}
+              >
+                属性列表
+              </Button>
+              <Button className="ml-10px" type="primary" onClick={handleAddCol}>
+                添加列
+              </Button>
+            </div>
+            <Table
+              rowKey="id"
+              dataSource={tableDataList}
+              columns={columns}
+              pagination={false}
+            />
+          </div>
+        </>
+      )}
     </div>
   )
 }

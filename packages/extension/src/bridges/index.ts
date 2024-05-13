@@ -5,6 +5,36 @@ import { Message } from '@/utils/message'
 import * as storage from '../utils/storage'
 // TODO 导入webview-page问题：ESM 导入 Commonjs项目
 
+// 查询所有配置
+export const getStorageData = async (
+  message: Message,
+  webview: vscode.Webview,
+  context: vscode.ExtensionContext
+) => {
+  const data = storage.getStorageData(context)
+  nativeCommandCallback({
+    webview,
+    commandId: message.commandId,
+    params: {
+      data
+    }
+  })
+}
+
+// 保存所有配置
+export const saveStorageData = async (
+  message: Message,
+  webview: vscode.Webview,
+  context: vscode.ExtensionContext
+) => {
+  const { data } = message.params || {}
+  storage.saveStorageData(context, data)
+  nativeCommandCallback({
+    webview,
+    commandId: message.commandId
+  })
+}
+
 // 查询配置列表
 export const getConfigList = async (
   message: Message,
@@ -112,87 +142,4 @@ export const generateCode = async (
       })
     })
   }
-}
-
-// 添加模板
-export const addTemplate = async (
-  message: Message,
-  webview: vscode.Webview
-) => {
-  const { templateName, templatePath } = message.params || {}
-  const config = vscode.workspace.getConfiguration()
-  // TODO ts增强
-  const templateList = config.get('pre-code.templateList') as any[]
-  if (templateList.find((item) => item.templateName === templateName)) {
-    return vscode.window.showErrorMessage('模版已存在')
-  }
-
-  await config.update(
-    'pre-code.templateList',
-    [...templateList, { templateName, templatePath }],
-    vscode.ConfigurationTarget.Global
-  )
-  nativeCommandCallback({
-    webview,
-    commandId: message.commandId
-  })
-}
-
-//  编辑模板
-export const editTemplate = async (
-  message: Message,
-  webview: vscode.Webview
-) => {
-  const { templateName, templatePath } = message.params || {}
-  const config = vscode.workspace.getConfiguration()
-  // TODO ts增强
-  const templateList = config.get('pre-code.templateList') as any[]
-  const index = templateList.findIndex(
-    (item) => item.templateName === templateName
-  )
-  templateList.splice(index, 1, { templateName, templatePath })
-  await config.update(
-    'pre-code.templateList',
-    templateList,
-    vscode.ConfigurationTarget.Global
-  )
-  nativeCommandCallback({
-    webview,
-    commandId: message.commandId
-  })
-}
-
-// 添加模板
-export const getTemplateList = async (
-  message: Message,
-  webview: vscode.Webview
-) => {
-  const config = vscode.workspace.getConfiguration()
-  const templateList = config.get('pre-code.templateList') as []
-  nativeCommandCallback({
-    webview,
-    commandId: message.commandId,
-    params: {
-      templateList
-    }
-  })
-}
-
-// 更新模板列表
-export const updateTemplateList = async (
-  message: Message,
-  webview: vscode.Webview
-) => {
-  const { templateList } = message.params || {}
-  await vscode.workspace
-    .getConfiguration()
-    .update(
-      'pre-code.templateList',
-      templateList,
-      vscode.ConfigurationTarget.Global
-    )
-  nativeCommandCallback({
-    webview,
-    commandId: message.commandId
-  })
 }
