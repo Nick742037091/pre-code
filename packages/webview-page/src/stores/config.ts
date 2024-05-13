@@ -39,10 +39,10 @@ interface State {
   setCurrentTemplateId: (templateId: string) => void
   fileType: FileType
   setFileType: (fileType: FileType) => void
-  setTablePropList: (tablePropList: ColumnAttrItem[]) => void
-  addTableProp: (tableProp: ColumnAttrItem) => void
-  updateTableProp: (tableProp: ColumnAttrItem) => void
-  deleteTableProp: (index: number) => void
+  setTableColumnList: (tableColumnList: ColumnAttrItem[]) => void
+  addTableColumn: (tableColumn: ColumnAttrItem) => void
+  updateTableColumn: (tableColumn: ColumnAttrItem) => void
+  deleteTableColumn: (index: number) => void
 }
 
 export const useConfig = create<State>()(
@@ -166,42 +166,42 @@ export const useConfig = create<State>()(
       }
 
       /*** 表格列 ***/
-      const setTablePropList = (tablePropList: ColumnAttrItem[]) => {
+      const setTableColumnList = (tableColumnList: ColumnAttrItem[]) => {
         set((state) => {
           const currentConfig = getCurrentConfig(state)
           if (!currentConfig) return
-          currentConfig.tablePropList = tablePropList
+          currentConfig.tableColumnList = tableColumnList
           updateConfigStorage(state)
         })
       }
 
-      const addTableProp = (tableProp: ColumnAttrItem) => {
+      const addTableColumn = (tableColumn: ColumnAttrItem) => {
         set((state) => {
           const currentConfig = getCurrentConfig(state)
           if (!currentConfig) return
-          currentConfig.tablePropList.push(tableProp)
+          currentConfig.tableColumnList.push(tableColumn)
           updateConfigStorage(state)
         })
       }
 
-      const updateTableProp = (tableProp: ColumnAttrItem) => {
+      const updateTableColumn = (tableColumn: ColumnAttrItem) => {
         set((state) => {
           const currentConfig = getCurrentConfig(state)
           if (!currentConfig) return
-          const index = currentConfig.tablePropList.findIndex(
-            (item) => item.id === tableProp.id
+          const index = currentConfig.tableColumnList.findIndex(
+            (item) => item.id === tableColumn.id
           )
           if (index === -1) return
-          currentConfig.tablePropList.splice(index, 1, tableProp)
+          currentConfig.tableColumnList.splice(index, 1, tableColumn)
           updateConfigStorage(state)
         })
       }
 
-      const deleteTableProp = (index: number) => {
+      const deleteTableColumn = (index: number) => {
         set((state) => {
           const currentConfig = getCurrentConfig(state)
           if (!currentConfig) return
-          currentConfig.tablePropList.splice(index, 1)
+          currentConfig.tableColumnList.splice(index, 1)
           updateConfigStorage(state)
         })
       }
@@ -231,10 +231,10 @@ export const useConfig = create<State>()(
         setCurrentTemplateId,
         fileType,
         setFileType,
-        setTablePropList,
-        addTableProp,
-        updateTableProp,
-        deleteTableProp
+        setTableColumnList,
+        addTableColumn,
+        updateTableColumn,
+        deleteTableColumn
       }
     }),
     (state) => {
@@ -245,11 +245,11 @@ export const useConfig = create<State>()(
       const currentTemplate = templateList.find(
         (item) => item.id === state.currentTemplateId
       )
-      const tablePropList = currentConfig?.tablePropList || []
+      const tableColumnList = currentConfig?.tableColumnList || []
       return {
         currentConfig,
         templateList,
-        tablePropList,
+        tableColumnList,
         currentTemplate
       }
     }

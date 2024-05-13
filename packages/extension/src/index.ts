@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
 function createWebviewPanel(context: vscode.ExtensionContext, command: string) {
   const panel = vscode.window.createWebviewPanel(
     'preCodeWebview',
-    '生成表格页面',
+    'Pre Code',
     vscode.ViewColumn.One,
     {
       enableScripts: true,

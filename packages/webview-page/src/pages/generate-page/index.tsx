@@ -26,7 +26,13 @@ export interface TableColumnProp {
 
 function GeneratePage() {
   const [configListVisible, setConfigListVisible] = useState(false)
-  const { currentConfigId, configList, isLoaded, tablePropList } = useConfig()
+  const {
+    currentConfigId,
+    currentConfig,
+    configList,
+    isLoaded,
+    tableColumnList
+  } = useConfig()
   useEffect(() => {
     if (isLoaded) {
       setConfigListVisible(configList.length === 0)
@@ -82,7 +88,7 @@ function GeneratePage() {
     }
   }
 
-  const customColumns = tablePropList.map((item) => {
+  const customColumns = tableColumnList.map((item) => {
     let render: ColumnType<TableColumnProp>['render'] | undefined = undefined
     switch (item.attrType) {
       case ColumnAttrType.Input:
@@ -190,7 +196,7 @@ function GeneratePage() {
           />
           <div className={blockStyle}>
             <div className="text-24px font-bold mb-15px flex items-center">
-              配置表格页面
+              {currentConfig?.configName}
               <SwapOutlined
                 className="text-20px ml-20px cursor-pointer"
                 onClick={() => setConfigListVisible(true)}

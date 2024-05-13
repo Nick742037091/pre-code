@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const listToMap = <T>(list: T[], key: keyof T, extractKey: keyof T) => {
   if (!list) return {}
   if (!key) return {}
@@ -11,5 +10,6 @@ export const listToMap = <T>(list: T[], key: keyof T, extractKey: keyof T) => {
       }
     }
     return map
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }, {} as any)
 }

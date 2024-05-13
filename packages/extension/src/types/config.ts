@@ -33,7 +33,7 @@ export type Config = {
   fileType: FileType
   templateList: TemplateItem[]
   defaultTemplateId: string
-  tablePropList: ColumnAttrItem[]
+  tableColumnList: ColumnAttrItem[]
 }
 
 export type StorageData = {

@@ -3,16 +3,18 @@ import { TableColumnProp } from '../../index'
 import handlebars from 'handlebars'
 import { nativeCommond } from '@/utils/bridge'
 import { useGenerateCodeStore } from '@/stores/generateCodeStore'
+import { useConfig } from '@/stores/config'
 
 function GenerateCode(props: { tableDataList: TableColumnProp[] }) {
   const [messageApi, contextHolder] = message.useMessage()
   const store = useGenerateCodeStore()
+  const { currentTemplate } = useConfig()
   const handleGenerateCode = async () => {
     if (!store.fileName) {
       messageApi.error('请输入页面名称')
       return
     }
-    if (!store.templatePath) {
+    if (!currentTemplate?.templatePath) {
       messageApi.error('请选择模板')
       return
     }
@@ -32,7 +34,7 @@ function GenerateCode(props: { tableDataList: TableColumnProp[] }) {
     const cmdResult = await nativeCommond<{ content: string }>({
       command: 'readFile',
       params: {
-        filePath: store.templatePath
+        filePath: currentTemplate?.templatePath
       }
     })
     const template = handlebars.compile(cmdResult.content)
@@ -41,7 +43,7 @@ function GenerateCode(props: { tableDataList: TableColumnProp[] }) {
       command: 'generateCode',
       params: {
         fileName: store.fileName,
-        fileType: store.fileType,
+        fileType: currentTemplate?.templatePath,
         filePath: store.filePath,
         code
       }

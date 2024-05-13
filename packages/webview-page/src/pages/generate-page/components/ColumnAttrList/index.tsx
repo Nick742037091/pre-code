@@ -11,28 +11,32 @@ function ColumnAttrList(props: {
   setVisible: (val: boolean) => void
 }) {
   const [messageApi, msgContextHolder] = message.useMessage()
-  const { tablePropList, addTableProp, updateTableProp, deleteTableProp } =
-    useConfig()
+  const {
+    tableColumnList,
+    addTableColumn,
+    updateTableColumn,
+    deleteTableColumn
+  } = useConfig()
   const handleConfirmAddColAttr = (info: ColumnAttrItem) => {
-    const exist = tablePropList.some((item) => item.attrKey === info.attrKey)
+    const exist = tableColumnList.some((item) => item.attrKey === info.attrKey)
     if (exist) {
       messageApi.warning('该键值已存在')
       return false
     } else {
-      addTableProp(info)
+      addTableColumn(info)
       return true
     }
   }
 
   const handleConfirmUpdateColAttr = (info: ColumnAttrItem) => {
-    const exist = tablePropList
+    const exist = tableColumnList
       .filter((item) => item.id !== info.id)
       .some((item) => item.attrKey === info.attrKey)
     if (exist) {
       messageApi.warning('该键值已存在')
       return false
     } else {
-      updateTableProp(info)
+      updateTableColumn(info)
       return true
     }
   }
@@ -48,7 +52,7 @@ function ColumnAttrList(props: {
   }
 
   const handleDeleteAttr = (index: number) => {
-    deleteTableProp(index)
+    deleteTableColumn(index)
   }
   const columns = [
     {
@@ -128,7 +132,7 @@ function ColumnAttrList(props: {
     >
       <Table
         rowKey="id"
-        dataSource={tablePropList}
+        dataSource={tableColumnList}
         columns={columns}
         pagination={false}
       />
