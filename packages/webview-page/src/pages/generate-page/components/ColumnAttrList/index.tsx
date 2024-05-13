@@ -1,35 +1,38 @@
-import { Button, Modal, Table, message } from 'antd'
-import { ColumnAttrItem, useColumnAtrr } from '../ColumnAttr'
+import { Button, Modal, Table, Tag, message } from 'antd'
+import { ColumnAttrItem, useColumnAtrr, AttrTypeOptions } from '../ColumnAttr'
+import { useConfig } from '@/stores/config'
+import { ColumnAttrType } from 'pre-code/src/types/config'
+import { listToMap } from '@/utils'
+
+const AttrTypeOptionsMap = listToMap(AttrTypeOptions, 'value', 'label')
 
 function ColumnAttrList(props: {
-  list: ColumnAttrItem[]
   visible: boolean
   setVisible: (val: boolean) => void
-  addColumAttr: (item: ColumnAttrItem) => void
-  updateColumAttr: (item: ColumnAttrItem) => void
-  deleteColumnAtrr: (index: number) => void
 }) {
   const [messageApi, msgContextHolder] = message.useMessage()
+  const { tablePropList, addTableProp, updateTableProp, deleteTableProp } =
+    useConfig()
   const handleConfirmAddColAttr = (info: ColumnAttrItem) => {
-    const exist = props.list.some((item) => item.attrKey === info.attrKey)
+    const exist = tablePropList.some((item) => item.attrKey === info.attrKey)
     if (exist) {
       messageApi.warning('该键值已存在')
       return false
     } else {
-      props.addColumAttr(info)
+      addTableProp(info)
       return true
     }
   }
 
   const handleConfirmUpdateColAttr = (info: ColumnAttrItem) => {
-    const exist = props.list
+    const exist = tablePropList
       .filter((item) => item.id !== info.id)
       .some((item) => item.attrKey === info.attrKey)
     if (exist) {
       messageApi.warning('该键值已存在')
       return false
     } else {
-      props.updateColumAttr(info)
+      updateTableProp(info)
       return true
     }
   }
@@ -45,7 +48,7 @@ function ColumnAttrList(props: {
   }
 
   const handleDeleteAttr = (index: number) => {
-    props.deleteColumnAtrr(index)
+    deleteTableProp(index)
   }
   const columns = [
     {
@@ -61,12 +64,24 @@ function ColumnAttrList(props: {
     {
       title: '类型',
       dataIndex: 'attrType',
-      key: 'attrLabel'
+      key: 'attrType',
+      render(text: ColumnAttrType) {
+        return <span>{AttrTypeOptionsMap[text]}</span>
+      }
     },
     {
       title: '选项',
       dataIndex: 'attrOptions',
-      key: 'attrLabel'
+      key: 'attrOptins',
+      render(text: string[]) {
+        return text.map((item, index) => {
+          return (
+            <Tag key={index} color="#1677ff" className="m-5px">
+              {item}
+            </Tag>
+          )
+        })
+      }
     },
     {
       title: '操作',
@@ -111,7 +126,12 @@ function ColumnAttrList(props: {
       footer={() => null}
       width={900}
     >
-      <Table dataSource={props.list} columns={columns} pagination={false} />
+      <Table
+        rowKey="id"
+        dataSource={tablePropList}
+        columns={columns}
+        pagination={false}
+      />
       {msgContextHolder}
       {columnAttrContext}
     </Modal>

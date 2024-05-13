@@ -1,3 +1,5 @@
+export type FileType = '.vue' | '.react'
+
 export enum ConfigType {
   Table,
   Form
@@ -28,6 +30,7 @@ export type Config = {
   id: string
   configName: string
   configType: ConfigType
+  fileType: FileType
   templateList: TemplateItem[]
   defaultTemplateId: string
   tablePropList: ColumnAttrItem[]

@@ -1,12 +1,13 @@
 import { useImmer } from 'use-immer'
-import { Button, Input, Select, Switch, Table } from 'antd'
+import { Button, Input, InputNumber, Select, Switch, Table } from 'antd'
+import type { InputNumberProps } from 'antd'
 import ConfigList from '../config-list/index'
 import SelectTemplate from './components/SelectTemplate/index'
 import FileName from './components/FileName/index'
 import GenerateCode from './components/GenerateCode/index'
 import { nanoid } from 'nanoid'
 import classnames from 'classnames'
-import { ColumnAttrItem, ColumnAttrType } from './components/ColumnAttr'
+import { ColumnAttrType } from './components/ColumnAttr'
 import { ColumnsType } from 'antd/es/table'
 import { ColumnType } from 'antd/lib/table'
 import { useEffect, useState } from 'react'
@@ -25,13 +26,14 @@ export interface TableColumnProp {
 
 function GeneratePage() {
   const [configListVisible, setConfigListVisible] = useState(false)
-  const { currentConfigId, configList, isLoaded } = useConfig()
+  const { currentConfigId, configList, isLoaded, tablePropList } = useConfig()
   useEffect(() => {
     if (isLoaded) {
       setConfigListVisible(configList.length === 0)
     }
   }, [isLoaded])
 
+  const columnMinWidth = 120
   const createInputRender = (prop: keyof TableColumnProp) => {
     return (text: string, record: TableColumnProp, index: number) => {
       return (
@@ -39,6 +41,17 @@ function GeneratePage() {
           value={text}
           allowClear
           onChange={(e) => onChangeValue(e.target.value, index, prop)}
+        />
+      )
+    }
+  }
+  const createNumberRender = (prop: keyof TableColumnProp) => {
+    return (text: number, record: TableColumnProp, index: number) => {
+      return (
+        <InputNumber
+          css={{ width: '95% !important' }}
+          value={text}
+          onChange={(value) => onChangeValue(value || '', index, prop)}
         />
       )
     }
@@ -60,7 +73,7 @@ function GeneratePage() {
     return (text: string, record: TableColumnProp, index: number) => {
       return (
         <Select
-          className="min-w-100px!"
+          css={{ width: '95% !important' }}
           options={options.map((item) => ({ label: item, value: item }))}
           value={text}
           onChange={(value) => onChangeValue(value, index, prop)}
@@ -69,16 +82,14 @@ function GeneratePage() {
     }
   }
 
-  const [customColumnAttrs, setCustomColumnAttrs] = useImmer<ColumnAttrItem[]>(
-    []
-  )
-  // TODO customColumnAttrs更新后进行持久化保存
-
-  const customColumns = customColumnAttrs.map((item) => {
+  const customColumns = tablePropList.map((item) => {
     let render: ColumnType<TableColumnProp>['render'] | undefined = undefined
     switch (item.attrType) {
       case ColumnAttrType.Input:
         render = createInputRender(item.attrKey)
+        break
+      case ColumnAttrType.Number:
+        render = createNumberRender(item.attrKey)
         break
       case ColumnAttrType.Switch:
         render = createSwitchRender(item.attrKey)
@@ -91,7 +102,8 @@ function GeneratePage() {
       title: item.attrLabel,
       dataIndex: item.attrKey,
       key: item.attrKey,
-      render
+      render,
+      width: columnMinWidth
     }
   })
 
@@ -100,13 +112,15 @@ function GeneratePage() {
       title: '列名称',
       dataIndex: 'prop',
       key: 'prop',
-      render: createInputRender('prop')
+      render: createInputRender('prop'),
+      width: columnMinWidth
     },
     {
       title: '列标题',
       dataIndex: 'label',
       key: 'label',
-      render: createInputRender('label')
+      render: createInputRender('label'),
+      width: columnMinWidth
     }
   ]
 
@@ -115,6 +129,7 @@ function GeneratePage() {
     dataIndex: 'operation',
     key: 'operation',
     width: 80,
+    fixed: 'right',
     render(text: string, record: TableColumnProp, index: number) {
       return (
         <Button danger onClick={() => handleDeleteCol(index)}>
@@ -128,7 +143,7 @@ function GeneratePage() {
   const [tableDataList, setTableDataList] = useImmer<TableColumnProp[]>([])
 
   const onChangeValue = (
-    value: string | boolean,
+    value: string | boolean | number | undefined,
     index: number,
     props: keyof TableColumnProp
   ) => {
@@ -140,23 +155,6 @@ function GeneratePage() {
     })
   }
 
-  const handleAddColumAttr = (info: ColumnAttrItem) => {
-    setCustomColumnAttrs((draft) => {
-      draft.push(info)
-    })
-  }
-  const handleUpdateColumAttr = (info: ColumnAttrItem) => {
-    setCustomColumnAttrs((draft) => {
-      const index = draft.findIndex((item) => item.id === info.id)
-      draft.splice(index, 1, info)
-    })
-  }
-  const handleDeleteAttr = (index: number) => {
-    setCustomColumnAttrs((draft) => {
-      draft.splice(index)
-    })
-  }
-
   const [columnAttrListVisible, setColumnAttrListVisible] = useState(false)
 
   const handleAddCol = () => {
@@ -165,8 +163,7 @@ function GeneratePage() {
         id: nanoid(),
         label: '',
         prop: '',
-        custom: false,
-        width: undefined
+        custom: false
       })
     })
   }
@@ -188,12 +185,8 @@ function GeneratePage() {
       {currentConfigId && (
         <>
           <ColumnAttrList
-            list={customColumnAttrs}
-            deleteColumnAtrr={handleDeleteAttr}
             visible={columnAttrListVisible}
             setVisible={(val: boolean) => setColumnAttrListVisible(val)}
-            addColumAttr={handleAddColumAttr}
-            updateColumAttr={handleUpdateColumAttr}
           />
           <div className={blockStyle}>
             <div className="text-24px font-bold mb-15px flex items-center">
@@ -224,6 +217,7 @@ function GeneratePage() {
               </Button>
             </div>
             <Table
+              scroll={{ x: 500 }}
               rowKey="id"
               dataSource={tableDataList}
               columns={columns}

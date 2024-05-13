@@ -19,6 +19,25 @@ export type ColumnAttrItem = {
   attrOptions: string[]
 }
 
+export const AttrTypeOptions = [
+  {
+    value: ColumnAttrType.Input,
+    label: '输入框'
+  },
+  {
+    value: ColumnAttrType.Number,
+    label: '计数器'
+  },
+  {
+    value: ColumnAttrType.Switch,
+    label: '开关'
+  },
+  {
+    value: ColumnAttrType.Select,
+    label: '选择器'
+  }
+]
+
 // 对于弹窗而言，通过对外暴露接口用于控制展示/隐藏，有利于控制弹窗状态，
 // 但是与此同时，需要在父组件添加ref用于操作弹窗组件，如果弹窗比较多，管理起来就比较麻烦。
 //
@@ -34,24 +53,7 @@ export const useColumnAtrr = (props: {
   const [attrKey, setAttrKey] = useState<string>('')
   const [attrLabel, setAttrLabel] = useState<string>('')
   const [attrType, setAttrType] = useState<ColumnAttrType>(ColumnAttrType.Input)
-  const attrTypeOptions = [
-    {
-      value: ColumnAttrType.Input,
-      label: '输入框'
-    },
-    {
-      value: ColumnAttrType.Number,
-      label: '计数器'
-    },
-    {
-      value: ColumnAttrType.Switch,
-      label: '开关'
-    },
-    {
-      value: ColumnAttrType.Select,
-      label: '选择器'
-    }
-  ]
+
   const [attrOptions, setAttrOptions] = useImmer<string[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const showModal = (
@@ -133,7 +135,11 @@ export const useColumnAtrr = (props: {
       onCancel={handleCancel}
       width={600}
     >
-      <Form name="columnAttrForm" labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+      <Form
+        name="columnAttrForm"
+        labelCol={{ span: 4 }}
+        wrapperCol={{ span: 20 }}
+      >
         <Form.Item<ColumnAttrItem>
           label="键值"
           rules={[{ required: true, message: '请输入键值' }]}
@@ -161,7 +167,7 @@ export const useColumnAtrr = (props: {
           <Select
             className="w-200px!"
             value={attrType}
-            options={attrTypeOptions}
+            options={AttrTypeOptions}
             onChange={setAttrType}
           />
         </Form.Item>
@@ -172,7 +178,8 @@ export const useColumnAtrr = (props: {
               {attrOptions.map((item, index) => {
                 return (
                   <Tag
-                    color="#108ee9"
+                    key={index}
+                    color="#1677ff"
                     className="m-5px"
                     closeIcon
                     onClose={() => handleDeleteOption(index)}

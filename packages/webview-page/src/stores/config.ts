@@ -8,8 +8,10 @@ import { mountStoreDevtool } from 'simple-zustand-devtools'
 import type {
   Config,
   StorageData,
-  TemplateItem
+  TemplateItem,
+  ColumnAttrItem
 } from 'pre-code/src/types/config'
+import { FileType } from './generateCodeStore'
 export type { Config, TemplateItem }
 
 export enum ConfigType {
@@ -35,6 +37,12 @@ interface State {
   deleteTemplate: (index: number) => void
   currentTemplateId: string
   setCurrentTemplateId: (templateId: string) => void
+  fileType: FileType
+  setFileType: (fileType: FileType) => void
+  setTablePropList: (tablePropList: ColumnAttrItem[]) => void
+  addTableProp: (tableProp: ColumnAttrItem) => void
+  updateTableProp: (tableProp: ColumnAttrItem) => void
+  deleteTableProp: (index: number) => void
 }
 
 export const useConfig = create<State>()(
@@ -52,9 +60,13 @@ export const useConfig = create<State>()(
           state.currentConfigId = result.data.defaultConfigId || ''
           const currentConfig = getCurrentConfig(state)
           state.currentTemplateId = currentConfig?.defaultTemplateId || ''
+          if (!state.fileType) {
+            state.fileType = currentConfig?.fileType || '.vue'
+          }
           state.isLoaded = true
         })
       })
+      /*** 配置 ***/
       const addConfig = (config: Config) => {
         set((state) => {
           state.configList.push(config)
@@ -82,6 +94,7 @@ export const useConfig = create<State>()(
           state.currentConfigId = configId
           const currentConfig = getCurrentConfig(state)
           state.currentTemplateId = currentConfig?.defaultTemplateId || ''
+          state.fileType = currentConfig?.fileType || '.vue'
         })
       }
       const getCurrentConfig = (state: WritableDraft<State>) => {
@@ -92,19 +105,23 @@ export const useConfig = create<State>()(
         return currentConfig
       }
 
+      /*** 模板 ***/
       const addTemplate = (template: TemplateItem) => {
         set((state) => {
           const currentConfig = getCurrentConfig(state)
           if (!currentConfig) return
           currentConfig.templateList.push(template)
+          currentConfig.defaultTemplateId = template.id
+          state.currentTemplateId = template.id
+          updateConfigStorage(state)
         })
       }
       const updateTemplate = (template: TemplateItem) => {
         set((state) => {
           const currentConfig = getCurrentConfig(state)
           if (!currentConfig) return
-          const index = currentConfig!.templateList.findIndex(
-            (item) => item.templateName === template.templateName
+          const index = currentConfig.templateList.findIndex(
+            (item) => item.id === template.id
           )
           if (index === -1) return
           currentConfig.templateList.splice(index, 1, template)
@@ -121,6 +138,75 @@ export const useConfig = create<State>()(
         })
       }
 
+      const currentTemplateId = ''
+      const setCurrentTemplateId = (templateId: string) => {
+        set((state) => {
+          const currentConfig = getCurrentConfig(state)
+          if (!currentConfig) return
+          state.currentTemplateId = templateId
+          currentConfig.defaultTemplateId = templateId
+          updateConfigStorage(state)
+        })
+      }
+
+      let fileType: FileType | '' = ''
+      const { openFilePath } = window.injectParams
+      if (openFilePath) {
+        const pathParts = openFilePath.split('/')
+        const lastPath = pathParts[pathParts.length - 1]
+        fileType = ('.' + lastPath.split('.')[1]) as FileType
+      }
+      const setFileType = (fileType: FileType) => {
+        set((state) => {
+          const currentConfig = getCurrentConfig(state)
+          if (!currentConfig) return
+          currentConfig.fileType = fileType
+          updateConfigStorage(state)
+        })
+      }
+
+      /*** 表格列 ***/
+      const setTablePropList = (tablePropList: ColumnAttrItem[]) => {
+        set((state) => {
+          const currentConfig = getCurrentConfig(state)
+          if (!currentConfig) return
+          currentConfig.tablePropList = tablePropList
+          updateConfigStorage(state)
+        })
+      }
+
+      const addTableProp = (tableProp: ColumnAttrItem) => {
+        set((state) => {
+          const currentConfig = getCurrentConfig(state)
+          if (!currentConfig) return
+          currentConfig.tablePropList.push(tableProp)
+          updateConfigStorage(state)
+        })
+      }
+
+      const updateTableProp = (tableProp: ColumnAttrItem) => {
+        set((state) => {
+          const currentConfig = getCurrentConfig(state)
+          if (!currentConfig) return
+          const index = currentConfig.tablePropList.findIndex(
+            (item) => item.id === tableProp.id
+          )
+          if (index === -1) return
+          currentConfig.tablePropList.splice(index, 1, tableProp)
+          updateConfigStorage(state)
+        })
+      }
+
+      const deleteTableProp = (index: number) => {
+        set((state) => {
+          const currentConfig = getCurrentConfig(state)
+          if (!currentConfig) return
+          currentConfig.tablePropList.splice(index, 1)
+          updateConfigStorage(state)
+        })
+      }
+
+      // 更新配置项，触发本地保存
       const updateConfigStorage = (state: WritableDraft<State>) => {
         const currentConfig = getCurrentConfig(state)
         if (!currentConfig) return
@@ -128,16 +214,6 @@ export const useConfig = create<State>()(
           (item) => item.id === currentConfig.id
         )
         state.configList.splice(index, 1, currentConfig)
-      }
-      const currentTemplateId = ''
-
-      const setCurrentTemplateId = (templateId: string) => {
-        set((state) => {
-          state.currentTemplateId = templateId
-          const currentConfig = getCurrentConfig(state)
-          if (!currentConfig) return
-          currentConfig.defaultTemplateId = templateId
-        })
       }
 
       return {
@@ -150,9 +226,15 @@ export const useConfig = create<State>()(
         setCurrentConfigId,
         addTemplate,
         updateTemplate,
+        deleteTemplate,
         currentTemplateId,
         setCurrentTemplateId,
-        deleteTemplate
+        fileType,
+        setFileType,
+        setTablePropList,
+        addTableProp,
+        updateTableProp,
+        deleteTableProp
       }
     }),
     (state) => {
@@ -163,9 +245,11 @@ export const useConfig = create<State>()(
       const currentTemplate = templateList.find(
         (item) => item.id === state.currentTemplateId
       )
+      const tablePropList = currentConfig?.tablePropList || []
       return {
         currentConfig,
         templateList,
+        tablePropList,
         currentTemplate
       }
     }

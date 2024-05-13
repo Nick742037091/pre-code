@@ -1,16 +1,19 @@
+import { useConfig } from '@/stores/config'
 import { useGenerateCodeStore } from '@/stores/generateCodeStore'
 import { Input, Select } from 'antd'
 const { Option } = Select
 
 function FileName() {
   const store = useGenerateCodeStore()
+  const { fileType, setFileType } = useConfig()
+
   const disabled = !!window.injectParams.openFilePath
   const fileTypeList = (
     <Select
       className="w-80px"
       disabled={disabled}
-      defaultValue={store.fileType}
-      onChange={(val) => store.setFileType(val)}
+      defaultValue={fileType}
+      onChange={setFileType}
     >
       <Option value=".vue">.vue</Option>
       <Option value=".react">.react</Option>
