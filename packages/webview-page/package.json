@@ -13,8 +13,10 @@
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
     "@emotion/react": "^11.11.4",
+    "@types/lodash": "^4.17.1",
     "antd": "^5.16.1",
     "immer": "^10.1.1",
+    "lodash": "^4.17.21",
     "pre-code": "workspace:^",
     "react-router-dom": "^6.23.0",
     "zustand": "^4.5.2",

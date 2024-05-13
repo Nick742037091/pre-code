@@ -37,6 +37,7 @@ export const useAddConfig = () => {
         templateList: [],
         defaultTemplateId: '',
         tableColumnList: [],
+        formItemList: [],
         fileType: '.vue'
       })
     } else {

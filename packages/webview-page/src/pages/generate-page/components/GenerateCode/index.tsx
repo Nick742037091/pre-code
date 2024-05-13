@@ -5,7 +5,7 @@ import { nativeCommond } from '@/utils/bridge'
 import { useGenerateCodeStore } from '@/stores/generateCodeStore'
 import { useConfig } from '@/stores/config'
 
-function GenerateCode(props: { tableDataList: TableColumnProp[] }) {
+function GenerateCode(props: { getTableDataList: () => TableColumnProp[] }) {
   const [messageApi, contextHolder] = message.useMessage()
   const store = useGenerateCodeStore()
   const { currentTemplate } = useConfig()
@@ -18,17 +18,18 @@ function GenerateCode(props: { tableDataList: TableColumnProp[] }) {
       messageApi.error('请选择模板')
       return
     }
-    if (!props.tableDataList.length) {
+    const tableDataList = props.getTableDataList()
+    if (!tableDataList.length) {
       messageApi.error('请先添加表头')
       return
     }
 
-    const columnList = props.tableDataList.map((item, index) => {
+    const columnList = tableDataList.map((item, index) => {
       return {
         ...item,
         // 补充字段用于判断首尾
         isFirst: index === 0,
-        isLast: props.tableDataList.length - 1 === index
+        isLast: tableDataList.length - 1 === index
       }
     })
     const cmdResult = await nativeCommond<{ content: string }>({

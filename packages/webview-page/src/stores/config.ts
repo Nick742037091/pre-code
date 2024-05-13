@@ -6,12 +6,13 @@ import computed from 'zustand-computed'
 import { mountStoreDevtool } from 'simple-zustand-devtools'
 
 import type {
+  FileType,
   Config,
   StorageData,
   TemplateItem,
-  ColumnAttrItem
+  ColumnAttrItem,
+  FormItem
 } from 'pre-code/src/types/config'
-import { FileType } from './generateCodeStore'
 export type { Config, TemplateItem }
 
 export enum ConfigType {
@@ -37,12 +38,15 @@ interface State {
   deleteTemplate: (index: number) => void
   currentTemplateId: string
   setCurrentTemplateId: (templateId: string) => void
-  fileType: FileType
+  fileType: FileType | ''
   setFileType: (fileType: FileType) => void
   setTableColumnList: (tableColumnList: ColumnAttrItem[]) => void
   addTableColumn: (tableColumn: ColumnAttrItem) => void
   updateTableColumn: (tableColumn: ColumnAttrItem) => void
   deleteTableColumn: (index: number) => void
+  addFormItem: (formItem: FormItem) => void
+  updateFormItem: (formItem: FormItem) => void
+  deleteFormItem: (index: number) => void
 }
 
 export const useConfig = create<State>()(
@@ -174,7 +178,6 @@ export const useConfig = create<State>()(
           updateConfigStorage(state)
         })
       }
-
       const addTableColumn = (tableColumn: ColumnAttrItem) => {
         set((state) => {
           const currentConfig = getCurrentConfig(state)
@@ -202,6 +205,38 @@ export const useConfig = create<State>()(
           const currentConfig = getCurrentConfig(state)
           if (!currentConfig) return
           currentConfig.tableColumnList.splice(index, 1)
+          updateConfigStorage(state)
+        })
+      }
+
+      /* 表单列表 */
+      const addFormItem = (form: FormItem) => {
+        set((state) => {
+          const currentConfig = getCurrentConfig(state)
+          if (!currentConfig) return
+          currentConfig.formItemList.push(form)
+          updateConfigStorage(state)
+        })
+      }
+
+      const updateFormItem = (form: FormItem) => {
+        set((state) => {
+          const currentConfig = getCurrentConfig(state)
+          if (!currentConfig) return
+          const index = currentConfig.formItemList.findIndex(
+            (item) => item.id === form.id
+          )
+          if (index === -1) return
+          currentConfig.formItemList.splice(index, 1, form)
+          updateConfigStorage(state)
+        })
+      }
+
+      const deleteFormItem = (index: number) => {
+        set((state) => {
+          const currentConfig = getCurrentConfig(state)
+          if (!currentConfig) return
+          currentConfig.formItemList.splice(index, 1)
           updateConfigStorage(state)
         })
       }
@@ -234,7 +269,10 @@ export const useConfig = create<State>()(
         setTableColumnList,
         addTableColumn,
         updateTableColumn,
-        deleteTableColumn
+        deleteTableColumn,
+        addFormItem,
+        updateFormItem,
+        deleteFormItem
       }
     }),
     (state) => {
@@ -246,11 +284,13 @@ export const useConfig = create<State>()(
         (item) => item.id === state.currentTemplateId
       )
       const tableColumnList = currentConfig?.tableColumnList || []
+      const formItemList = currentConfig?.formItemList || []
       return {
         currentConfig,
+        currentTemplate,
         templateList,
         tableColumnList,
-        currentTemplate
+        formItemList
       }
     }
   )

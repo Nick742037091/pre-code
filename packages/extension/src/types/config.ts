@@ -5,6 +5,12 @@ export enum ConfigType {
   Form
 }
 
+export interface TemplateItem {
+  id: string
+  templateName: string
+  templatePath: string
+}
+
 export enum ColumnAttrType {
   Input = 0,
   Number,
@@ -20,12 +26,13 @@ export interface ColumnAttrItem {
   attrOptions: string[]
 }
 
-export interface TemplateItem {
-  id: string
-  templateName: string
-  templatePath: string
-}
+export type FormAttrITem = ColumnAttrItem
 
+export interface FormItem {
+  id: string
+  formName: string
+  attrList: FormAttrITem[]
+}
 export type Config = {
   id: string
   configName: string
@@ -34,6 +41,7 @@ export type Config = {
   templateList: TemplateItem[]
   defaultTemplateId: string
   tableColumnList: ColumnAttrItem[]
+  formItemList: FormItem[]
 }
 
 export type StorageData = {

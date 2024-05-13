@@ -3,27 +3,29 @@ import { ColumnAttrItem, useColumnAtrr, AttrTypeOptions } from '../ColumnAttr'
 import { useConfig } from '@/stores/config'
 import { ColumnAttrType } from 'pre-code/src/types/config'
 import { listToMap } from '@/utils'
+import { useState } from 'react'
+import { useImmer } from 'use-immer'
+import { cloneDeep } from 'lodash'
 
 const AttrTypeOptionsMap = listToMap(AttrTypeOptions, 'value', 'label')
-
-function ColumnAttrList(props: {
-  visible: boolean
-  setVisible: (val: boolean) => void
-}) {
+export function useColumnAttrList() {
+  const [visible, setVisible] = useState(false)
+  const showModal = () => {
+    setVisible(true)
+    setTableColumnList(cloneDeep(configStore.tableColumnList))
+  }
   const [messageApi, msgContextHolder] = message.useMessage()
-  const {
-    tableColumnList,
-    addTableColumn,
-    updateTableColumn,
-    deleteTableColumn
-  } = useConfig()
+  const [tableColumnList, setTableColumnList] = useImmer<ColumnAttrItem[]>([])
+  const configStore = useConfig()
   const handleConfirmAddColAttr = (info: ColumnAttrItem) => {
     const exist = tableColumnList.some((item) => item.attrKey === info.attrKey)
     if (exist) {
       messageApi.warning('该键值已存在')
       return false
     } else {
-      addTableColumn(info)
+      setTableColumnList((draft) => {
+        draft.push(info)
+      })
       return true
     }
   }
@@ -36,7 +38,10 @@ function ColumnAttrList(props: {
       messageApi.warning('该键值已存在')
       return false
     } else {
-      updateTableColumn(info)
+      setTableColumnList((draft) => {
+        const index = draft.findIndex((item) => item.id === info.id)
+        draft.splice(index, 1, info)
+      })
       return true
     }
   }
@@ -52,7 +57,9 @@ function ColumnAttrList(props: {
   }
 
   const handleDeleteAttr = (index: number) => {
-    deleteTableColumn(index)
+    setTableColumnList((draft) => {
+      draft.splice(index, 1)
+    })
   }
   const columns = [
     {
@@ -115,7 +122,7 @@ function ColumnAttrList(props: {
       }
     }
   ]
-  return (
+  const context = (
     <Modal
       title={
         <div className="flex items-center">
@@ -125,9 +132,12 @@ function ColumnAttrList(props: {
           </Button>
         </div>
       }
-      open={props.visible}
-      onCancel={() => props.setVisible(false)}
-      footer={() => null}
+      open={visible}
+      onOk={() => {
+        configStore.setTableColumnList(tableColumnList)
+        setVisible(false)
+      }}
+      onCancel={() => setVisible(false)}
       width={900}
     >
       <Table
@@ -140,6 +150,8 @@ function ColumnAttrList(props: {
       {columnAttrContext}
     </Modal>
   )
+  return {
+    context,
+    showModal
+  }
 }
-
-export default ColumnAttrList
