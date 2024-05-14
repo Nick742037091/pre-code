@@ -58,16 +58,16 @@ function Draggable(props: {
     </div>
   )
 }
-export default function LeftList(props: { activeId: string | null }) {
+export default function LeftList(props: { dragId: string | null }) {
   const { formItemList, deleteFormItem } = useConfig()
-  const activeFormItem = formItemList.find((item) => item.id === props.activeId)
+  const dragFormItem = formItemList.find((item) => item.id === props.dragId)
   const { showModal, context: formItemModalContext } = useFormItemModal()
   const [isEditing, setIsEditing] = useState(false)
 
   const iconClass =
     'text-16px p-5px rounded-full hover:bg-primary hover:color-white cursor-pointer'
   return (
-    <div className="flex flex-col w-300px bg-white border-1px border-solid border-slate-200 rounded-8px">
+    <div className="flex flex-col w-300px bg-white border-r-1px border-r-solid border-r-slate-200">
       {formItemModalContext}
       <div
         className="font-18px text-center font-500 p-10px position-relative"
@@ -111,10 +111,10 @@ export default function LeftList(props: { activeId: string | null }) {
         })}
       </div>
       <DragOverlay>
-        {activeFormItem ? (
+        {dragFormItem ? (
           <Draggable
             isActive
-            item={activeFormItem}
+            item={dragFormItem}
             isEditing={isEditing}
             iconClass={iconClass}
             onEdit={() => {}}

@@ -19,7 +19,7 @@ export function useFormItemModal() {
   const [messageApi, msgContextHolder] = message.useMessage()
   const [visible, setVisible] = useState(false)
   const [formItemId, setFormItemId] = useState('')
-  const [form] = Form.useForm<FormItem>()
+  const [form] = Form.useForm<{ formName: string }>()
   const formName = Form.useWatch('formName', form)
   const [type, setType] = useState<'add' | 'edit'>('add')
   const showModal = (

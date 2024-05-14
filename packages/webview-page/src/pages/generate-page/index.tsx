@@ -30,7 +30,7 @@ function GeneratePage() {
 
   const tableColumnListRef = useRef<TableColumnListRef>(null)
   const blockStyle =
-    'm-10px py-10px px-15px rounded-10px border-1px border-solid border-slate-200'
+    'mt-10px mx-10px py-10px px-15px rounded-10px border-1px border-solid border-slate-200'
   const configListDom = (
     <ConfigList visible={configListVisible} setVisible={setConfigListVisible} />
   )

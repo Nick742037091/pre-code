@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { forwardRef, useState } from 'react'
+import { useState } from 'react'
 import LeftList from './Left/index'
 import RightList from './Right'
 import Main from './Main'
@@ -19,18 +19,20 @@ export interface FormConfig {
   attrs: Record<string, any>
 }
 
-export default forwardRef(function FormItemList(props: { blockStyle: string }) {
+export default function FormItemList(props: { blockStyle: string }) {
+  const [dragId, setDragId] = useState('')
   const [activeId, setActiveId] = useState('')
   const [formConfigList, setFormConfigList] = useImmer<FormConfig[]>([])
+  const activeFormConfig = formConfigList.find((item) => item.id === activeId)
 
   function handleDragStart(event: DragStartEvent) {
     if (event.active.id) {
-      setActiveId(event.active.id + '')
+      setDragId(event.active.id + '')
     }
   }
 
   function handleDragEnd(event: DragEndEvent) {
-    setActiveId('')
+    setDragId('')
     const { active, over } = event
     if (!over) return
     if (over?.id === 'containier') {
@@ -58,11 +60,31 @@ export default forwardRef(function FormItemList(props: { blockStyle: string }) {
     const { active, over } = event
     console.log('dragOver', 'active', active, 'over', over)
   }
+
+  const handleDeleteConfig = (index: number) => {
+    setFormConfigList((draft) => {
+      draft.splice(index, 1)
+    })
+  }
+
+  const handleCopyConfig = (index: number) => {
+    setFormConfigList((draft) => {
+      const config = draft[index]
+      draft.push({
+        ...config,
+        id: nanoid()
+      })
+    })
+  }
+
+  const handleSelectConfig = (index: number) => {
+    setActiveId(formConfigList[index].id)
+  }
   return (
     <div
       className={classNames(
         props.blockStyle,
-        'p-10px flex-1 flex items-stretch'
+        'p-0px! flex-1 flex items-stretch'
       )}
       css={{ height: 'calc(100vh - 162px)' }}
     >
@@ -71,26 +93,16 @@ export default forwardRef(function FormItemList(props: { blockStyle: string }) {
         onDragEnd={handleDragEnd}
         onDragOver={handleDragOver}
       >
-        <LeftList activeId={activeId} />
+        <LeftList dragId={dragId} />
         <Main
+          activeId={activeId}
           formConfigList={formConfigList}
-          onDelete={(index: number) => {
-            setFormConfigList((draft) => {
-              draft.splice(index, 1)
-            })
-          }}
-          onCopy={(index: number) => {
-            setFormConfigList((draft) => {
-              const config = draft[index]
-              draft.push({
-                ...config,
-                id: nanoid()
-              })
-            })
-          }}
+          onDelete={handleDeleteConfig}
+          onCopy={handleCopyConfig}
+          onSelect={handleSelectConfig}
         />
-        <RightList />
+        <RightList config={activeFormConfig} />
       </DndContext>
     </div>
   )
-})
+}
