@@ -88,7 +88,12 @@ export const useConfig = create<State>()(
       const deleteConfig = (index: number) => {
         if (index === -1) return
         set((state) => {
+          const deleteItem = state.configList[index]
           state.configList.splice(index, 1)
+          // 删除当前选择配置，需要重置当前配置id
+          if (deleteItem.id === state.currentConfigId) {
+            state.currentConfigId = ''
+          }
         })
       }
 

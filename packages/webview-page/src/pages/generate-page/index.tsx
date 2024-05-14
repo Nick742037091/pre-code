@@ -20,12 +20,13 @@ export interface TableColumnProp {
 
 function GeneratePage() {
   const [configListVisible, setConfigListVisible] = useState(false)
-  const { currentConfig, configList, isLoaded } = useConfig()
+  const { currentConfig, isLoaded } = useConfig()
+  // 当前为选中配置，需要弹出配置列表
   useEffect(() => {
-    if (isLoaded) {
-      setConfigListVisible(configList.length === 0)
+    if (isLoaded && !currentConfig) {
+      setConfigListVisible(true)
     }
-  }, [isLoaded])
+  }, [isLoaded, currentConfig])
 
   const tableColumnListRef = useRef<TableColumnListRef>(null)
   const blockStyle =
@@ -48,7 +49,9 @@ function GeneratePage() {
             {currentConfig?.configName}
             <SwapOutlined
               className="text-20px ml-20px cursor-pointer"
-              onClick={() => setConfigListVisible(true)}
+              onClick={() => {
+                setConfigListVisible(true)
+              }}
             />
           </div>
           <div className="flex items-center color-black">

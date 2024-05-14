@@ -1,13 +1,11 @@
 import { Button, Modal, Table, Tag, message } from 'antd'
-import { ColumnAttrItem, useColumnAtrr, AttrTypeOptions } from '../ColumnAttr'
+import { AttrTypeOptionsMap, useColumnAtrr } from './ColumnAttr'
 import { useConfig } from '@/stores/config'
-import { ColumnAttrType } from 'pre-code/src/types/config'
-import { listToMap } from '@/utils'
+import { ColumnAttrItem, ColumnAttrType } from 'pre-code/src/types/config'
 import { useState } from 'react'
 import { useImmer } from 'use-immer'
 import { cloneDeep } from 'lodash'
 
-const AttrTypeOptionsMap = listToMap(AttrTypeOptions, 'value', 'label')
 export function useColumnAttrList() {
   const [visible, setVisible] = useState(false)
   const showModal = () => {

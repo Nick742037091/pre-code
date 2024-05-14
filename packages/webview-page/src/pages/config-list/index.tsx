@@ -37,6 +37,7 @@ export default function ConfigList(props: {
     currentConfig
   } = useConfig()
   const { context: addConfigContext, showModal } = useAddConfig()
+  // 加载时没有配置列表，弹出添加配置弹窗
   useEffect(() => {
     if (isLoaded && configList.length === 0) {
       showModal('add')

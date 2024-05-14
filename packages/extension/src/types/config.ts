@@ -26,12 +26,12 @@ export interface ColumnAttrItem {
   attrOptions: string[]
 }
 
-export type FormAttrITem = ColumnAttrItem
+export type FormAttrItem = ColumnAttrItem
 
 export interface FormItem {
   id: string
   formName: string
-  attrList: FormAttrITem[]
+  attrList: FormAttrItem[]
 }
 export type Config = {
   id: string

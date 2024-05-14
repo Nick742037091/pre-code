@@ -1,3 +1,4 @@
+import { listToMap } from '@/utils'
 import { PlusOutlined } from '@ant-design/icons'
 import { Form, Input, InputRef, Modal, Select, Tag, message } from 'antd'
 import { nanoid } from 'nanoid'
@@ -38,15 +39,17 @@ export const AttrTypeOptions = [
   }
 ]
 
+export const AttrTypeOptionsMap = listToMap(AttrTypeOptions, 'value', 'label')
+
 // 对于弹窗而言，通过对外暴露接口用于控制展示/隐藏，有利于控制弹窗状态，
 // 但是与此同时，需要在父组件添加ref用于操作弹窗组件，如果弹窗比较多，管理起来就比较麻烦。
 //
 // 通过hooks的方式封装弹窗，可以直接返回弹窗需要对外暴露的接口，同时暴露元素context用于嵌入父组件。
 // 这种模式下，父组件传递给子组件的props通过hook入参传入。
-export const useColumnAtrr = (props: {
+export function useColumnAtrr(props: {
   onConfirmAdd: (item: ColumnAttrItem) => boolean
   onConfirmUpdate: (item: ColumnAttrItem) => boolean
-}) => {
+}) {
   const [type, setType] = useState<'add' | 'edit'>('add')
   const [messageApi, msgContextHolder] = message.useMessage()
   const [id, setId] = useState<string>('')
@@ -129,7 +132,7 @@ export const useColumnAtrr = (props: {
 
   const context = (
     <Modal
-      title={type === 'add' ? '添加列属性' : '编辑列属性'}
+      title={type === 'add' ? '添加属性' : '编辑属性'}
       open={isModalOpen}
       onOk={handleOk}
       onCancel={handleCancel}
