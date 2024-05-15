@@ -14,6 +14,11 @@ import { useImmer } from 'use-immer'
 import { useConfig } from '@/stores/config'
 import { nanoid } from 'nanoid'
 import { cloneDeep } from 'lodash'
+import { arrayMove } from '@dnd-kit/sortable'
+import { ColumnsType } from 'antd/lib/table'
+import SortableTaleContext, {
+  SortableTableRow
+} from '@/components/SortableTaleContext'
 
 export function useFormItemModal() {
   const [messageApi, msgContextHolder] = message.useMessage()
@@ -53,7 +58,7 @@ export function useFormItemModal() {
     }
   }
 
-  const columns = [
+  const columns: ColumnsType<ColumnAttrItem> = [
     {
       title: '键值',
       dataIndex: 'attrKey',
@@ -189,12 +194,27 @@ export function useFormItemModal() {
             添加属性
           </Button>
         </div>
-        <Table
+        <SortableTaleContext
+          list={formAttrList}
           rowKey="id"
-          dataSource={formAttrList}
-          columns={columns}
-          pagination={false}
-        />
+          onDragEnd={(activeIndex, overIndex) => {
+            setFormAttrList((draft) => {
+              return arrayMove(draft, activeIndex, overIndex)
+            })
+          }}
+        >
+          <Table
+            components={{
+              body: {
+                row: SortableTableRow
+              }
+            }}
+            rowKey="id"
+            dataSource={formAttrList}
+            columns={columns}
+            pagination={false}
+          />
+        </SortableTaleContext>
       </div>
       {msgContextHolder}
       {columnAttrContext}
