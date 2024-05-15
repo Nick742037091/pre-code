@@ -5,6 +5,10 @@ import { ColumnAttrItem, ColumnAttrType } from 'pre-code/src/types/config'
 import { useState } from 'react'
 import { useImmer } from 'use-immer'
 import { cloneDeep } from 'lodash'
+import SortableTaleContext, {
+  SortableTableRow
+} from '@/components/SortableTaleContext'
+import { arrayMove } from '@dnd-kit/sortable'
 
 export function useColumnAttrList() {
   const [visible, setVisible] = useState(false)
@@ -138,12 +142,28 @@ export function useColumnAttrList() {
       onCancel={() => setVisible(false)}
       width={900}
     >
-      <Table
+      <SortableTaleContext
+        list={tableColumnList}
         rowKey="id"
-        dataSource={tableColumnList}
-        columns={columns}
-        pagination={false}
-      />
+        onDragEnd={(activeIndex, overIndex) => {
+          setTableColumnList((draft) => {
+            return arrayMove(draft, activeIndex, overIndex)
+          })
+        }}
+      >
+        <Table
+          components={{
+            body: {
+              row: SortableTableRow
+            }
+          }}
+          rowKey="id"
+          dataSource={tableColumnList}
+          columns={columns}
+          pagination={false}
+        />
+      </SortableTaleContext>
+
       {msgContextHolder}
       {columnAttrContext}
     </Modal>
