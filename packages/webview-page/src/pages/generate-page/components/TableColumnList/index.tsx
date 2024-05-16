@@ -9,6 +9,11 @@ import { ColumnType } from 'antd/lib/table'
 import { useConfig } from '@/stores/config'
 import { ColumnAttrType } from './ColumnAttr'
 import { useColumnAttrList } from './ColumnAttrList'
+import SortableTaleContext, {
+  SortableTableRow,
+  sortableTableProps
+} from '@/components/SortableTaleContext'
+import { arrayMove } from '@dnd-kit/sortable'
 
 export interface TableColumnListRef {
   getTableDataList: () => TableColumnProp[]
@@ -106,22 +111,22 @@ export default forwardRef(function TableColumnList(
     }
   })
 
-  const defaultColumns: ColumnsType<TableColumnProp> = [
-    {
-      title: '列名称',
-      dataIndex: 'prop',
-      key: 'prop',
-      render: createInputRender('prop'),
-      width: columnMinWidth
-    },
-    {
-      title: '列标题',
-      dataIndex: 'label',
-      key: 'label',
-      render: createInputRender('label'),
-      width: columnMinWidth
-    }
-  ]
+  // const defaultColumns: ColumnsType<TableColumnProp> = [
+  //   {
+  //     title: '列名称',
+  //     dataIndex: 'prop',
+  //     key: 'prop',
+  //     render: createInputRender('prop'),
+  //     width: columnMinWidth
+  //   },
+  //   {
+  //     title: '列标题',
+  //     dataIndex: 'label',
+  //     key: 'label',
+  //     render: createInputRender('label'),
+  //     width: columnMinWidth
+  //   }
+  // ]
 
   const columnOperation: ColumnType<TableColumnProp> = {
     title: '操作',
@@ -137,7 +142,7 @@ export default forwardRef(function TableColumnList(
       )
     }
   }
-  const columns = [...defaultColumns, ...customColumns, columnOperation]
+  const columns = [...customColumns, columnOperation]
 
   const onChangeValue = (
     value: string | boolean | number | undefined,
@@ -186,13 +191,24 @@ export default forwardRef(function TableColumnList(
             添加列
           </Button>
         </div>
-        <Table
-          scroll={{ x: 500 }}
+        <SortableTaleContext
+          list={tableDataList}
           rowKey="id"
-          dataSource={tableDataList}
-          columns={columns}
-          pagination={false}
-        />
+          onDragEnd={(activeIndex, overIndex) => {
+            setTableDataList((draft) => {
+              return arrayMove(draft, activeIndex, overIndex)
+            })
+          }}
+        >
+          <Table
+            {...sortableTableProps}
+            scroll={{ x: 500 }}
+            rowKey="id"
+            dataSource={tableDataList}
+            columns={columns}
+            pagination={false}
+          />
+        </SortableTaleContext>
       </div>
     </>
   )

@@ -38,7 +38,7 @@ interface State {
   deleteTemplate: (index: number) => void
   currentTemplateId: string
   setCurrentTemplateId: (templateId: string) => void
-  fileType: FileType | ''
+  fileType: FileType | null
   setFileType: (fileType: FileType) => void
   setTableColumnList: (tableColumnList: ColumnAttrItem[]) => void
   addTableColumn: (tableColumn: ColumnAttrItem) => void
@@ -158,7 +158,7 @@ export const useConfig = create<State>()(
         })
       }
 
-      let fileType: FileType | '' = ''
+      let fileType: FileType | null = null
       const { openFilePath } = window.injectParams
       if (openFilePath) {
         const pathParts = openFilePath.split('/')

@@ -1,8 +1,28 @@
+import { ColumnAttrItem } from '@/pages/generate-page/components/TableColumnList/ColumnAttr'
 import { Config, ConfigType, useConfig } from '@/stores/config'
 import { Form, Input, Modal, Select, message } from 'antd'
 import { nanoid } from 'nanoid'
+import { ColumnAttrType } from 'pre-code/src/types/config'
 import { useState } from 'react'
 
+const createDefaultTableAttrs = () => {
+  return [
+    {
+      id: nanoid(),
+      attrKey: 'prop',
+      attrLabel: '列名称',
+      attrType: ColumnAttrType.Input,
+      attrOptions: []
+    },
+    {
+      id: nanoid(),
+      attrKey: 'label',
+      attrLabel: '列标题',
+      attrType: ColumnAttrType.Input,
+      attrOptions: []
+    }
+  ] as ColumnAttrItem[]
+}
 export const useAddConfig = () => {
   const { addConfig, updateConfig } = useConfig()
   const [messageApi, msgContextHolder] = message.useMessage()
@@ -36,7 +56,7 @@ export const useAddConfig = () => {
         configType,
         templateList: [],
         defaultTemplateId: '',
-        tableColumnList: [],
+        tableColumnList: createDefaultTableAttrs(),
         formItemList: [],
         fileType: '.vue'
       })

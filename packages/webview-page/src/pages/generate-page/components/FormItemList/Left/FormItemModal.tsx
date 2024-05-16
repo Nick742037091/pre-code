@@ -17,7 +17,8 @@ import { cloneDeep } from 'lodash'
 import { arrayMove } from '@dnd-kit/sortable'
 import { ColumnsType } from 'antd/lib/table'
 import SortableTaleContext, {
-  SortableTableRow
+  SortableTableRow,
+  sortableTableProps
 } from '@/components/SortableTaleContext'
 
 export function useFormItemModal() {
@@ -204,11 +205,7 @@ export function useFormItemModal() {
           }}
         >
           <Table
-            components={{
-              body: {
-                row: SortableTableRow
-              }
-            }}
+            {...sortableTableProps}
             rowKey="id"
             dataSource={formAttrList}
             columns={columns}

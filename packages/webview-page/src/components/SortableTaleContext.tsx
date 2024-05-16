@@ -1,8 +1,9 @@
 /** 拖拽相关依赖 */
 import type { DragEndEvent } from '@dnd-kit/core'
-import { DndContext } from '@dnd-kit/core'
+import { DndContext, MouseSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 
 export default function SortableTaleContext(props: {
   children: React.ReactNode
@@ -17,8 +18,21 @@ export default function SortableTaleContext(props: {
       props.onDragEnd(activeIndex, overIndex)
     }
   }
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 5 // 按住不动移动5px时才进行拖拽, 这样就可以拖拽元素内部的点击事件
+      }
+    })
+  )
   return (
-    <DndContext onDragEnd={onDragEnd}>
+    <DndContext
+      // 使拖拽元素内部点击事件可以生效
+      sensors={sensors}
+      // 只在垂直方向可以拖拽
+      modifiers={[restrictToVerticalAxis]}
+      onDragEnd={onDragEnd}
+    >
       <SortableContext items={props.list.map((item) => item[props.rowKey])}>
         {props.children}
       </SortableContext>
@@ -46,7 +60,7 @@ export const SortableTableRow = (props: RowProps) => {
     transform: CSS.Translate.toString(transform),
     transition,
     cursor: 'move',
-    ...(isDragging ? { position: 'relative', zIndex: 9999 } : {})
+    ...(isDragging ? { position: 'relative', zIndex: 100 } : {})
   }
 
   return (
@@ -58,4 +72,8 @@ export const SortableTableRow = (props: RowProps) => {
       {...listeners}
     />
   )
+}
+
+export const sortableTableProps = {
+  components: { body: { row: SortableTableRow } }
 }

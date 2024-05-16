@@ -7,10 +7,10 @@ import { useConfig } from '@/stores/config'
 
 function GenerateCode(props: { getTableDataList: () => TableColumnProp[] }) {
   const [messageApi, contextHolder] = message.useMessage()
-  const store = useGenerateCodeStore()
-  const { currentTemplate } = useConfig()
+  const { fileName, filePath } = useGenerateCodeStore()
+  const { currentTemplate, fileType } = useConfig()
   const handleGenerateCode = async () => {
-    if (!store.fileName) {
+    if (!fileName) {
       messageApi.error('请输入页面名称')
       return
     }
@@ -43,9 +43,9 @@ function GenerateCode(props: { getTableDataList: () => TableColumnProp[] }) {
     nativeCommond({
       command: 'generateCode',
       params: {
-        fileName: store.fileName,
-        fileType: currentTemplate?.templatePath,
-        filePath: store.filePath,
+        fileName,
+        fileType,
+        filePath,
         code
       }
     })

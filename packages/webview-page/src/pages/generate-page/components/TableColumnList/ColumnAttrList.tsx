@@ -6,7 +6,8 @@ import { useState } from 'react'
 import { useImmer } from 'use-immer'
 import { cloneDeep } from 'lodash'
 import SortableTaleContext, {
-  SortableTableRow
+  SortableTableRow,
+  sortableTableProps
 } from '@/components/SortableTaleContext'
 import { arrayMove } from '@dnd-kit/sortable'
 
@@ -152,11 +153,7 @@ export function useColumnAttrList() {
         }}
       >
         <Table
-          components={{
-            body: {
-              row: SortableTableRow
-            }
-          }}
+          {...sortableTableProps}
           rowKey="id"
           dataSource={tableColumnList}
           columns={columns}
