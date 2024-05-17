@@ -1,4 +1,4 @@
-export type FileType = '.vue' | '.react'
+export type FileType = '.vue' | '.js' | '.jsx' | '.ts' | '.tsx'
 
 export enum ConfigType {
   Table,
@@ -15,7 +15,8 @@ export enum ColumnAttrType {
   Input = 0,
   Number,
   Switch,
-  Select
+  Select,
+  Code
 }
 
 export interface ColumnAttrItem {
@@ -30,17 +31,18 @@ export type FormAttrItem = ColumnAttrItem
 
 export interface FormItem {
   id: string
-  formName: string
+  name: string
+  type: string
   attrList: FormAttrItem[]
 }
 export type Config = {
   id: string
   configName: string
   configType: ConfigType
-  fileType: FileType
+  defaultFileType: FileType
   templateList: TemplateItem[]
   defaultTemplateId: string
-  tableColumnList: ColumnAttrItem[]
+  tableColAttrList: ColumnAttrItem[]
   formItemList: FormItem[]
 }
 

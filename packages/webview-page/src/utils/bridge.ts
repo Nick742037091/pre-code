@@ -4,7 +4,6 @@ import { Message } from 'pre-code/src/utils/message'
 export interface NativeCommandOptions {
   command: string
   params?: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any
   }
 }

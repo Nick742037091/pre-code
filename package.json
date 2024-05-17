@@ -16,8 +16,9 @@
     "publish:extension": "pnpm run -F pre-code publish"
   },
   "dependencies": {
+    "@types/ejs": "^3.1.5",
     "dayjs": "^1.11.10",
-    "handlebars": "^4.7.8",
+    "ejs": "^3.1.10",
     "nanoid": "^5.0.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -1,4 +1,4 @@
-export const listToMap = <T>(list: T[], key: keyof T, extractKey: keyof T) => {
+export const listToMap = <T>(list: T[], key: keyof T, extractKey?: keyof T) => {
   if (!list) return {}
   if (!key) return {}
   return list.reduce((map, item: T) => {
@@ -10,6 +10,5 @@ export const listToMap = <T>(list: T[], key: keyof T, extractKey: keyof T) => {
       }
     }
     return map
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }, {} as any)
 }

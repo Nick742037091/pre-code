@@ -17,7 +17,6 @@ import { cloneDeep } from 'lodash'
 import { arrayMove } from '@dnd-kit/sortable'
 import { ColumnsType } from 'antd/lib/table'
 import SortableTaleContext, {
-  SortableTableRow,
   sortableTableProps
 } from '@/components/SortableTaleContext'
 
@@ -25,23 +24,26 @@ export function useFormItemModal() {
   const [messageApi, msgContextHolder] = message.useMessage()
   const [visible, setVisible] = useState(false)
   const [formItemId, setFormItemId] = useState('')
-  const [form] = Form.useForm<{ formName: string }>()
-  const formName = Form.useWatch('formName', form)
-  const [type, setType] = useState<'add' | 'edit'>('add')
+  const [form] = Form.useForm<{ name: string; type: '' }>()
+  const name = Form.useWatch('name', form)
+  const type = Form.useWatch('type', form)
+  const [modalType, setModalType] = useState<'add' | 'edit'>('add')
   const showModal = (
-    showType: typeof type = 'add',
+    showType: typeof modalType = 'add',
     formItemData?: FormItem
   ) => {
     if (formItemData) {
       setFormItemId(formItemData.id)
-      form.setFieldValue('formName', formItemData.formName)
+      form.setFieldValue('name', formItemData.name)
+      form.setFieldValue('type', formItemData.type)
       setFormAttrList(cloneDeep(formItemData.attrList))
     } else {
       setFormItemId('')
-      form.setFieldValue('formName', '')
+      form.setFieldValue('name', '')
+      form.setFieldValue('type', '')
       setFormAttrList([])
     }
-    setType(showType)
+    setModalType(showType)
     setVisible(true)
   }
   const [formAttrList, setFormAttrList] = useImmer<FormAttrItem[]>([])
@@ -49,7 +51,7 @@ export function useFormItemModal() {
   const handleConfirmAddColAttr = (info: ColumnAttrItem) => {
     const exist = formAttrList.some((item) => item.attrKey === info.attrKey)
     if (exist) {
-      messageApi.warning('该键值已存在')
+      messageApi.error('该键值已存在')
       return false
     } else {
       setFormAttrList((draft) => {
@@ -126,7 +128,7 @@ export function useFormItemModal() {
       .filter((item) => item.id !== info.id)
       .some((item) => item.attrKey === info.attrKey)
     if (exist) {
-      messageApi.warning('该键值已存在')
+      messageApi.error('该键值已存在')
       return false
     } else {
       setFormAttrList((draft) => {
@@ -154,16 +156,24 @@ export function useFormItemModal() {
   }
 
   const handleOk = () => {
-    if (type === 'edit') {
+    if (!name) {
+      return messageApi.error('请输入表单项名称')
+    }
+    if (!modalType) {
+      return messageApi.error('请输入表单项类型')
+    }
+    if (modalType === 'edit') {
       configStore.updateFormItem({
-        formName: formName,
-        attrList: formAttrList,
-        id: formItemId
+        id: formItemId,
+        name,
+        type,
+        attrList: formAttrList
       })
     } else {
       configStore.addFormItem({
         id: nanoid(),
-        formName: formName,
+        type,
+        name,
         attrList: formAttrList
       })
     }
@@ -172,7 +182,7 @@ export function useFormItemModal() {
 
   const context = (
     <Modal
-      title={type === 'add' ? '添加表单项' : '编辑表单项'}
+      title={modalType === 'add' ? '添加表单项' : '编辑表单项'}
       open={visible}
       onOk={handleOk}
       onCancel={() => setVisible(false)}
@@ -182,8 +192,15 @@ export function useFormItemModal() {
         <Form form={form}>
           <Form.Item
             label="名称"
-            name="formName"
+            name="name"
             rules={[{ required: true, message: '请输入名称' }]}
+          >
+            <Input className="w-250px" />
+          </Form.Item>
+          <Form.Item
+            label="类型"
+            name="type"
+            rules={[{ required: true, message: '请输入类型' }]}
           >
             <Input className="w-250px" />
           </Form.Item>

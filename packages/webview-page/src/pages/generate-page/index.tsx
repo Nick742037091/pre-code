@@ -7,41 +7,50 @@ import { SwapOutlined } from '@ant-design/icons'
 import { ConfigType, useConfig } from '@/stores/config'
 import TableColumnList from './components/TableColumnList'
 import type { TableColumnListRef } from './components/TableColumnList'
-import FormItemList from './components/FormItemList'
-
-export interface TableColumnProp {
-  id: string
-  title?: string
-  label: string
-  prop: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any
-}
+import FormItemList, { FormItemListRef } from './components/FormItemList'
+import { Spin } from 'antd'
 
 function GeneratePage() {
   const [configListVisible, setConfigListVisible] = useState(false)
   const { currentConfig, isLoaded } = useConfig()
-  // 当前为选中配置，需要弹出配置列表
+
+  // 当前未选中配置，需要弹出配置列表
   useEffect(() => {
     if (isLoaded && !currentConfig) {
       setConfigListVisible(true)
     }
-  }, [isLoaded, currentConfig])
+  }, [isLoaded])
 
-  const tableColumnListRef = useRef<TableColumnListRef>(null)
+  const tableColuAttrListRef = useRef<TableColumnListRef>(null)
+  const formItemListRef = useRef<FormItemListRef>(null)
+  // 未加载完成时显示loading
+  if (!isLoaded)
+    return (
+      <div className="w-100vw h-100vh flex flex-center">
+        <Spin size="large" />
+      </div>
+    )
+
   const blockStyle =
     'mt-10px mx-10px py-10px px-15px rounded-10px border-1px border-solid border-slate-200'
   const configListDom = (
     <ConfigList visible={configListVisible} setVisible={setConfigListVisible} />
   )
+
   if (!currentConfig) {
     return configListDom
   }
-  const getTableDataList = () => {
-    return tableColumnListRef.current?.getTableDataList() || []
+
+  const getTableolumnList = () => {
+    return tableColuAttrListRef.current?.getTableColumnList() || []
   }
+
+  const getFormItemConfigList = () => {
+    return formItemListRef.current?.getFormItemList() || []
+  }
+
   return (
-    <div>
+    <div key={currentConfig.id}>
       {configListDom}
       <div className="h-100vh flex flex-col">
         <div className={blockStyle}>
@@ -57,14 +66,17 @@ function GeneratePage() {
           <div className="flex items-center color-black">
             <SelectTemplate />
             <FileName />
-            <GenerateCode getTableDataList={getTableDataList} />
+            <GenerateCode
+              getTableColumnList={getTableolumnList}
+              getFormItemConfigList={getFormItemConfigList}
+            />
           </div>
         </div>
         {currentConfig.configType === ConfigType.Table && (
-          <TableColumnList blockStyle={blockStyle} ref={tableColumnListRef} />
+          <TableColumnList blockStyle={blockStyle} ref={tableColuAttrListRef} />
         )}
         {currentConfig.configType === ConfigType.Form && (
-          <FormItemList blockStyle={blockStyle} />
+          <FormItemList blockStyle={blockStyle} ref={formItemListRef} />
         )}
       </div>
     </div>

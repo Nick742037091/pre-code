@@ -1,18 +1,17 @@
 import { useConfig } from '@/stores/config'
-import { FormConfig } from '../index'
+import { FormItemConfig } from '../index'
 import { Form, Input, InputNumber, Select, Switch } from 'antd'
 import { ColumnAttrType } from 'pre-code/src/types/config'
 import { useEffect } from 'react'
+const { TextArea } = Input
 
 export default function RightList(props: {
-  config: FormConfig | undefined
+  config: FormItemConfig | undefined
   onUpdateAttrs: (attrs: Record<string, any>) => void
 }) {
   const [form] = Form.useForm<Record<string, any>>()
-  const { formItemList } = useConfig()
-  const formItem = formItemList.find(
-    (item) => item.id === props.config?.componentId
-  )
+  const { formItemMap } = useConfig()
+  const formItem = formItemMap[props.config?.componentId || '']
   const attrList = formItem?.attrList || []
   // 选择表单项时更新数据
   useEffect(() => {
@@ -30,7 +29,7 @@ export default function RightList(props: {
           borderBottom: '1px solid #eee'
         }}
       >
-        表单项信息
+        表单项属性
       </div>
       <div className="flex-1 overflow-auto px-10px pt-10px">
         <Form form={form} onValuesChange={handleValuesChange}>
@@ -38,7 +37,10 @@ export default function RightList(props: {
             let content = null
             switch (item.attrType) {
               case ColumnAttrType.Input:
-                content = <Input></Input>
+                content = <Input allowClear></Input>
+                break
+              case ColumnAttrType.Code:
+                content = <TextArea rows={3} allowClear />
                 break
               case ColumnAttrType.Switch:
                 content = <Switch></Switch>
@@ -62,7 +64,7 @@ export default function RightList(props: {
                 key={item.attrKey}
                 label={item.attrLabel}
                 name={item.attrKey}
-                labelCol={{ span: 6 }}
+                labelCol={{ span: 8 }}
               >
                 {content}
               </Form.Item>

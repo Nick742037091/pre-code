@@ -4,9 +4,8 @@ export interface CallbackOptions {
   webview: vscode.Webview
   commandId: string
   params?: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any
-  }
+  } | null
 }
 
 export const NATIVE_CALLBACK_NAME = 'nativeCallbackResult'

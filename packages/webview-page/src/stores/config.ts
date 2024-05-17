@@ -13,6 +13,7 @@ import type {
   ColumnAttrItem,
   FormItem
 } from 'pre-code/src/types/config'
+import { listToMap } from '@/utils'
 export type { Config, TemplateItem }
 
 export enum ConfigType {
@@ -40,10 +41,10 @@ interface State {
   setCurrentTemplateId: (templateId: string) => void
   fileType: FileType | null
   setFileType: (fileType: FileType) => void
-  setTableColumnList: (tableColumnList: ColumnAttrItem[]) => void
-  addTableColumn: (tableColumn: ColumnAttrItem) => void
-  updateTableColumn: (tableColumn: ColumnAttrItem) => void
-  deleteTableColumn: (index: number) => void
+  setTableColAttrList: (tableColAttrList: ColumnAttrItem[]) => void
+  addTableColAttr: (tableColAttr: ColumnAttrItem) => void
+  updateTableColAttr: (tableColumn: ColumnAttrItem) => void
+  deleteTableColAttr: (index: number) => void
   addFormItem: (formItem: FormItem) => void
   updateFormItem: (formItem: FormItem) => void
   deleteFormItem: (index: number) => void
@@ -63,9 +64,13 @@ export const useConfig = create<State>()(
           state.configList = result.data.configList || []
           state.currentConfigId = result.data.defaultConfigId || ''
           const currentConfig = getCurrentConfig(state)
-          state.currentTemplateId = currentConfig?.defaultTemplateId || ''
-          if (!state.fileType) {
-            state.fileType = currentConfig?.fileType || '.vue'
+          if (currentConfig) {
+            if (currentConfig.defaultTemplateId) {
+              state.currentTemplateId = currentConfig.defaultTemplateId
+            }
+            if (currentConfig.defaultFileType) {
+              state.fileType = currentConfig.defaultFileType
+            }
           }
           state.isLoaded = true
         })
@@ -103,7 +108,7 @@ export const useConfig = create<State>()(
           state.currentConfigId = configId
           const currentConfig = getCurrentConfig(state)
           state.currentTemplateId = currentConfig?.defaultTemplateId || ''
-          state.fileType = currentConfig?.fileType || '.vue'
+          state.fileType = currentConfig?.defaultFileType || fileType
         })
       }
       const getCurrentConfig = (state: WritableDraft<State>) => {
@@ -158,58 +163,59 @@ export const useConfig = create<State>()(
         })
       }
 
-      let fileType: FileType | null = null
+      let fileType: FileType = '.vue'
       const { openFilePath } = window.injectParams
       if (openFilePath) {
         const pathParts = openFilePath.split('/')
         const lastPath = pathParts[pathParts.length - 1]
         fileType = ('.' + lastPath.split('.')[1]) as FileType
       }
-      const setFileType = (fileType: FileType) => {
+      const setFileType = (val: FileType) => {
         set((state) => {
           const currentConfig = getCurrentConfig(state)
           if (!currentConfig) return
-          currentConfig.fileType = fileType
+          currentConfig.defaultFileType = val
+          state.fileType = val
           updateConfigStorage(state)
         })
       }
 
       /*** 表格列 ***/
-      const setTableColumnList = (tableColumnList: ColumnAttrItem[]) => {
+      const setTableColAttrList = (tableColAttrList: ColumnAttrItem[]) => {
         set((state) => {
           const currentConfig = getCurrentConfig(state)
           if (!currentConfig) return
-          currentConfig.tableColumnList = tableColumnList
+          currentConfig.tableColAttrList = tableColAttrList
           updateConfigStorage(state)
         })
       }
-      const addTableColumn = (tableColumn: ColumnAttrItem) => {
+      const addTableColAttr = (tableColumn: ColumnAttrItem) => {
         set((state) => {
           const currentConfig = getCurrentConfig(state)
           if (!currentConfig) return
-          currentConfig.tableColumnList.push(tableColumn)
+          currentConfig.tableColAttrList.push(tableColumn)
           updateConfigStorage(state)
         })
       }
 
-      const updateTableColumn = (tableColumn: ColumnAttrItem) => {
+      const updateTableColAttr = (tableColumn: ColumnAttrItem) => {
         set((state) => {
           const currentConfig = getCurrentConfig(state)
           if (!currentConfig) return
-          const index = currentConfig.tableColumnList.findIndex(
+          const index = currentConfig.tableColAttrList.findIndex(
             (item) => item.id === tableColumn.id
           )
           if (index === -1) return
-          currentConfig.tableColumnList.splice(index, 1, tableColumn)
+          currentConfig.tableColAttrList.splice(index, 1, tableColumn)
           updateConfigStorage(state)
         })
       }
 
-      const deleteTableColumn = (index: number) => {
+      const deleteTableColAttr = (index: number) => {
         set((state) => {
           const currentConfig = getCurrentConfig(state)
           if (!currentConfig) return
-          currentConfig.tableColumnList.splice(index, 1)
+          currentConfig.tableColAttrList.splice(index, 1)
           updateConfigStorage(state)
         })
       }
@@ -271,10 +277,10 @@ export const useConfig = create<State>()(
         setCurrentTemplateId,
         fileType,
         setFileType,
-        setTableColumnList,
-        addTableColumn,
-        updateTableColumn,
-        deleteTableColumn,
+        setTableColAttrList,
+        addTableColAttr,
+        updateTableColAttr,
+        deleteTableColAttr,
         addFormItem,
         updateFormItem,
         deleteFormItem
@@ -288,14 +294,19 @@ export const useConfig = create<State>()(
       const currentTemplate = templateList.find(
         (item) => item.id === state.currentTemplateId
       )
-      const tableColumnList = currentConfig?.tableColumnList || []
+      const tableColAttrList = currentConfig?.tableColAttrList || []
       const formItemList = currentConfig?.formItemList || []
+      const formItemMap = listToMap(formItemList, 'id') as Record<
+        string,
+        FormItem
+      >
       return {
         currentConfig,
         currentTemplate,
         templateList,
-        tableColumnList,
-        formItemList
+        tableColAttrList,
+        formItemList,
+        formItemMap
       }
     }
   )

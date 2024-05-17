@@ -1,7 +1,9 @@
 import { useConfig } from '@/stores/config'
 import { useGenerateCodeStore } from '@/stores/generateCodeStore'
 import { Input, Select } from 'antd'
-const { Option } = Select
+import { FileType } from 'pre-code/src/types/config'
+
+const FileTypeList: FileType[] = ['.vue', '.tsx', '.jsx']
 
 function FileName() {
   const store = useGenerateCodeStore()
@@ -13,11 +15,13 @@ function FileName() {
       className="w-80px"
       disabled={disabled}
       defaultValue={fileType}
-      onChange={setFileType}
-    >
-      <Option value=".vue">.vue</Option>
-      <Option value=".react">.react</Option>
-    </Select>
+      onChange={(val) => {
+        setFileType(val)
+      }}
+      options={FileTypeList.map((item) => {
+        return { label: item, value: item }
+      })}
+    />
   )
   return (
     <div className="flex items-center">

@@ -1,14 +1,20 @@
 import { Button, message } from 'antd'
-import { TableColumnProp } from '../../index'
-import handlebars from 'handlebars'
+import ejs from 'ejs'
 import { nativeCommond } from '@/utils/bridge'
 import { useGenerateCodeStore } from '@/stores/generateCodeStore'
 import { useConfig } from '@/stores/config'
+import { ColumnAttrType } from 'pre-code/src/types/config'
+import { TableColumnProp } from '../TableColumnList/index'
+import { FormItemConfig } from '../FormItemList/index'
 
-function GenerateCode(props: { getTableDataList: () => TableColumnProp[] }) {
+function GenerateCode(props: {
+  getTableColumnList: () => TableColumnProp[]
+  getFormItemConfigList: () => FormItemConfig[]
+}) {
   const [messageApi, contextHolder] = message.useMessage()
   const { fileName, filePath } = useGenerateCodeStore()
-  const { currentTemplate, fileType } = useConfig()
+  const { currentTemplate, tableColAttrList, fileType, formItemMap } =
+    useConfig()
   const handleGenerateCode = async () => {
     if (!fileName) {
       messageApi.error('请输入页面名称')
@@ -18,28 +24,54 @@ function GenerateCode(props: { getTableDataList: () => TableColumnProp[] }) {
       messageApi.error('请选择模板')
       return
     }
-    const tableDataList = props.getTableDataList()
-    if (!tableDataList.length) {
-      messageApi.error('请先添加表头')
-      return
-    }
+    const tableColList = props.getTableColumnList().map((tableColumn) => {
+      return tableColAttrList.map((column) => {
+        const value = tableColumn[column.attrKey] ?? ''
+        // 字符串增加双引号
+        const attrValue =
+          column.attrType === ColumnAttrType.Input ? `"${value}"` : value
+        return {
+          ...column,
+          attrValue
+        }
+      })
+    })
 
-    const columnList = tableDataList.map((item, index) => {
+    const formItemList = props.getFormItemConfigList().map((formItemConfig) => {
+      const component = formItemMap[formItemConfig.componentId]
+      const attrList = (component?.attrList || []).map((attr) => {
+        const value = formItemConfig.attrs[attr.attrKey]
+        // 字符串增加双引号
+        const attrValue =
+          attr.attrType === ColumnAttrType.Input ? `"${value}"` : value
+        return {
+          ...attr,
+          attrValue
+        }
+      })
       return {
-        ...item,
-        // 补充字段用于判断首尾
-        isFirst: index === 0,
-        isLast: tableDataList.length - 1 === index
+        ...component,
+        attrMap: formItemConfig.attrs,
+        attrList
       }
     })
+
     const cmdResult = await nativeCommond<{ content: string }>({
       command: 'readFile',
       params: {
         filePath: currentTemplate?.templatePath
       }
     })
-    const template = handlebars.compile(cmdResult.content)
-    const code = template({ columnList: columnList })
+    if (!cmdResult) {
+      messageApi.error('读取模板失败')
+      return
+    }
+    console.log('tableColList', tableColList)
+    console.log('formItemList', formItemList)
+    const code = ejs.render(cmdResult.content, {
+      tableColList,
+      formItemList
+    })
     nativeCommond({
       command: 'generateCode',
       params: {

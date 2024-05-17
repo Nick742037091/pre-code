@@ -1,8 +1,7 @@
-import { ColumnAttrItem } from '@/pages/generate-page/components/TableColumnList/ColumnAttr'
 import { Config, ConfigType, useConfig } from '@/stores/config'
 import { Form, Input, Modal, Select, message } from 'antd'
 import { nanoid } from 'nanoid'
-import { ColumnAttrType } from 'pre-code/src/types/config'
+import { ColumnAttrItem, ColumnAttrType } from 'pre-code/src/types/config'
 import { useState } from 'react'
 
 const createDefaultTableAttrs = () => {
@@ -45,7 +44,7 @@ export const useAddConfig = () => {
 
   const handleOk = async () => {
     if (!configName) {
-      messageApi.warning('配置名称不能为空')
+      messageApi.error('配置名称不能为空')
       return
     }
     setIsModalOpen(false)
@@ -56,9 +55,9 @@ export const useAddConfig = () => {
         configType,
         templateList: [],
         defaultTemplateId: '',
-        tableColumnList: createDefaultTableAttrs(),
+        tableColAttrList: createDefaultTableAttrs(),
         formItemList: [],
-        fileType: '.vue'
+        defaultFileType: '.vue'
       })
     } else {
       updateConfig({

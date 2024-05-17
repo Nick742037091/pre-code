@@ -8,6 +8,7 @@ import { useAddConfig } from './components/AddConfig'
 import { ConfigTypeNames, useConfig } from '@/stores/config'
 import classNames from 'classnames'
 import { useEffect } from 'react'
+import { useGenerateCodeStore } from '@/stores/generateCodeStore'
 
 function Header(props: { addTemplate: () => void; onClose: () => void }) {
   return (
@@ -29,20 +30,15 @@ export default function ConfigList(props: {
   visible: boolean
   setVisible: (val: boolean) => void
 }) {
-  const {
-    isLoaded,
-    configList,
-    deleteConfig,
-    setCurrentConfigId,
-    currentConfig
-  } = useConfig()
+  const { configList, deleteConfig, setCurrentConfigId, currentConfig } =
+    useConfig()
   const { context: addConfigContext, showModal } = useAddConfig()
   // 加载时没有配置列表，弹出添加配置弹窗
   useEffect(() => {
-    if (isLoaded && configList.length === 0) {
+    if (configList.length === 0) {
       showModal('add')
     }
-  }, [isLoaded])
+  }, [])
 
   const hoverIconClass =
     'hover:bg-blue hover:color-white hover:rounded-50% cursor-pointer  p-10px'

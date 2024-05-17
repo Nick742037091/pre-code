@@ -2,38 +2,40 @@ import { forwardRef, useImperativeHandle } from 'react'
 import classNames from 'classnames'
 import { Button, Input, InputNumber, Select, Switch, Table } from 'antd'
 import { useImmer } from 'use-immer'
-import { TableColumnProp } from '../..'
 import { nanoid } from 'nanoid'
-import { ColumnsType } from 'antd/es/table'
 import { ColumnType } from 'antd/lib/table'
 import { useConfig } from '@/stores/config'
-import { ColumnAttrType } from './ColumnAttr'
 import { useColumnAttrList } from './ColumnAttrList'
 import SortableTaleContext, {
-  SortableTableRow,
   sortableTableProps
 } from '@/components/SortableTaleContext'
 import { arrayMove } from '@dnd-kit/sortable'
+import { ColumnAttrType } from 'pre-code/src/types/config'
+const { TextArea } = Input
+
+export interface TableColumnProp {
+  id: string
+  [prop: string]: any
+}
 
 export interface TableColumnListRef {
-  getTableDataList: () => TableColumnProp[]
+  getTableColumnList: () => TableColumnProp[]
 }
 
 export default forwardRef(function TableColumnList(
   props: { blockStyle: string },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ref: any
 ) {
   useImperativeHandle(ref, () => {
     return {
-      getTableDataList: () => {
+      getTableColumnList: () => {
         return tableDataList
       }
     }
   })
   const { context: columnAttrListContext, showModal: showColumnAttrListModal } =
     useColumnAttrList()
-  const { tableColumnList } = useConfig()
+  const { tableColAttrList } = useConfig()
 
   const [tableDataList, setTableDataList] = useImmer<TableColumnProp[]>([])
 
@@ -43,6 +45,19 @@ export default forwardRef(function TableColumnList(
       return (
         <Input
           value={text}
+          allowClear
+          onChange={(e) => onChangeValue(e.target.value, index, prop)}
+        />
+      )
+    }
+  }
+
+  const createTextAreaRender = (prop: keyof TableColumnProp) => {
+    return (text: string, record: TableColumnProp, index: number) => {
+      return (
+        <TextArea
+          value={text}
+          rows={3}
           allowClear
           onChange={(e) => onChangeValue(e.target.value, index, prop)}
         />
@@ -86,11 +101,14 @@ export default forwardRef(function TableColumnList(
     }
   }
 
-  const customColumns = tableColumnList.map((item) => {
+  const customColumns = tableColAttrList.map((item) => {
     let render: ColumnType<TableColumnProp>['render'] | undefined = undefined
     switch (item.attrType) {
       case ColumnAttrType.Input:
         render = createInputRender(item.attrKey)
+        break
+      case ColumnAttrType.Code:
+        render = createTextAreaRender(item.attrKey)
         break
       case ColumnAttrType.Number:
         render = createNumberRender(item.attrKey)
@@ -110,23 +128,6 @@ export default forwardRef(function TableColumnList(
       width: columnMinWidth
     }
   })
-
-  // const defaultColumns: ColumnsType<TableColumnProp> = [
-  //   {
-  //     title: '列名称',
-  //     dataIndex: 'prop',
-  //     key: 'prop',
-  //     render: createInputRender('prop'),
-  //     width: columnMinWidth
-  //   },
-  //   {
-  //     title: '列标题',
-  //     dataIndex: 'label',
-  //     key: 'label',
-  //     render: createInputRender('label'),
-  //     width: columnMinWidth
-  //   }
-  // ]
 
   const columnOperation: ColumnType<TableColumnProp> = {
     title: '操作',

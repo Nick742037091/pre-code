@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { useState } from 'react'
+import { forwardRef, useImperativeHandle, useState } from 'react'
 import LeftList from './Left/index'
 import RightList from './Right'
 import Main from './Main'
@@ -15,21 +15,40 @@ import { useImmer } from 'use-immer'
 import { nanoid } from 'nanoid'
 import { arrayMove } from '@dnd-kit/sortable'
 
-export interface FormConfig {
+export interface FormItemConfig {
   id: string
   componentId: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   attrs: Record<string, any>
 }
 
-export default function FormItemList(props: { blockStyle: string }) {
+export interface FormItemListRef {
+  getFormItemList: () => FormItemConfig[]
+}
+
+export default forwardRef(function FormItemList(
+  props: {
+    blockStyle: string
+  },
+  ref: any
+) {
+  useImperativeHandle(ref, () => {
+    return {
+      getFormItemList: () => {
+        return formItemConfigList
+      }
+    }
+  })
   const [dragId, setDragId] = useState('')
   const [activeId, setActiveId] = useState('')
-  const [formConfigList, setFormConfigList] = useImmer<FormConfig[]>([])
-  const activeFormConfig = formConfigList.find((item) => item.id === activeId)
+  const [formItemConfigList, setFormItemConfigList] = useImmer<
+    FormItemConfig[]
+  >([])
+  const activeFormConfig = formItemConfigList.find(
+    (item) => item.id === activeId
+  )
 
   // 是否正在对表单项排序
-  const isSorting = formConfigList.some((item) => item.id === dragId)
+  const isSorting = formItemConfigList.some((item) => item.id === dragId)
 
   function handleDragStart(event: DragStartEvent) {
     console.log('handleDragStart')
@@ -43,7 +62,7 @@ export default function FormItemList(props: { blockStyle: string }) {
     const { active, over } = event
     if (isSorting) {
       // 拖拽排序
-      setFormConfigList((draft) => {
+      setFormItemConfigList((draft) => {
         // TODO 存在闪烁问题
         const activeIndex = draft.findIndex((item) => item.id === active.id)
         const overIndex = draft.findIndex((item) => item.id === over?.id)
@@ -53,7 +72,7 @@ export default function FormItemList(props: { blockStyle: string }) {
       // 拖动表单组件进行添加
       if (!over) return
       if (over?.id === 'containier') {
-        setFormConfigList((draft) => {
+        setFormItemConfigList((draft) => {
           draft.push({
             id: nanoid(),
             componentId: active.id + '',
@@ -62,7 +81,7 @@ export default function FormItemList(props: { blockStyle: string }) {
         })
       } else {
         const index = over?.data.current?.index as number
-        setFormConfigList((draft) => {
+        setFormItemConfigList((draft) => {
           draft.splice(index, 0, {
             id: nanoid(),
             componentId: active.id + '',
@@ -75,13 +94,13 @@ export default function FormItemList(props: { blockStyle: string }) {
   }
 
   const handleDeleteConfig = (index: number) => {
-    setFormConfigList((draft) => {
+    setFormItemConfigList((draft) => {
       draft.splice(index, 1)
     })
   }
 
   const handleCopyConfig = (index: number) => {
-    setFormConfigList((draft) => {
+    setFormItemConfigList((draft) => {
       const config = draft[index]
       draft.push({
         ...config,
@@ -91,11 +110,11 @@ export default function FormItemList(props: { blockStyle: string }) {
   }
 
   const handleSelectConfig = (index: number) => {
-    setActiveId(formConfigList[index].id)
+    setActiveId(formItemConfigList[index].id)
   }
 
   const handleUpdateAttrs = (attrs: Record<string, any>) => {
-    setFormConfigList((draft) => {
+    setFormItemConfigList((draft) => {
       const index = draft.findIndex((item) => item.id === activeId)
       draft.splice(index, 1, {
         ...draft[index],
@@ -127,11 +146,11 @@ export default function FormItemList(props: { blockStyle: string }) {
         <Main
           isSorting={isSorting}
           activeId={activeId}
-          formConfigList={formConfigList}
+          formConfigList={formItemConfigList}
           onDelete={handleDeleteConfig}
           onCopy={handleCopyConfig}
           onSelect={handleSelectConfig}
-          onSetFormConfigList={(list) => setFormConfigList(list)}
+          onSetFormItemConfigList={(list) => setFormItemConfigList(list)}
         />
         <RightList
           key={activeFormConfig?.id || ''}
@@ -141,4 +160,4 @@ export default function FormItemList(props: { blockStyle: string }) {
       </DndContext>
     </div>
   )
-}
+})

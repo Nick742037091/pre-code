@@ -96,6 +96,11 @@ export const readFile = async (message: Message, webview: vscode.Webview) => {
   const { filePath } = message.params || {}
   fs.readFile(filePath, 'utf-8', (err, data) => {
     if (err) {
+      nativeCommandCallback({
+        webview,
+        commandId: message.commandId,
+        params: null
+      })
       return
     }
     nativeCommandCallback({

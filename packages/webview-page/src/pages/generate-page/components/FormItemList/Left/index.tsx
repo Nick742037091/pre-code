@@ -40,7 +40,7 @@ function Draggable(props: {
           props.isActive && 'opacity-50'
         )}
       >
-        {props.item.formName}
+        {props.item.name}
       </div>
       {props.isEditing && (
         <>

@@ -6,7 +6,6 @@ import { useState } from 'react'
 import { useImmer } from 'use-immer'
 import { cloneDeep } from 'lodash'
 import SortableTaleContext, {
-  SortableTableRow,
   sortableTableProps
 } from '@/components/SortableTaleContext'
 import { arrayMove } from '@dnd-kit/sortable'
@@ -15,15 +14,15 @@ export function useColumnAttrList() {
   const [visible, setVisible] = useState(false)
   const showModal = () => {
     setVisible(true)
-    setTableColumnList(cloneDeep(configStore.tableColumnList))
+    setTableColumnList(cloneDeep(configStore.tableColAttrList))
   }
   const [messageApi, msgContextHolder] = message.useMessage()
-  const [tableColumnList, setTableColumnList] = useImmer<ColumnAttrItem[]>([])
+  const [tableColAttrList, setTableColumnList] = useImmer<ColumnAttrItem[]>([])
   const configStore = useConfig()
   const handleConfirmAddColAttr = (info: ColumnAttrItem) => {
-    const exist = tableColumnList.some((item) => item.attrKey === info.attrKey)
+    const exist = tableColAttrList.some((item) => item.attrKey === info.attrKey)
     if (exist) {
-      messageApi.warning('该键值已存在')
+      messageApi.error('该键值已存在')
       return false
     } else {
       setTableColumnList((draft) => {
@@ -34,11 +33,11 @@ export function useColumnAttrList() {
   }
 
   const handleConfirmUpdateColAttr = (info: ColumnAttrItem) => {
-    const exist = tableColumnList
+    const exist = tableColAttrList
       .filter((item) => item.id !== info.id)
       .some((item) => item.attrKey === info.attrKey)
     if (exist) {
-      messageApi.warning('该键值已存在')
+      messageApi.error('该键值已存在')
       return false
     } else {
       setTableColumnList((draft) => {
@@ -137,14 +136,14 @@ export function useColumnAttrList() {
       }
       open={visible}
       onOk={() => {
-        configStore.setTableColumnList(tableColumnList)
+        configStore.setTableColAttrList(tableColAttrList)
         setVisible(false)
       }}
       onCancel={() => setVisible(false)}
       width={900}
     >
       <SortableTaleContext
-        list={tableColumnList}
+        list={tableColAttrList}
         rowKey="id"
         onDragEnd={(activeIndex, overIndex) => {
           setTableColumnList((draft) => {
@@ -155,7 +154,7 @@ export function useColumnAttrList() {
         <Table
           {...sortableTableProps}
           rowKey="id"
-          dataSource={tableColumnList}
+          dataSource={tableColAttrList}
           columns={columns}
           pagination={false}
         />

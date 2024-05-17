@@ -1,5 +1,5 @@
 import { useDroppable } from '@dnd-kit/core'
-import { FormConfig } from '../index'
+import { FormItemConfig } from '../index'
 import { CloseCircleOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import classNames from 'classnames'
 import { useConfig } from '@/stores/config'
@@ -14,7 +14,7 @@ function Droppable(props: {
   isSorting: boolean
   index?: number
   className?: string
-  data?: FormConfig
+  data?: FormItemConfig
   children?: React.ReactNode
 }) {
   const {
@@ -63,17 +63,17 @@ function Droppable(props: {
 
 export default function Main(props: {
   activeId: string
-  formConfigList: FormConfig[]
+  formConfigList: FormItemConfig[]
   isSorting: boolean
   onDelete: (index: number) => void
   onCopy: (index: number) => void
   onSelect: (index: number) => void
-  onSetFormConfigList: (list: FormConfig[]) => void
+  onSetFormItemConfigList: (list: FormItemConfig[]) => void
 }) {
   const iconClass = 'icon cursor-pointer text-20px hidden'
   const { formItemList } = useConfig()
   const formNameMap = useMemo(() => {
-    return listToMap(formItemList, 'id', 'formName')
+    return listToMap(formItemList, 'id', 'name')
   }, [formItemList])
 
   return (

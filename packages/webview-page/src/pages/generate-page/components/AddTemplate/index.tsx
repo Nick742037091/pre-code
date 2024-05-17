@@ -49,7 +49,7 @@ export const useAddTemplate = () => {
         (item) => item.templateName === templateName
       )
       if (isExist) {
-        return messageApi.warning('该模板已存在')
+        return messageApi.error('该模板已存在')
       }
       addTemplate({
         id: nanoid(),
@@ -110,7 +110,7 @@ export const useAddTemplate = () => {
         >
           <div className="flex flex-col items-start">
             {templatePath && (
-              <div className="h-32px line-height-32px mb-10px px-10px">
+              <div className="line-height-32px mb-10px px-10px break-all">
                 {templatePath}
               </div>
             )}

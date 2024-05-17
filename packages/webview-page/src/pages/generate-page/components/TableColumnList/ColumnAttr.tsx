@@ -2,23 +2,9 @@ import { listToMap } from '@/utils'
 import { PlusOutlined } from '@ant-design/icons'
 import { Form, Input, InputRef, Modal, Select, Tag, message } from 'antd'
 import { nanoid } from 'nanoid'
+import { ColumnAttrItem, ColumnAttrType } from 'pre-code/src/types/config'
 import { useRef, useState } from 'react'
 import { useImmer } from 'use-immer'
-
-export enum ColumnAttrType {
-  Input = 0,
-  Number,
-  Switch,
-  Select
-}
-
-export type ColumnAttrItem = {
-  id: string
-  attrKey: string
-  attrLabel: string
-  attrType: ColumnAttrType
-  attrOptions: string[]
-}
 
 export const AttrTypeOptions = [
   {
@@ -36,6 +22,10 @@ export const AttrTypeOptions = [
   {
     value: ColumnAttrType.Select,
     label: '选择器'
+  },
+  {
+    value: ColumnAttrType.Code,
+    label: '代码'
   }
 ]
 
@@ -81,7 +71,7 @@ export function useColumnAtrr(props: {
   }
   const handleOk = () => {
     if (attrType === ColumnAttrType.Select && attrOptions.length === 0) {
-      messageApi.warning('请至少添加一个选项')
+      messageApi.error('请至少添加一个选项')
       return
     }
     if (type === 'add') {
