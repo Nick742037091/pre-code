@@ -22,6 +22,7 @@
     "immer": "^10.1.1",
     "lodash": "^4.17.21",
     "pre-code": "workspace:^",
+    "react-json-view": "^1.21.3",
     "react-router-dom": "^6.23.0",
     "zustand": "^4.5.2",
     "zustand-computed": "^1.4.1"

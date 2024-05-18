@@ -77,7 +77,6 @@ export default function RightList(props: {
   const [form] = Form.useForm<Record<string, any>>()
   const { formItemMap } = useConfig()
   const formItem = formItemMap[props.config?.componentId || '']
-  const attrList = formItem?.attrList || []
   // 选择表单项时更新数据
   useEffect(() => {
     if (!props.config) return
@@ -86,51 +85,6 @@ export default function RightList(props: {
   const handleValuesChange = (values: Record<string, any>, key: AttrsKey) => {
     props.onUpdateAttrs(values, key)
   }
-  const formItemAttrList = (
-    <div className="w-350px flex flex-col bg-white">
-      <div className="flex-1 overflow-auto px-10px pt-10px">
-        <Form form={form} onValuesChange={handleValuesChange}>
-          {attrList.map((item) => {
-            let content = null
-            switch (item.attrType) {
-              case ColumnAttrType.Input:
-                content = <Input allowClear></Input>
-                break
-              case ColumnAttrType.Code:
-                content = <TextArea rows={3} allowClear />
-                break
-              case ColumnAttrType.Switch:
-                content = <Switch></Switch>
-                break
-              case ColumnAttrType.Number:
-                content = <InputNumber></InputNumber>
-                break
-              case ColumnAttrType.Select:
-                content = (
-                  <Select
-                    options={item.attrOptions.map((item) => ({
-                      value: item,
-                      label: item
-                    }))}
-                  ></Select>
-                )
-                break
-            }
-            return (
-              <Form.Item
-                key={item.attrKey}
-                label={item.attrLabel}
-                name={item.attrKey}
-                labelCol={{ span: 8 }}
-              >
-                {content}
-              </Form.Item>
-            )
-          })}
-        </Form>
-      </div>
-    </div>
-  )
   const tabItems: TabsProps['items'] = [
     {
       key: 'formItemAttrList',

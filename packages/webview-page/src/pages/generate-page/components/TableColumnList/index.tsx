@@ -161,10 +161,7 @@ export default forwardRef(function TableColumnList(
   const handleAddCol = () => {
     setTableDataList((draft) => {
       draft.push({
-        id: nanoid(),
-        label: '',
-        prop: '',
-        custom: false
+        id: nanoid()
       })
     })
   }
