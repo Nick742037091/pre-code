@@ -25,7 +25,7 @@ function GenerateCode(props: {
       return
     }
     const tableColList = props.getTableColumnList().map((tableColumn) => {
-      return tableColAttrList.map((column) => {
+      const attrList = tableColAttrList.map((column) => {
         const value = tableColumn[column.attrKey] ?? ''
         // 字符串增加双引号
         const attrValue =
@@ -35,6 +35,12 @@ function GenerateCode(props: {
           attrValue
         }
       })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id, ...attrMap } = tableColumn
+      return {
+        attrList,
+        attrMap
+      }
     })
 
     const formItemList = props.getFormItemConfigList().map((formItemConfig) => {
@@ -52,6 +58,7 @@ function GenerateCode(props: {
       return {
         ...component,
         attrMap: formItemConfig.attrs,
+        elementAttrMap: formItemConfig.elementAttrs,
         attrList
       }
     })

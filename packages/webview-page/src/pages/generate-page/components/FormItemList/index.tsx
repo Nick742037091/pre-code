@@ -19,6 +19,7 @@ export interface FormItemConfig {
   id: string
   componentId: string
   attrs: Record<string, any>
+  elementAttrs: Record<string, any>
 }
 
 export interface FormItemListRef {
@@ -113,12 +114,15 @@ export default forwardRef(function FormItemList(
     setActiveId(formItemConfigList[index].id)
   }
 
-  const handleUpdateAttrs = (attrs: Record<string, any>) => {
+  const handleUpdateAttrs = (
+    attrs: Record<string, any>,
+    key: 'attrs' | 'elementAttrs'
+  ) => {
     setFormItemConfigList((draft) => {
       const index = draft.findIndex((item) => item.id === activeId)
       draft.splice(index, 1, {
         ...draft[index],
-        attrs
+        [key]: attrs
       })
     })
   }

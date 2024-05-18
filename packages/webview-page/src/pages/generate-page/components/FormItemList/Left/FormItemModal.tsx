@@ -1,4 +1,5 @@
-import { Button, Modal, Table, Tag, message, Form, Input } from 'antd'
+import { Button, Modal, Table, Tag, message, Form, Input, Tabs } from 'antd'
+import type { TabsProps } from 'antd'
 import {
   ColumnAttrItem,
   ColumnAttrType,
@@ -19,48 +20,54 @@ import { ColumnsType } from 'antd/lib/table'
 import SortableTaleContext, {
   sortableTableProps
 } from '@/components/SortableTaleContext'
+import { MessageInstance } from 'antd/lib/message/interface'
 
-export function useFormItemModal() {
-  const [messageApi, msgContextHolder] = message.useMessage()
-  const [visible, setVisible] = useState(false)
-  const [formItemId, setFormItemId] = useState('')
-  const [form] = Form.useForm<{ name: string; type: '' }>()
-  const name = Form.useWatch('name', form)
-  const type = Form.useWatch('type', form)
-  const [modalType, setModalType] = useState<'add' | 'edit'>('add')
-  const showModal = (
-    showType: typeof modalType = 'add',
-    formItemData?: FormItem
-  ) => {
-    if (formItemData) {
-      setFormItemId(formItemData.id)
-      form.setFieldValue('name', formItemData.name)
-      form.setFieldValue('type', formItemData.type)
-      setFormAttrList(cloneDeep(formItemData.attrList))
-    } else {
-      setFormItemId('')
-      form.setFieldValue('name', '')
-      form.setFieldValue('type', '')
-      setFormAttrList([])
-    }
-    setModalType(showType)
-    setVisible(true)
-  }
-  const [formAttrList, setFormAttrList] = useImmer<FormAttrItem[]>([])
-  const configStore = useConfig()
+function useAttrTable(messageApi: MessageInstance) {
+  const [attrList, setAttrList] = useImmer<FormAttrItem[]>([])
   const handleConfirmAddColAttr = (info: ColumnAttrItem) => {
-    const exist = formAttrList.some((item) => item.attrKey === info.attrKey)
+    const exist = attrList.some((item) => item.attrKey === info.attrKey)
     if (exist) {
       messageApi.error('该键值已存在')
       return false
     } else {
-      setFormAttrList((draft) => {
+      setAttrList((draft) => {
         draft.push(info)
       })
       return true
     }
   }
 
+  const handleConfirmUpdateColAttr = (info: ColumnAttrItem) => {
+    const exist = attrList
+      .filter((item) => item.id !== info.id)
+      .some((item) => item.attrKey === info.attrKey)
+    if (exist) {
+      messageApi.error('该键值已存在')
+      return false
+    } else {
+      setAttrList((draft) => {
+        const index = draft.findIndex((item) => item.id === info.id)
+        draft.splice(index, 1, info)
+      })
+      return true
+    }
+  }
+
+  const handleDeleteAttr = (index: number) => {
+    setAttrList((draft) => {
+      draft.splice(index, 1)
+    })
+  }
+
+  const handleAddColAttr = () => {
+    showColumnAttrModal('add')
+  }
+
+  const { context: columnAttrContext, showModal: showColumnAttrModal } =
+    useColumnAtrr({
+      onConfirmAdd: handleConfirmAddColAttr,
+      onConfirmUpdate: handleConfirmUpdateColAttr
+    })
   const columns: ColumnsType<ColumnAttrItem> = [
     {
       title: '键值',
@@ -122,38 +129,81 @@ export function useFormItemModal() {
       }
     }
   ]
+  const context = (
+    <>
+      {columnAttrContext}
+      <div className="flex items-center mb-10px">
+        <Button type="primary" size="small" onClick={handleAddColAttr}>
+          添加属性
+        </Button>
+      </div>
+      <SortableTaleContext
+        list={attrList}
+        rowKey="id"
+        onDragEnd={(activeIndex, overIndex) => {
+          setAttrList((draft) => {
+            return arrayMove(draft, activeIndex, overIndex)
+          })
+        }}
+      >
+        <Table
+          {...sortableTableProps}
+          size="small"
+          rowKey="id"
+          dataSource={attrList}
+          columns={columns}
+          pagination={false}
+        />
+      </SortableTaleContext>
+    </>
+  )
+  return {
+    context,
+    attrList,
+    setAttrList
+  }
+}
 
-  const handleConfirmUpdateColAttr = (info: ColumnAttrItem) => {
-    const exist = formAttrList
-      .filter((item) => item.id !== info.id)
-      .some((item) => item.attrKey === info.attrKey)
-    if (exist) {
-      messageApi.error('该键值已存在')
-      return false
+export function useFormItemModal() {
+  const [messageApi, msgContextHolder] = message.useMessage()
+  const {
+    context: itemAttrTableContext,
+    attrList: itemAttrList,
+    setAttrList: setItemAttrList
+  } = useAttrTable(messageApi)
+
+  const {
+    context: elementAttrTableContext,
+    attrList: elementAttrList,
+    setAttrList: setElementAttrList
+  } = useAttrTable(messageApi)
+  const [visible, setVisible] = useState(false)
+  const [formItemId, setFormItemId] = useState('')
+  const [form] = Form.useForm<{ name: string; type: '' }>()
+  const name = Form.useWatch('name', form)
+  const type = Form.useWatch('type', form)
+  const [modalType, setModalType] = useState<'add' | 'edit'>('add')
+  const showModal = (
+    showType: typeof modalType = 'add',
+    formItemData?: FormItem
+  ) => {
+    if (formItemData) {
+      setFormItemId(formItemData.id)
+      form.setFieldValue('name', formItemData.name)
+      form.setFieldValue('type', formItemData.type)
+      setItemAttrList(cloneDeep(formItemData.attrList || []))
+      setElementAttrList(cloneDeep(formItemData.elementAttrList || []))
     } else {
-      setFormAttrList((draft) => {
-        const index = draft.findIndex((item) => item.id === info.id)
-        draft.splice(index, 1, info)
-      })
-      return true
+      setFormItemId('')
+      form.setFieldValue('name', '')
+      form.setFieldValue('type', '')
+      setItemAttrList([])
+      setElementAttrList([])
     }
+    setModalType(showType)
+    setVisible(true)
   }
-
-  const { context: columnAttrContext, showModal: showColumnAttrModal } =
-    useColumnAtrr({
-      onConfirmAdd: handleConfirmAddColAttr,
-      onConfirmUpdate: handleConfirmUpdateColAttr
-    })
-
-  const handleAddColAttr = () => {
-    showColumnAttrModal('add')
-  }
-
-  const handleDeleteAttr = (index: number) => {
-    setFormAttrList((draft) => {
-      draft.splice(index, 1)
-    })
-  }
+  const configStore = useConfig()
 
   const handleOk = () => {
     if (!name) {
@@ -167,18 +217,33 @@ export function useFormItemModal() {
         id: formItemId,
         name,
         type,
-        attrList: formAttrList
+        attrList: itemAttrList,
+        elementAttrList: elementAttrList
       })
     } else {
       configStore.addFormItem({
         id: nanoid(),
         type,
         name,
-        attrList: formAttrList
+        attrList: itemAttrList,
+        elementAttrList: elementAttrList
       })
     }
     setVisible(false)
   }
+
+  const tabItems: TabsProps['items'] = [
+    {
+      key: 'formItemAttrList',
+      label: <div className="font-bold ">表单项属性列表</div>,
+      children: itemAttrTableContext
+    },
+    {
+      key: 'elementItemAttrList',
+      label: <div className="font-bold">表单元素属性列表</div>,
+      children: elementAttrTableContext
+    }
+  ]
 
   const context = (
     <Modal
@@ -205,33 +270,13 @@ export function useFormItemModal() {
             <Input className="w-250px" />
           </Form.Item>
         </Form>
-
-        <div className="flex items-center mb-10px">
-          <div className="font-bold text-15px">属性列表</div>
-          <Button type="primary" className="ml-20px" onClick={handleAddColAttr}>
-            添加属性
-          </Button>
-        </div>
-        <SortableTaleContext
-          list={formAttrList}
-          rowKey="id"
-          onDragEnd={(activeIndex, overIndex) => {
-            setFormAttrList((draft) => {
-              return arrayMove(draft, activeIndex, overIndex)
-            })
-          }}
-        >
-          <Table
-            {...sortableTableProps}
-            rowKey="id"
-            dataSource={formAttrList}
-            columns={columns}
-            pagination={false}
-          />
-        </SortableTaleContext>
+        <Tabs
+          defaultActiveKey="formItemAttrList"
+          type="card"
+          items={tabItems}
+        />
       </div>
       {msgContextHolder}
-      {columnAttrContext}
     </Modal>
   )
   return {

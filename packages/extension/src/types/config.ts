@@ -34,6 +34,7 @@ export interface FormItem {
   name: string
   type: string
   attrList: FormAttrItem[]
+  elementAttrList: FormAttrItem[]
 }
 export type Config = {
   id: string
