@@ -4,6 +4,9 @@ import { DndContext, MouseSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
+import { Table } from 'antd'
+import React, { Children, ReactElement, cloneElement } from 'react'
+import { MenuOutlined } from '@ant-design/icons'
 
 export default function SortableTaleContext(props: {
   children: React.ReactNode
@@ -43,11 +46,15 @@ export default function SortableTaleContext(props: {
 interface RowProps extends React.HTMLAttributes<HTMLTableRowElement> {
   'data-row-key': string
 }
-export const SortableTableRow = (props: RowProps) => {
+export const SortableTableRow = (
+  props: RowProps & { draggableProp?: string }
+) => {
+  const { children, ...restProps } = props
   const {
     attributes,
     listeners,
     setNodeRef,
+    setActivatorNodeRef,
     transform,
     transition,
     isDragging
@@ -55,25 +62,72 @@ export const SortableTableRow = (props: RowProps) => {
     id: props['data-row-key']
   })
 
+  const rowChildren = Children.map(children, (_child) => {
+    const child = _child as ReactElement
+    if (child.key === props.draggableProp) {
+      return React.cloneElement(child as React.ReactElement, {
+        children: (
+          <div
+            className="w-100%"
+            ref={setActivatorNodeRef}
+            style={{ touchAction: 'none', cursor: 'move' }}
+            {...listeners}
+          >
+            <MenuOutlined />
+          </div>
+        )
+      })
+    } else {
+      return cloneElement(child)
+    }
+  })
+
   const style: React.CSSProperties = {
     ...props.style,
     transform: CSS.Translate.toString(transform),
     transition,
-    cursor: 'move',
     ...(isDragging ? { position: 'relative', zIndex: 100 } : {})
   }
-
-  return (
-    <tr
-      {...props}
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-    />
-  )
+  if (props.draggableProp) {
+    return (
+      <tr
+        id={props.id}
+        {...restProps}
+        {...attributes}
+        style={style}
+        ref={setNodeRef}
+      >
+        {rowChildren}
+      </tr>
+    )
+  } else {
+    return (
+      <tr
+        {...props}
+        ref={setNodeRef}
+        style={style}
+        className="cursor-move"
+        {...attributes}
+        {...listeners}
+      />
+    )
+  }
 }
 
-export const sortableTableProps = {
-  components: { body: { row: SortableTableRow } }
+export const createSortableTableProps = (props?: {
+  draggableProp?: string
+  // draggableProp 排序列字段，会自动添加排序图标，不提供则整行可以拖动排序
+}) => {
+  return {
+    components: {
+      body: {
+        row: (rowProps: RowProps) => (
+          <SortableTableRow
+            {...rowProps}
+            draggableProp={props?.draggableProp || ''}
+          />
+        )
+      }
+    }
+  } as Partial<typeof Table>
 }

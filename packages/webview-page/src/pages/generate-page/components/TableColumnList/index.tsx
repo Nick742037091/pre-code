@@ -1,13 +1,13 @@
 import { forwardRef, useImperativeHandle } from 'react'
 import classNames from 'classnames'
-import { Button, Input, InputNumber, Select, Switch, Table } from 'antd'
+import { Button, Input, InputNumber, Row, Select, Switch, Table } from 'antd'
 import { useImmer } from 'use-immer'
 import { nanoid } from 'nanoid'
 import { ColumnType } from 'antd/lib/table'
 import { useConfig } from '@/stores/config'
 import { useColumnAttrList } from './ColumnAttrList'
 import SortableTaleContext, {
-  sortableTableProps
+  createSortableTableProps
 } from '@/components/SortableTaleContext'
 import { arrayMove } from '@dnd-kit/sortable'
 import { ColumnAttrType } from 'pre-code/src/types/config'
@@ -57,7 +57,7 @@ export default forwardRef(function TableColumnList(
       return (
         <TextArea
           value={text}
-          rows={3}
+          rows={1}
           allowClear
           onChange={(e) => onChangeValue(e.target.value, index, prop)}
         />
@@ -143,7 +143,16 @@ export default forwardRef(function TableColumnList(
       )
     }
   }
-  const columns = [...customColumns, columnOperation]
+  const columns = [
+    {
+      title: '排序',
+      dataIndex: 'draggable',
+      key: 'draggable',
+      width: 40
+    },
+    ...customColumns,
+    columnOperation
+  ]
 
   const onChangeValue = (
     value: string | boolean | number | undefined,
@@ -199,7 +208,7 @@ export default forwardRef(function TableColumnList(
           }}
         >
           <Table
-            {...sortableTableProps}
+            {...createSortableTableProps({ draggableProp: 'draggable' })}
             scroll={{ x: 500 }}
             rowKey="id"
             dataSource={tableDataList}

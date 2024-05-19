@@ -18,7 +18,7 @@ import { cloneDeep } from 'lodash'
 import { arrayMove } from '@dnd-kit/sortable'
 import { ColumnsType } from 'antd/lib/table'
 import SortableTaleContext, {
-  sortableTableProps
+  createSortableTableProps
 } from '@/components/SortableTaleContext'
 import { MessageInstance } from 'antd/lib/message/interface'
 
@@ -147,7 +147,7 @@ function useAttrTable(messageApi: MessageInstance) {
         }}
       >
         <Table
-          {...sortableTableProps}
+          {...createSortableTableProps()}
           size="small"
           rowKey="id"
           dataSource={attrList}
