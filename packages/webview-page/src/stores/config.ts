@@ -48,6 +48,7 @@ interface State {
   addFormItem: (formItem: FormItem) => void
   updateFormItem: (formItem: FormItem) => void
   deleteFormItem: (index: number) => void
+  setGlobalAttrList: (globalAttrList: ColumnAttrItem[]) => void
 }
 
 export const useConfig = create<State>()(
@@ -252,6 +253,16 @@ export const useConfig = create<State>()(
         })
       }
 
+      /*** 全局属性 ***/
+      const setGlobalAttrList = (globalAttrList: ColumnAttrItem[]) => {
+        set((state) => {
+          const currentConfig = getCurrentConfig(state)
+          if (!currentConfig) return
+          currentConfig.globalAttrList = globalAttrList
+          updateConfigStorage(state)
+        })
+      }
+
       // 更新配置项，触发本地保存
       const updateConfigStorage = (state: WritableDraft<State>) => {
         const currentConfig = getCurrentConfig(state)
@@ -283,7 +294,8 @@ export const useConfig = create<State>()(
         deleteTableColAttr,
         addFormItem,
         updateFormItem,
-        deleteFormItem
+        deleteFormItem,
+        setGlobalAttrList
       }
     }),
     (state) => {
@@ -300,13 +312,20 @@ export const useConfig = create<State>()(
         string,
         FormItem
       >
+      const globalAttrList = currentConfig?.globalAttrList || []
+      const globalAttrMap = listToMap(globalAttrList, 'attrKey') as Record<
+        string,
+        ColumnAttrItem
+      >
       return {
         currentConfig,
         currentTemplate,
         templateList,
         tableColAttrList,
         formItemList,
-        formItemMap
+        formItemMap,
+        globalAttrList,
+        globalAttrMap
       }
     }
   )

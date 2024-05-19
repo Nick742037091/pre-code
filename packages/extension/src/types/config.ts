@@ -43,6 +43,7 @@ export type Config = {
   defaultFileType: FileType
   templateList: TemplateItem[]
   defaultTemplateId: string
+  globalAttrList: ColumnAttrItem[]
   tableColAttrList: ColumnAttrItem[]
   formItemList: FormItem[]
 }

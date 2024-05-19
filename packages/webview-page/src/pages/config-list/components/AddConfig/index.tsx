@@ -55,9 +55,10 @@ export const useAddConfig = () => {
         configType,
         templateList: [],
         defaultTemplateId: '',
+        defaultFileType: '.vue',
         tableColAttrList: createDefaultTableAttrs(),
         formItemList: [],
-        defaultFileType: '.vue'
+        globalAttrList: []
       })
     } else {
       updateConfig({

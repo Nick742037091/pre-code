@@ -1,29 +1,36 @@
 import { Button, Modal, message } from 'antd'
 import ejs from 'ejs'
 import { nativeCommond } from '@/utils/bridge'
-import { useGenerateCodeStore } from '@/stores/generateCodeStore'
+import { useAppStore } from '@/stores/app'
 import { useConfig } from '@/stores/config'
 import { ColumnAttrType } from 'pre-code/src/types/config'
 import { TableColumnProp } from '../TableColumnList/index'
 import { FormItemConfig } from '../FormItemList/index'
 import { useState } from 'react'
 import JSONView from 'react-json-view'
+import { CheckOutlined, EyeOutlined } from '@ant-design/icons'
 
 function useExportData(
   tableColumnList: TableColumnProp[],
-  formItemConfigList: FormItemConfig[]
+  formItemConfigList: FormItemConfig[],
+  globalAttrs: Record<string, any>
 ) {
-  const { tableColAttrList, formItemMap } = useConfig()
+  const {
+    tableColAttrList,
+    formItemMap,
+    globalAttrMap: globalAttrItemMap
+  } = useConfig()
   const tableColList = tableColumnList.map((tableColumn) => {
     const attrList = tableColAttrList.map((column) => {
       const { attrKey, attrType, attrLabel } = column
       const value = tableColumn[attrKey] ?? ''
       // 字符串增加双引号，缺失值为空字符串
       // 其他类型缺省值为null
-      const attrValue =
-        column.attrType === ColumnAttrType.Input
-          ? `"${value || ''}"`
-          : value || null
+      const attrValue = [ColumnAttrType.Select, ColumnAttrType.Input].includes(
+        column.attrType
+      )
+        ? `"${value || ''}"`
+        : value || null
       return {
         attrKey,
         attrValue,
@@ -46,10 +53,12 @@ function useExportData(
         const value = formItemConfig.attrs[attr.attrKey]
         // 字符串增加双引号，缺失值为空字符串
         // 其他类型缺省值为null
-        const attrValue =
-          attr.attrType === ColumnAttrType.Input
-            ? `"${value ?? ''}"`
-            : value ?? null
+        const attrValue = [
+          ColumnAttrType.Select,
+          ColumnAttrType.Input
+        ].includes(attr.attrType)
+          ? `"${value ?? ''}"`
+          : value ?? null
         return {
           attrKey: attr.attrKey,
           attrValue,
@@ -67,9 +76,25 @@ function useExportData(
       elementAttrMap: formItemConfig.elementAttrs || {}
     }
   })
+
+  const globalAttrMap: Record<string, any> = {}
+  for (const key in globalAttrs) {
+    const globalAttrItem = globalAttrItemMap[key] || {}
+    const value = globalAttrs[key] ?? ''
+    // 字符串增加双引号，缺失值为空字符串
+    // 其他类型缺省值为null
+    const attrValue = [ColumnAttrType.Select, ColumnAttrType.Input].includes(
+      globalAttrItem.attrType
+    )
+      ? `"${value || ''}"`
+      : value || null
+    globalAttrMap[key] = attrValue
+  }
+
   const injectData = {
     tableColList,
-    formItemList
+    formItemList,
+    globalAttrMap
   }
   return injectData
 }
@@ -77,13 +102,15 @@ function useExportData(
 function GenerateCode(props: {
   getTableColumnList: () => TableColumnProp[]
   getFormItemConfigList: () => FormItemConfig[]
+  globalAttrs: Record<string, any>
 }) {
   const [messageApi, msgContext] = message.useMessage()
-  const { fileName, filePath } = useGenerateCodeStore()
+  const { fileName, filePath } = useAppStore()
   const { currentTemplate, fileType } = useConfig()
   const exportData = useExportData(
     props.getTableColumnList(),
-    props.getFormItemConfigList()
+    props.getFormItemConfigList(),
+    props.globalAttrs
   )
   const [exportDateVisible, setExportDateVisible] = useState(false)
   const handleGenerateCode = async () => {
@@ -119,11 +146,20 @@ function GenerateCode(props: {
     })
   }
   return (
-    <div className="ml-auto">
-      <Button onClick={() => setExportDateVisible(true)} className="mr-10px">
+    <div>
+      <Button
+        type="primary"
+        onClick={() => setExportDateVisible(true)}
+        className="mr-10px"
+        icon={<EyeOutlined />}
+      >
         预览导出数据
       </Button>
-      <Button type="primary" onClick={handleGenerateCode}>
+      <Button
+        type="primary"
+        onClick={handleGenerateCode}
+        icon={<CheckOutlined />}
+      >
         生成代码
       </Button>
       <Modal

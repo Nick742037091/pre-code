@@ -8,7 +8,7 @@ import {
 } from 'pre-code/src/types/config'
 import {
   AttrTypeOptionsMap,
-  useColumnAtrr
+  useColumnAttr
 } from '@/pages/generate-page/components/TableColumnList/ColumnAttr'
 import { useState } from 'react'
 import { useImmer } from 'use-immer'
@@ -64,7 +64,7 @@ function useAttrTable(messageApi: MessageInstance) {
   }
 
   const { context: columnAttrContext, showModal: showColumnAttrModal } =
-    useColumnAtrr({
+    useColumnAttr({
       onConfirmAdd: handleConfirmAddColAttr,
       onConfirmUpdate: handleConfirmUpdateColAttr
     })

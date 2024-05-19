@@ -49,7 +49,7 @@ interface RowProps extends React.HTMLAttributes<HTMLTableRowElement> {
 export const SortableTableRow = (
   props: RowProps & { draggableProp?: string }
 ) => {
-  const { children, ...restProps } = props
+  const { children, draggableProp, ...restProps } = props
   const {
     attributes,
     listeners,
@@ -64,7 +64,7 @@ export const SortableTableRow = (
 
   const rowChildren = Children.map(children, (_child) => {
     const child = _child as ReactElement
-    if (child.key === props.draggableProp) {
+    if (child.key === draggableProp) {
       return React.cloneElement(child as React.ReactElement, {
         children: (
           <div
@@ -88,7 +88,7 @@ export const SortableTableRow = (
     transition,
     ...(isDragging ? { position: 'relative', zIndex: 100 } : {})
   }
-  if (props.draggableProp) {
+  if (draggableProp) {
     return (
       <tr
         id={props.id}
@@ -103,8 +103,9 @@ export const SortableTableRow = (
   } else {
     return (
       <tr
-        {...props}
+        {...restProps}
         ref={setNodeRef}
+        children={children}
         style={style}
         className="cursor-move"
         {...attributes}

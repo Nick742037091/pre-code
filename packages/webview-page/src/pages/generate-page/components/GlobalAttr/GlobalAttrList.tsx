@@ -1,5 +1,4 @@
 import { Button, Modal, Table, Tag, message } from 'antd'
-import { AttrTypeOptionsMap, useColumnAttr } from './ColumnAttr'
 import { useConfig } from '@/stores/config'
 import { ColumnAttrItem, ColumnAttrType } from 'pre-code/src/types/config'
 import { useState } from 'react'
@@ -9,27 +8,33 @@ import SortableTaleContext, {
   createSortableTableProps
 } from '@/components/SortableTaleContext'
 import { arrayMove } from '@dnd-kit/sortable'
+import {
+  AttrTypeOptionsMap,
+  useColumnAttr
+} from '../TableColumnList/ColumnAttr'
 
-export function useColumnAttrList() {
-  const [visible, setVisible] = useState(false)
+export function useGlobalAttrList() {
   const [messageApi, msgContextHolder] = message.useMessage()
-  const [curTableColAttrList, setCurTableColumnList] = useImmer<
-    ColumnAttrItem[]
-  >([])
-  const { tableColAttrList, setTableColAttrList } = useConfig()
+  const [curGlobalAttrList, setCurGlobalAttrList] = useImmer<ColumnAttrItem[]>(
+    []
+  )
+  const { globalAttrList, setGlobalAttrList } = useConfig()
+  const [visible, setVisible] = useState(false)
+
   const showModal = () => {
     setVisible(true)
-    setCurTableColumnList(cloneDeep(tableColAttrList))
+    setCurGlobalAttrList(cloneDeep(globalAttrList))
   }
+
   const handleConfirmAddColAttr = (info: ColumnAttrItem) => {
-    const exist = curTableColAttrList.some(
+    const exist = curGlobalAttrList.some(
       (item) => item.attrKey === info.attrKey
     )
     if (exist) {
       messageApi.error('该键值已存在')
       return false
     } else {
-      setCurTableColumnList((draft) => {
+      setCurGlobalAttrList((draft) => {
         draft.push(info)
       })
       return true
@@ -37,14 +42,14 @@ export function useColumnAttrList() {
   }
 
   const handleConfirmUpdateColAttr = (info: ColumnAttrItem) => {
-    const exist = curTableColAttrList
+    const exist = curGlobalAttrList
       .filter((item) => item.id !== info.id)
       .some((item) => item.attrKey === info.attrKey)
     if (exist) {
       messageApi.error('该键值已存在')
       return false
     } else {
-      setCurTableColumnList((draft) => {
+      setCurGlobalAttrList((draft) => {
         const index = draft.findIndex((item) => item.id === info.id)
         draft.splice(index, 1, info)
       })
@@ -63,7 +68,7 @@ export function useColumnAttrList() {
   }
 
   const handleDeleteAttr = (index: number) => {
-    setCurTableColumnList((draft) => {
+    setCurGlobalAttrList((draft) => {
       draft.splice(index, 1)
     })
   }
@@ -132,7 +137,7 @@ export function useColumnAttrList() {
     <Modal
       title={
         <div className="flex items-center">
-          <span>属性列表</span>
+          <span>全局属性列表</span>
           <Button className="ml-20px" type="primary" onClick={handleAddColAttr}>
             添加属性
           </Button>
@@ -140,17 +145,17 @@ export function useColumnAttrList() {
       }
       open={visible}
       onOk={() => {
-        setTableColAttrList(curTableColAttrList)
+        setGlobalAttrList(curGlobalAttrList)
         setVisible(false)
       }}
       onCancel={() => setVisible(false)}
       width={900}
     >
       <SortableTaleContext
-        list={curTableColAttrList}
+        list={curGlobalAttrList}
         rowKey="id"
         onDragEnd={(activeIndex, overIndex) => {
-          setCurTableColumnList((draft) => {
+          setCurGlobalAttrList((draft) => {
             return arrayMove(draft, activeIndex, overIndex)
           })
         }}
@@ -158,7 +163,7 @@ export function useColumnAttrList() {
         <Table
           {...createSortableTableProps()}
           rowKey="id"
-          dataSource={curTableColAttrList}
+          dataSource={curGlobalAttrList}
           columns={columns}
           pagination={false}
         />

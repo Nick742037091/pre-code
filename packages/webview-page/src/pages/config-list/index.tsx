@@ -8,7 +8,6 @@ import { useAddConfig } from './components/AddConfig'
 import { ConfigTypeNames, useConfig } from '@/stores/config'
 import classNames from 'classnames'
 import { useEffect } from 'react'
-import { useGenerateCodeStore } from '@/stores/generateCodeStore'
 
 function Header(props: { addTemplate: () => void; onClose: () => void }) {
   return (

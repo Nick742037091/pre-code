@@ -1,12 +1,12 @@
 import { useConfig } from '@/stores/config'
-import { useGenerateCodeStore } from '@/stores/generateCodeStore'
+import { useAppStore } from '@/stores/app'
 import { Input, Select } from 'antd'
 import { FileType } from 'pre-code/src/types/config'
 
 const FileTypeList: FileType[] = ['.vue', '.tsx', '.jsx']
 
 function FileName() {
-  const store = useGenerateCodeStore()
+  const store = useAppStore()
   const { fileType, setFileType } = useConfig()
 
   const disabled = !!window.injectParams.openFilePath

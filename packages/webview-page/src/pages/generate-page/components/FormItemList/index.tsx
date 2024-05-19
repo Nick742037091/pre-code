@@ -77,7 +77,8 @@ export default forwardRef(function FormItemList(
           draft.push({
             id: nanoid(),
             componentId: active.id + '',
-            attrs: {}
+            attrs: {},
+            elementAttrs: {}
           })
         })
       } else {
@@ -86,7 +87,8 @@ export default forwardRef(function FormItemList(
           draft.splice(index, 0, {
             id: nanoid(),
             componentId: active.id + '',
-            attrs: {}
+            attrs: {},
+            elementAttrs: {}
           })
         })
       }
@@ -137,7 +139,7 @@ export default forwardRef(function FormItemList(
     <div
       className={classNames(
         props.blockStyle,
-        'p-0px! flex-1 flex items-stretch'
+        'p-0px! mb-10px flex-1 flex items-stretch overflow-hidden'
       )}
       css={{ height: 'calc(100vh - 162px)' }}
     >

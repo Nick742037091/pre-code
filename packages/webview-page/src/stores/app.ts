@@ -6,7 +6,7 @@ interface State {
   setFileName: (fileName: string) => void
 }
 
-export const useGenerateCodeStore = create<State>((set) => {
+export const useAppStore = create<State>((set) => {
   let filePath = ''
   let fileName = ''
   const { openFilePath } = window.injectParams
