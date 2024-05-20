@@ -2,7 +2,7 @@
   "name": "pre-code",
   "displayName": "pre-code",
   "description": "a vscode extension to generate template code ",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "license": "MIT",
   "scripts": {
     "dev": "run-p dev:*",
