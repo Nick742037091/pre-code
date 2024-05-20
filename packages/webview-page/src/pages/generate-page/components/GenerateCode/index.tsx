@@ -94,7 +94,7 @@ function useExportData(
   const injectData = {
     tableColList,
     formItemList,
-    globalAttrMap
+    ...globalAttrMap
   }
   return injectData
 }
