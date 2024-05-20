@@ -46,10 +46,8 @@ export default function SortableTaleContext(props: {
 interface RowProps extends React.HTMLAttributes<HTMLTableRowElement> {
   'data-row-key': string
 }
-export const SortableTableRow = (
-  props: RowProps & { draggableProp?: string }
-) => {
-  const { children, draggableProp, ...restProps } = props
+export const SortableTableRow = (props: RowProps) => {
+  const { children, ...restProps } = props
   const {
     attributes,
     listeners,
@@ -64,7 +62,7 @@ export const SortableTableRow = (
 
   const rowChildren = Children.map(children, (_child) => {
     const child = _child as ReactElement
-    if (child.key === draggableProp) {
+    if (child.key === 'sortable') {
       return React.cloneElement(child as React.ReactElement, {
         children: (
           <div
@@ -88,46 +86,24 @@ export const SortableTableRow = (
     transition,
     ...(isDragging ? { position: 'relative', zIndex: 100 } : {})
   }
-  if (draggableProp) {
-    return (
-      <tr
-        id={props.id}
-        {...restProps}
-        {...attributes}
-        style={style}
-        ref={setNodeRef}
-      >
-        {rowChildren}
-      </tr>
-    )
-  } else {
-    return (
-      <tr
-        {...restProps}
-        ref={setNodeRef}
-        children={children}
-        style={style}
-        className="cursor-move"
-        {...attributes}
-        {...listeners}
-      />
-    )
-  }
+  return (
+    <tr
+      id={props.id}
+      {...restProps}
+      {...attributes}
+      style={style}
+      ref={setNodeRef}
+    >
+      {rowChildren}
+    </tr>
+  )
 }
 
-export const createSortableTableProps = (props?: {
-  draggableProp?: string
-  // draggableProp 排序列字段，会自动添加排序图标，不提供则整行可以拖动排序
-}) => {
+export const createSortableTableProps = () => {
   return {
     components: {
       body: {
-        row: (rowProps: RowProps) => (
-          <SortableTableRow
-            {...rowProps}
-            draggableProp={props?.draggableProp || ''}
-          />
-        )
+        row: SortableTableRow
       }
     }
   } as Partial<typeof Table>

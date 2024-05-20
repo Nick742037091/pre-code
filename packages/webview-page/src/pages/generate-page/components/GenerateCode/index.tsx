@@ -22,7 +22,7 @@ function useExportData(
   } = useConfig()
   const tableColList = tableColumnList.map((tableColumn) => {
     const attrList = tableColAttrList.map((column) => {
-      const { attrKey, attrType, attrLabel } = column
+      const { attrKey } = column
       const value = tableColumn[attrKey] ?? ''
       // 字符串增加双引号，缺失值为空字符串
       // 其他类型缺省值为null
@@ -33,9 +33,7 @@ function useExportData(
         : value || null
       return {
         attrKey,
-        attrValue,
-        attrLabel,
-        attrType
+        attrValue
       }
     })
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -61,9 +59,7 @@ function useExportData(
           : value ?? null
         return {
           attrKey: attr.attrKey,
-          attrValue,
-          attrLabel: attr.attrLabel,
-          attrType: attr.attrType
+          attrValue
         }
       })
     }
@@ -167,9 +163,12 @@ function GenerateCode(props: {
         open={exportDateVisible}
         footer={null}
         width={800}
+        style={{ top: '5vh' }}
         onCancel={() => setExportDateVisible(false)}
       >
-        <JSONView src={exportData} displayDataTypes={false} />
+        <div className="h-80vh overflow-auto">
+          <JSONView src={exportData} displayDataTypes={false} />
+        </div>
       </Modal>
       {msgContext}
     </div>

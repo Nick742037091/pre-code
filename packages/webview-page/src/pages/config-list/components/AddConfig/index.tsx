@@ -9,14 +9,14 @@ const createDefaultTableAttrs = () => {
     {
       id: nanoid(),
       attrKey: 'prop',
-      attrLabel: '列名称',
+      attrLabel: '字段',
       attrType: ColumnAttrType.Input,
       attrOptions: []
     },
     {
       id: nanoid(),
       attrKey: 'label',
-      attrLabel: '列标题',
+      attrLabel: '标题',
       attrType: ColumnAttrType.Input,
       attrOptions: []
     }

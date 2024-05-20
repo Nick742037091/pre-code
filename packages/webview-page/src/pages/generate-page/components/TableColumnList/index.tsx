@@ -146,8 +146,8 @@ export default forwardRef(function TableColumnList(
   const columns = [
     {
       title: '排序',
-      dataIndex: 'draggable',
-      key: 'draggable',
+      dataIndex: 'sortable',
+      key: 'sortable',
       width: 40
     },
     ...customColumns,
@@ -208,7 +208,7 @@ export default forwardRef(function TableColumnList(
           }}
         >
           <Table
-            {...createSortableTableProps({ draggableProp: 'draggable' })}
+            {...createSortableTableProps()}
             scroll={{ x: 500 }}
             rowKey="id"
             dataSource={tableDataList}
