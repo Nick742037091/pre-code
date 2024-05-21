@@ -27,18 +27,19 @@
 ![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9b657c4290a547869b76632dbd365cd5~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2430&h=892&s=123934&e=png&b=fefefe)
 ![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/320f59909b78477db58c84c4aea8b241~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2302&h=920&s=142961&e=png&b=8b8b8b)
 
-如何编写模板文件见后文，模板名称自定义即可
+如何编写模板文件见[后文](#templateFile)，模板名称自定义即可
 ### 5. 输入生成文件名称，选择后缀名，后缀名支持 vue、jsx 和 tsx，即vue和react组件
 ![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e4ab2130e26e4c368de29221dcc86de8~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2432&h=878&s=121579&e=png&b=fefefe)   
 ### 6. 添加全局属性和表格或表单属性
 ![image.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a2f80155803e421587ed31156aab3cc5~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2422&h=906&s=119345&e=png&b=fefefe)
 
-如何添加属性见后文
+如何添加属性见[后文](#attribute)
 
 ### 7. 预览导出到模板中的数据，根据导出的数据调整模板文件
 ![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2655b614c0e743a9a45d572277eaf800~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2766&h=1384&s=235170&e=png&b=fefefe)
 ### 8. 点击 `生成代码` 按钮，选择生成文件所在目录，即可生成代码
 
+<span id="templateFile"></span>
 ## 编写模板文件
 插件使用[ejs](https://ejs.co/)作为模板引擎，它使用嵌入式JavaScript代码来动态生成HTML，模板标记为`<% %>`，详细使用方式如下：
 ### `<% %>` 
@@ -67,7 +68,14 @@
 ### `<%# %>`
 `注释标记`，可内嵌注释，不执行，不输出
 
-> 有时候，为了提高可读性，上述的`脚步标记`、`输出标记`、`注释标记`会换行书写，由于目标引擎对于换行符是直接输出的，所以在输出时会显示为一行空白
+<br/>
+
+----
+
+<br/>
+
+有时候，为了提高可读性，上述的`脚步标记`、`输出标记`、`注释标记`会换行书写，由于模板引擎对于换行符是直接输出的，所以在输出时会显示为一行空白。所以需要以下辅助标记：
+
 
 ### `<%_`
 `前置空白删除标记`，用于删除`模板标记`前面的空格符。与`输出标记`和`注释标记`存在冲突，因此只能在`脚步标记`中使用
@@ -78,6 +86,7 @@
 ### `-%>`
 `后置换行删除标记`，用于删除`模板标记`后面的换行符
 
+<span id="attribute"></span>
 ## 属性
 
 模板中可嵌入自定义变量，自定义变量通过配置属性生成，属性需要先添加后再配置值
