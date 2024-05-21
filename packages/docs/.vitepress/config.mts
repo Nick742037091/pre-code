@@ -4,6 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'Pre Code',
   description: '用EJS模板生成代码的VSCode插件',
+  base: '/pre-code/',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [

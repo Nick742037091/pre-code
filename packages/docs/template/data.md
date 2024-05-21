@@ -5,7 +5,7 @@
 
 添加表格列，补充类属性值
 
-![alt text](../public/template-file/table.png)
+![alt text](/template-file/table.png)
 
 预览导出数据：
 
