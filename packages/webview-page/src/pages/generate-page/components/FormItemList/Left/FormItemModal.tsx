@@ -70,6 +70,11 @@ function useAttrTable(messageApi: MessageInstance) {
     })
   const columns: ColumnsType<ColumnAttrItem> = [
     {
+      title: '排序',
+      dataIndex: 'sortable',
+      key: 'sortable'
+    },
+    {
       title: '键值',
       dataIndex: 'attrKey',
       key: 'attrKey'

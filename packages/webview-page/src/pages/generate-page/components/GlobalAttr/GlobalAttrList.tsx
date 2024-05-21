@@ -74,6 +74,11 @@ export function useGlobalAttrList() {
   }
   const columns = [
     {
+      title: '排序',
+      dataIndex: 'sortable',
+      key: 'sortable'
+    },
+    {
       title: '键值',
       dataIndex: 'attrKey',
       key: 'attrKey'

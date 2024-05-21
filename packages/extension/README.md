@@ -7,36 +7,42 @@
 
 ## 功能入口
 ### 1.编辑器右上角的 <img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/89e68a7b98bb49a7b130294a59038127~tplv-k3u1fbpfcp-image.image" width="20" height="20" alt="图片名称" align=center /> 按钮
-<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/df4c1a2b18dc4d5c8da730c482454f7b~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" style="margin-top: 10px"/>
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/df4c1a2b18dc4d5c8da730c482454f7b~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
 
 ### 2.编辑器右键菜单的 `Pre Code` 选项  
-<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8ee83cd661b042969d8b24c8b1c59f43~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#" width="500" alt="图片名称" style="margin-top: 10px"/>
-
-
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8ee83cd661b042969d8b24c8b1c59f43~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#" width="500" alt="图片名称" />
 
 ## 操作指引
    
 ### 1.添加配置项，可选类型为表格/表单
-![image.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6dd96eee19c046d2811ecaf49b7594a7~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2170&h=762&s=94405&e=png&b=868686)   
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6dd96eee19c046d2811ecaf49b7594a7~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
+
 ### 2.点击任意一个配置项，进入配置页面
-![image.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3e3384c110a14b128eaf7a92e85e8924~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2198&h=886&s=68975&e=png&b=f6f6f6)
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3e3384c110a14b128eaf7a92e85e8924~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
+
 ### 3. 表格/表单配置页面有不同的配置内容
-![表格](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a7802f9237d34281967eb093fa5caa44~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2194&h=1118&s=110939&e=png&b=fefefe)
-![表单](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6a3322d58baa406681d7306001e5f439~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2424&h=1398&s=122218&e=png&b=ffffff)
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a7802f9237d34281967eb093fa5caa44~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
+
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6a3322d58baa406681d7306001e5f439~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" style="margin-top: 5px"/>
+
 ### 4. 添加模板文件并选中
-![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9b657c4290a547869b76632dbd365cd5~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2430&h=892&s=123934&e=png&b=fefefe)
-![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/320f59909b78477db58c84c4aea8b241~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2302&h=920&s=142961&e=png&b=8b8b8b)
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9b657c4290a547869b76632dbd365cd5~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
+
+<img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/320f59909b78477db58c84c4aea8b241~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" style="margin-top: 5px"/>
 
 如何编写模板文件见[后文](#templateFile)，模板名称自定义即可
 ### 5. 输入生成文件名称，选择后缀名，后缀名支持 vue、jsx 和 tsx，即vue和react组件
-![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e4ab2130e26e4c368de29221dcc86de8~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2432&h=878&s=121579&e=png&b=fefefe)   
+
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e4ab2130e26e4c368de29221dcc86de8~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
+
 ### 6. 添加全局属性和表格或表单属性
-![image.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a2f80155803e421587ed31156aab3cc5~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2422&h=906&s=119345&e=png&b=fefefe)
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a2f80155803e421587ed31156aab3cc5~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
 
 如何添加属性见[后文](#attribute)
 
 ### 7. 预览导出到模板中的数据，根据导出的数据调整模板文件
-![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2655b614c0e743a9a45d572277eaf800~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2766&h=1384&s=235170&e=png&b=fefefe)
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2655b614c0e743a9a45d572277eaf800~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
+
 ### 8. 点击 `生成代码` 按钮，选择生成文件所在目录，即可生成代码
 
 <span id="templateFile"></span>
@@ -86,16 +92,62 @@
 ### `-%>`
 `后置换行删除标记`，用于删除`模板标记`后面的换行符
 
+### 模板文件嵌入动态数据
+模板文件中可直接引用导入的数据，如下：
+```jsx
+import React from 'react';
+import { Table } from 'antd';
+import type { TableProps } from 'antd';
+
+interface DataType {
+}
+const columns: TableProps<DataType>['columns'] = [
+  <%_ tableColList.forEach(function(tableCol,colIndex){ _%>    
+  { 
+    <%_ tableCol.attrList.forEach(function(attr,attrIndex){ -%>
+    <%- attr.attrKey %>: <%- attr.attrValue %>,
+    <%_ }) -%>
+  },
+  <%_ }) -%>
+];
+const data: DataType[] = [];
+const <%- componentName %>: React.FC = () => <Table columns={columns} dataSource={data} />;
+export default <%- componentName %>;
+```
+导出数据：
+
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fa779ad88dea41d3ad593f075cfccd36~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
+
+生成文件：
+```jsx
+import React from 'react';
+import { Table } from 'antd';
+import type { TableProps } from 'antd';
+
+interface DataType {
+}
+const columns: TableProps<DataType>['columns'] = [
+  { 
+    prop: "name",
+    label: "姓名",
+  },
+];
+const data: DataType[] = [];
+const Demo: React.FC = () => <Table columns={columns} dataSource={data} />;
+export default Demo;
+```
+
 <span id="attribute"></span>
 ## 属性
 
 模板中可嵌入自定义变量，自定义变量通过配置属性生成，属性需要先添加后再配置值
 
-![image.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ce6769d7441f4812b01b6d256d98c4f8~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2396&h=1144&s=137712&e=png&b=4c4c4c)
 
-![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e3c8ad4922934cf0b431398769877a9b~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=1878&h=502&s=68768&e=png&b=fefefe)
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ce6769d7441f4812b01b6d256d98c4f8~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
 
-![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8c42656b73ef4b39b9b3dcfcdc09b1c8~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=1100&h=440&s=42107&e=png&b=ffffff)
+<img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e3c8ad4922934cf0b431398769877a9b~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" style="margin-top:5px" />
+
+<img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8c42656b73ef4b39b9b3dcfcdc09b1c8~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="500" alt="图片名称" style="margin-top:5px" />
 
 属性包括键值、标题和类型
 
@@ -110,17 +162,33 @@
 * 选择器：可配置字符串选项，选择项作为字符串输出，带双引号
 * 代码：输出内容即输入内容
 
-![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ea0b648642304bbd9a13226fbd212f14~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=1986&h=846&s=112427&e=png&b=ffffff)
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ea0b648642304bbd9a13226fbd212f14~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
 
 ## 全局属性
 每个配置可单独添加全局属性，全局属性的值在导出数据中可直接访问
 
-![image.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f92b185204b84de1a56152f82517da03~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2432&h=678&s=96608&e=png&b=fefefe)
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f92b185204b84de1a56152f82517da03~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
 
+<img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8c42656b73ef4b39b9b3dcfcdc09b1c8~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="500" alt="图片名称" style="margin-top:5px"  />
 
-![image.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8c42656b73ef4b39b9b3dcfcdc09b1c8~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=1100&h=440&s=42107&e=png&b=ffffff)
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/74fe00702adf4402990d37fcf9c340cf~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" style="margin-top:5px"  />
 
-
-![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/74fe00702adf4402990d37fcf9c340cf~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#?w=2774&h=1546&s=170852&e=png&b=ffffff)
 
 ## 表格数据
+
+表格列的属性可以动态配置
+
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0c3faa62408b435596742c4a05a619fa~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
+
+新创建的表格配置，默认每个表格列带有prop和label两个属性，可以新增或者修改属性
+
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2e2baa1af0704a80bb8d5dbbf6fba129~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
+
+点击添加列，列属性会根据类型渲染输入元素，根据需求输入或选择对应的值
+
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f9a200bba3c24df382e6996d3f6bf287~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
+
+
+可在导出数据中看到表格数据`tableColList`，每个列中的`attrList`用于变量属性，`attrMap`用于查找属性值。
+
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7c9b4d43d0a644ec9826d1e0f882c6cf~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
