@@ -5,6 +5,15 @@ export default defineConfig({
   title: 'Pre Code',
   description: '用EJS模板生成代码的VSCode插件',
   base: '/pre-code/',
+  head: [
+    [
+      'link',
+      {
+        rel: 'icon',
+        href: '/favicon.ico'
+      }
+    ]
+  ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
@@ -39,6 +48,6 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
     ],
-    logo: '/logo.svg'
+    logo: '/logo.png'
   }
 })
