@@ -78,7 +78,7 @@ export default function Main(props: {
 
   return (
     <div className="flex-1 flex flex-col px-10px">
-      <div className="text-20px font-bold py-10px text-center">表单配置</div>
+      <div className="text-20px font-bold py-10px text-center">表单项列表</div>
       <div className="flex-1  flex flex-col overflow-auto">
         <SortableContext items={props.formConfigList.map((item) => item.id)}>
           {props.formConfigList.map((item, index) => (
