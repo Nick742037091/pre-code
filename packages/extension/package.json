@@ -3,7 +3,7 @@
   "publisher": "nick742037091",
   "displayName": "Pre Code",
   "description": "a vscode extension to generate template code",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "repository": "https://github.com/Nick742037091/pre-code",
   "icon": "assets/icons/logo.png",
   "license": "MIT",
