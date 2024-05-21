@@ -2,7 +2,7 @@
 
 ## 安装插件
 VSCode 插件市场搜索`Pre Code`，安装即可，无需配置。
-![alt text](extension-market.png){width="300px"}
+![alt text](public/extension-market.png){width="300px"}
 
 ## 插件入口
 

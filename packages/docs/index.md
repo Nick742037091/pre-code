@@ -12,7 +12,7 @@ hero:
       link: /desc
     - theme: alt
       text: 快速开始
-      link: /api-examples
+      link: /quick-start
 
 features:
   - title: VSCode 插件
