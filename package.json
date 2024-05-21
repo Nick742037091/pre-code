@@ -1,19 +1,22 @@
 {
   "name": "pre-code",
   "displayName": "pre-code",
-  "description": "a vscode extension to generate template code ",
+  "description": "a vscode extension to generate template code",
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "dev": "run-p dev:*",
+    "dev": "pnpm run dev:extension & pnpm run dev:webview-page & pnpm run dev:devtools",
     "dev:extension": "pnpm run -F pre-code dev",
     "dev:webview-page": "pnpm run -F webview-page dev",
     "dev:devtools": "pnpm run -F webview-page devtools",
+    "dev:docs": "pnpm run -F docs dev",
     "build": "run-p build:* && pnpm run package:extension",
     "build:extension": "pnpm run -F pre-code build",
     "build:webview-page": "pnpm run -F webview-page build",
+    "build:docs": "pnpm run -F docs build",
     "package:extension": "pnpm run -F pre-code package",
-    "publish:extension": "pnpm run -F pre-code publish"
+    "publish:extension": "pnpm run -F pre-code publish",
+    "preview:docs": "pnpm run -F docs preview"
   },
   "dependencies": {
     "@types/ejs": "^3.1.5",
