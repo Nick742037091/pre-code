@@ -176,7 +176,7 @@ export default Demo;
 
 ## 表格数据
 
-表格列的属性可以动态配置
+表格列的属性列表可以动态配置
 
 <img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0c3faa62408b435596742c4a05a619fa~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
 
@@ -189,6 +189,41 @@ export default Demo;
 <img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f9a200bba3c24df382e6996d3f6bf287~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
 
 
-可在导出数据中看到表格数据`tableColList`，每个列中的`attrList`用于变量属性，`attrMap`用于查找属性值。
+可在导出数据中看到表格数据`tableColList`，每个列中的`attrList`用于遍历属性，`attrMap`用于查找属性值。
 
 <img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7c9b4d43d0a644ec9826d1e0f882c6cf~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
+
+
+## 表单数据
+
+配置页面分为三部分：`表单组件列表`、`表单配置`和`表单项属性/表单元素属性`
+
+### 表格组件列表
+表单组件包含名称、类型、表单项属性列表和表单元素属性列表
+* 名称：用于区分组件，不会出现在导出数据中
+* 类型：组件的唯一标识
+* 表单项属性列表：结构同全局属性，每个组件有单独的配置，用于为表单项添加属性
+* 表单元素属性列表：结构同全局属性，每个组件有单独的配置，用于为表单项内部的元素添加属性
+
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/59e373545a7545c8a45a1ffcb9e460f6~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
+
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a1873f6e1be549169ba62057310fdb2d~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
+
+
+### 表单配置 
+表单组件可拖拽至`表单配置`中生成`表单项`，每个表格项有独立的数据
+
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1185fc49c02c4c18b8960b0a493da716~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image#" width="900" alt="图片名称" />
+
+表单项可以拖拽调整排序
+
+<img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7d916bde96624884a0efaed46a2b2eed~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
+
+
+### 表单项属性/表单元素属性
+点击表单项，页面右侧会回显对应的表单项属性/表单元素属性，配置属性值后可在导出数据中看到表单数据`formItemList`
+
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c182f243d442459ab9258f48a90472c6~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" />
+
+
+<img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3450945f0a0b48feb1989ab75204e8e7~tplv-k3u1fbpfcp-jj-mark:0:0:0:0:q75.image" width="900" alt="图片名称" style="margin-top:5px"  />

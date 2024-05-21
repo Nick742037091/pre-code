@@ -75,7 +75,7 @@ export default function LeftList(props: { dragId: string | null }) {
           borderBottom: '1px solid #eee'
         }}
       >
-        表单项列表
+        表单组件列表
         <div className="position-absolute right-10px top-50% translate-y-[-50%]">
           {isEditing ? (
             <CheckOutlined
