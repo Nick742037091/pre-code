@@ -2,7 +2,6 @@
   "name": "pre-code",
   "displayName": "pre-code",
   "description": "a vscode extension to generate template code",
-  "version": "0.0.1",
   "license": "MIT",
   "scripts": {
     "dev": "pnpm run dev:extension & pnpm run dev:webview-page & pnpm run dev:devtools",
