@@ -50,12 +50,12 @@ export function useGlobalAttr() {
       open={isModalOpen}
       onOk={handleOk}
       onCancel={handleCancel}
-      width={500}
+      width={600}
     >
       <Form
         form={form}
         onValuesChange={handleValuesChange}
-        className="my-20px"
+        className="my-20px mr-20px"
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
       >
@@ -63,21 +63,21 @@ export function useGlobalAttr() {
           let formElement: ReactNode | null = null
           switch (item.attrType) {
             case ColumnAttrType.Input:
-              formElement = <Input className="w-200px" allowClear />
+              formElement = <Input className="w-100%" allowClear />
               break
             case ColumnAttrType.Code:
-              formElement = <TextArea className="w-200px" rows={3} allowClear />
+              formElement = <TextArea className="w-100%" rows={3} allowClear />
               break
             case ColumnAttrType.Switch:
-              formElement = <Switch className="w-200px"></Switch>
+              formElement = <Switch></Switch>
               break
             case ColumnAttrType.Number:
-              formElement = <InputNumber className="w-200px"></InputNumber>
+              formElement = <InputNumber className="w-100%"></InputNumber>
               break
             case ColumnAttrType.Select:
               formElement = (
                 <Select
-                  className="w-200px!"
+                  className="w-100%"
                   options={item.attrOptions.map((option) => ({
                     label: option,
                     value: option

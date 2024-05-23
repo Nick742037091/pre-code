@@ -38,7 +38,7 @@ function GeneratePage() {
     )
 
   const blockStyle =
-    'mt-10px mx-10px py-10px px-15px rounded-10px border-1px border-solid border-slate-200'
+    'mt-10px mx-10px py-10px px-15px rounded-10px border-normal'
   const configListDom = (
     <ConfigList visible={configListVisible} setVisible={setConfigListVisible} />
   )

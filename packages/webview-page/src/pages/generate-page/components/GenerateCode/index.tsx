@@ -9,6 +9,7 @@ import { FormItemConfig } from '../FormItemList/index'
 import { useState } from 'react'
 import JSONView from 'react-json-view'
 import { CheckOutlined, EyeOutlined } from '@ant-design/icons'
+import hljs from 'highlight.js'
 
 function useExportData(
   tableColumnList: TableColumnProp[],
@@ -109,6 +110,8 @@ function GenerateCode(props: {
     props.globalAttrs
   )
   const [exportDateVisible, setExportDateVisible] = useState(false)
+  const [exportErrorVisible, setExportErrorVisible] = useState(false)
+  const [exportError, setExportError] = useState('')
   const handleGenerateCode = async () => {
     if (!fileName) {
       messageApi.error('请输入页面名称')
@@ -129,17 +132,22 @@ function GenerateCode(props: {
       messageApi.error('读取模板失败')
       return
     }
-
-    const code = ejs.render(cmdResult.content, exportData)
-    nativeCommond({
-      command: 'generateCode',
-      params: {
-        fileName,
-        fileType,
-        filePath,
-        code
-      }
-    })
+    try {
+      const code = ejs.render(cmdResult.content, exportData)
+      nativeCommond({
+        command: 'generateCode',
+        params: {
+          fileName,
+          fileType,
+          filePath,
+          code
+        }
+      })
+    } catch (e) {
+      // setExportError(hljs.highlightAuto((e as any).message).value)
+      setExportError((e as any).message)
+      setExportErrorVisible(true)
+    }
   }
   return (
     <div>
@@ -168,6 +176,22 @@ function GenerateCode(props: {
       >
         <div className="h-80vh overflow-auto">
           <JSONView src={exportData} displayDataTypes={false} />
+        </div>
+      </Modal>
+      <Modal
+        title={<div className="color-red text-20px">生成代码出错</div>}
+        open={exportErrorVisible}
+        width={800}
+        footer={null}
+        style={{ top: '5vh' }}
+        onCancel={() => setExportErrorVisible(false)}
+      >
+        <div
+          className="mt-10px max-h-80vh px-10px 
+          bg-white color-red 
+          border-normal border-rounded-10px"
+        >
+          <pre className="overflow-auto px-10px pb-10px">{exportError}</pre>
         </div>
       </Modal>
       {msgContext}

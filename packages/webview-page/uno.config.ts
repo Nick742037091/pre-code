@@ -19,7 +19,8 @@ export default defineConfig({
     }
   },
   shortcuts: {
-    'flex-center': 'items-center justify-center'
+    'flex-center': 'items-center justify-center',
+    'border-normal': 'border-1px border-solid border-slate-200'
   },
   presets: [
     presetMini(),

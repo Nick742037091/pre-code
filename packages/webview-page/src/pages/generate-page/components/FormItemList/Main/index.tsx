@@ -107,7 +107,7 @@ export default function Main(props: {
               >
                 <div
                   className="item line-height-36px mx-10px my-6px  rounded-4px text-center 
-                  border-solid border-slate-200  border-1px select-none"
+                  border-normal select-none"
                   css={{
                     backgroundColor:
                       props.activeId === item.id
