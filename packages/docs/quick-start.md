@@ -6,11 +6,11 @@ VSCode 插件市场搜索`Pre Code`，安装即可，无需配置。
 
 ## 插件入口
 
-1. 编辑器右上角的`Pre Code`按钮
+1. 点击编辑器右上角的`Pre Code`按钮
 
 ![alt text](/entry-1.png)
 
-2. 编辑器右键菜单的 `Pre Code` 选项  
+2. 编辑器内点击，右键菜单的 `Pre Code` 选项，**会在鼠标所在位置插入代码**。
 
 ![alt text](/entry-2.png){width="400px"}
 
