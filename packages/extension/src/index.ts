@@ -29,6 +29,15 @@ function createWebviewPanel(context: vscode.ExtensionContext, command: string) {
   }
   if (command === 'openInContext') {
     const activeEditor = vscode.window.activeTextEditor
+    // 获取当前活动的文本编辑器
+    if (activeEditor) {
+      // 获取当前光标的位置
+      let position = activeEditor.selection.active
+      injectParams.position = {
+        line: position.line,
+        character: position.character
+      }
+    }
     injectParams.openFilePath = activeEditor!.document.uri.fsPath
   }
 

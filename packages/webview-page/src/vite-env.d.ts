@@ -6,5 +6,9 @@ interface Window {
   injectParams: {
     command: string
     openFilePath?: string
+    position: {
+      line: number
+      character: number
+    }
   }
 }

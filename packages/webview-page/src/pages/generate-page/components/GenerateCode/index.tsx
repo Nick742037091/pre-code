@@ -140,6 +140,8 @@ function GenerateCode(props: {
           fileName,
           fileType,
           filePath,
+          line: window.injectParams?.position?.line || 0,
+          character: window.injectParams?.position?.character || 0,
           code
         }
       })

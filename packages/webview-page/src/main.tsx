@@ -6,6 +6,8 @@ import 'virtual:uno.css'
 import { ConfigProvider } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 
+console.log('injectParams', window.injectParams)
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ConfigProvider locale={zhCN} componentSize="middle">
