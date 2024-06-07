@@ -182,3 +182,35 @@ export const generateCode = async (
     })
   }
 }
+
+// 导出到文件
+export const exportToFile = async (
+  message: Message,
+  webview: vscode.Webview
+) => {
+  const { fileName, data } = message.params || {}
+  const uri = await vscode.window.showOpenDialog({
+    canSelectFolders: true,
+    canSelectFiles: false,
+    openLabel: '选择导出文件所在文件夹'
+  })
+  let filePath = ''
+  if (uri && uri[0]) {
+    filePath = `${uri[0].fsPath}/${fileName}`
+  }
+  // 覆盖
+  fs.writeFile(filePath, data, {}, (err) => {
+    if (err) {
+      vscode.window.showErrorMessage('导出失败')
+    } else {
+      vscode.window.showInformationMessage('导出成功')
+    }
+    nativeCommandCallback({
+      webview,
+      commandId: message.commandId,
+      params: {
+        isSuccess: !err
+      }
+    })
+  })
+}
