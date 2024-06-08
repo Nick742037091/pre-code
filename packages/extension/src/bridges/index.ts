@@ -1,5 +1,6 @@
 import * as vscode from 'vscode'
 import * as fs from 'fs'
+import axios from 'axios'
 import { nativeCommandCallback } from '../utils/bridge'
 import { Message } from '@/utils/message'
 import * as storage from '../utils/storage'
@@ -91,9 +92,22 @@ export const pickFile = async (message: Message, webview: vscode.Webview) => {
   }
 }
 
-// 选择文件
+// 读取文件
 export const readFile = async (message: Message, webview: vscode.Webview) => {
-  const { filePath } = message.params || {}
+  let { filePath } = message.params || {}
+  if (!filePath) {
+    const fileUri = await vscode.window.showOpenDialog({
+      canSelectFiles: true, // 是否可以选择文件
+      canSelectFolders: false, // 是否可以选择文件夹
+      canSelectMany: false, // 是否可以多选
+      openLabel: '选择文件' // 选择文件时的标签
+    })
+    if (fileUri && fileUri[0]) {
+      filePath = fileUri[0].fsPath
+    } else {
+      return
+    }
+  }
   fs.readFile(filePath, 'utf-8', (err, data) => {
     if (err) {
       nativeCommandCallback({
@@ -110,6 +124,48 @@ export const readFile = async (message: Message, webview: vscode.Webview) => {
         content: data
       }
     })
+  })
+}
+
+// 导出到文件
+export const saveFile = async (message: Message, webview: vscode.Webview) => {
+  const { fileName, data } = message.params || {}
+  const uri = await vscode.window.showOpenDialog({
+    canSelectFolders: true,
+    canSelectFiles: false,
+    openLabel: '选择导出文件所在文件夹'
+  })
+  let filePath = ''
+  if (uri && uri[0]) {
+    filePath = `${uri[0].fsPath}/${fileName}`
+  }
+  // 覆盖
+  fs.writeFile(filePath, data, {}, (err) => {
+    if (err) {
+      vscode.window.showErrorMessage('导出失败')
+    } else {
+      vscode.window.showInformationMessage('导出成功')
+    }
+    nativeCommandCallback({
+      webview,
+      commandId: message.commandId,
+      params: {
+        isSuccess: !err
+      }
+    })
+  })
+}
+
+// 读取文件
+export const fetchUrl = async (message: Message, webview: vscode.Webview) => {
+  let { url } = message.params || {}
+  const reslut = await axios({ method: 'get', url, responseType: 'text' })
+  nativeCommandCallback({
+    webview,
+    commandId: message.commandId,
+    params: {
+      content: reslut.data
+    }
   })
 }
 
@@ -181,36 +237,4 @@ export const generateCode = async (
       })
     })
   }
-}
-
-// 导出到文件
-export const exportToFile = async (
-  message: Message,
-  webview: vscode.Webview
-) => {
-  const { fileName, data } = message.params || {}
-  const uri = await vscode.window.showOpenDialog({
-    canSelectFolders: true,
-    canSelectFiles: false,
-    openLabel: '选择导出文件所在文件夹'
-  })
-  let filePath = ''
-  if (uri && uri[0]) {
-    filePath = `${uri[0].fsPath}/${fileName}`
-  }
-  // 覆盖
-  fs.writeFile(filePath, data, {}, (err) => {
-    if (err) {
-      vscode.window.showErrorMessage('导出失败')
-    } else {
-      vscode.window.showInformationMessage('导出成功')
-    }
-    nativeCommandCallback({
-      webview,
-      commandId: message.commandId,
-      params: {
-        isSuccess: !err
-      }
-    })
-  })
 }

@@ -1,18 +1,35 @@
 import {
   CloseCircleOutlined,
   CloseOutlined,
+  DownOutlined,
   ExportOutlined,
   FormOutlined
 } from '@ant-design/icons'
-import { Button, Card, Popconfirm, Tooltip, message } from 'antd'
+import { Button, Card, Dropdown, Popconfirm, Tooltip, message } from 'antd'
 import { useAddConfig } from './components/AddConfig'
 import { Config, ConfigTypeNames, useConfig } from '@/stores/config'
 import classNames from 'classnames'
 import { useEffect } from 'react'
 import { nativeCommond } from '@/utils/bridge'
 import { cloneDeep } from 'lodash'
+import { nanoid } from 'nanoid'
+import { MenuProps } from 'antd/lib'
+import { usePrompt } from '@/hooks/components'
 
-function Header(props: { addTemplate: () => void; onClose: () => void }) {
+function Header(props: {
+  addTemplate: () => void
+  importConfig: () => void
+  importByUrl: () => void
+  onClose: () => void
+}) {
+  const onMenuClick: MenuProps['onClick'] = (e) => {
+    switch (e.key) {
+      case 'link':
+        props.importByUrl()
+        break
+    }
+  }
+
   return (
     <div
       className="flex items-center text-24px font-bold py-15px px-10px"
@@ -20,11 +37,32 @@ function Header(props: { addTemplate: () => void; onClose: () => void }) {
         borderBottom: 'solid 2px #eee'
       }}
     >
-      配置列表
-      <Button type="primary" ml-20px onClick={props.addTemplate}>
+      <div className="flex-shrink-0">配置列表</div>
+      <Button
+        type="primary"
+        className="ml-20px"
+        size="middle"
+        onClick={props.addTemplate}
+      >
         添加配置
       </Button>
-      <CloseCircleOutlined ml-auto cursor-pointer onClick={props.onClose} />
+      <Dropdown.Button
+        type="primary"
+        size="middle"
+        className="ml-20px"
+        icon={<DownOutlined />}
+        onClick={props.importConfig}
+        menu={{
+          items: [{ key: 'link', label: '通过链接导入' }],
+          onClick: onMenuClick
+        }}
+      >
+        导入配置
+      </Dropdown.Button>
+      <CloseCircleOutlined
+        className="ml-auto cursor-pointer"
+        onClick={props.onClose}
+      />
     </div>
   )
 }
@@ -32,8 +70,18 @@ export default function ConfigList(props: {
   visible: boolean
   setVisible: (val: boolean) => void
 }) {
-  const { configList, deleteConfig, setCurrentConfigId, currentConfig } =
-    useConfig()
+  const {
+    context: importPromptCtx,
+    showPrompt: showImportPrompt,
+    setPromptVisible
+  } = usePrompt()
+  const {
+    configList,
+    deleteConfig,
+    setCurrentConfigId,
+    currentConfig,
+    addConfig
+  } = useConfig()
   const { context: addConfigContext, showModal } = useAddConfig()
   // 加载时没有配置列表，弹出添加配置弹窗
   useEffect(() => {
@@ -42,11 +90,50 @@ export default function ConfigList(props: {
     }
   }, [])
 
+  const handleImportConfig = async () => {
+    const data = await nativeCommond<{ content: string }>({
+      command: 'readFile'
+    })
+    if (!data) return
+    parseConfigAndImport(data.content)
+  }
+
+  const parseConfigAndImport = async (data: string) => {
+    // TODO 配置校验
+    try {
+      const config = JSON.parse(data) as Config
+      config.id = nanoid()
+      addConfig(config)
+    } catch {
+      message.error('读取配置失败')
+    }
+  }
+
+  const handleImportByUrl = async () => {
+    const { confirm, value: url } = await showImportPrompt({
+      title: '请输入配置链接',
+      defaultValue: ''
+    })
+    if (!confirm) {
+      setPromptVisible(false)
+      return
+    }
+    const { content } = await nativeCommond<{ content: string }>({
+      command: 'fetchUrl',
+      params: {
+        url
+      }
+    })
+    console.log('content', content)
+    setPromptVisible(false)
+    parseConfigAndImport(content)
+  }
+
   const exportConfig = (item: Config) => {
     const newItem = cloneDeep(item)
     newItem.templateList = []
     nativeCommond({
-      command: 'exportToFile',
+      command: 'saveFile',
       params: {
         fileName: `${item.configName}.json`,
         data: JSON.stringify(newItem)
@@ -65,8 +152,11 @@ export default function ConfigList(props: {
       }}
     >
       {addConfigContext}
+      {importPromptCtx}
       <Header
         addTemplate={() => showModal('add')}
+        importConfig={handleImportConfig}
+        importByUrl={handleImportByUrl}
         onClose={() => {
           if (!currentConfig) {
             return message.warning('请先选择配置')
@@ -79,7 +169,7 @@ export default function ConfigList(props: {
           return (
             <Card
               style={{ cursor: 'pointer' }}
-              key={item.configName}
+              key={item.id}
               title={item.configName}
               bordered={false}
               onClick={() => {

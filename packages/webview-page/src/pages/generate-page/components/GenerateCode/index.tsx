@@ -9,7 +9,6 @@ import { FormItemConfig } from '../FormItemList/index'
 import { useState } from 'react'
 import JSONView from 'react-json-view'
 import { CheckOutlined, EyeOutlined } from '@ant-design/icons'
-import hljs from 'highlight.js'
 
 function useExportData(
   tableColumnList: TableColumnProp[],
