@@ -41,7 +41,7 @@ export type Config = {
   configName: string
   configType: ConfigType
   defaultFileType: FileType
-  templateList: TemplateItem[]
+  templateCode: string
   defaultTemplateId: string
   globalAttrList: ColumnAttrItem[]
   tableColAttrList: ColumnAttrItem[]

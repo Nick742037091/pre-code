@@ -34,11 +34,7 @@ interface State {
   deleteConfig: (index: number) => void
   currentConfigId: string
   setCurrentConfigId: (config: string) => void
-  addTemplate: (template: TemplateItem) => void
-  updateTemplate: (template: TemplateItem) => void
-  deleteTemplate: (index: number) => void
-  currentTemplateId: string
-  setCurrentTemplateId: (templateId: string) => void
+  setTemplateCode: (code: string) => void
   fileType: FileType | null
   setFileType: (fileType: FileType) => void
   setTableColAttrList: (tableColAttrList: ColumnAttrItem[]) => void
@@ -66,9 +62,6 @@ export const useConfig = create<State>()(
           state.currentConfigId = result.data.defaultConfigId || ''
           const currentConfig = getCurrentConfig(state)
           if (currentConfig) {
-            if (currentConfig.defaultTemplateId) {
-              state.currentTemplateId = currentConfig.defaultTemplateId
-            }
             if (currentConfig.defaultFileType) {
               state.fileType = currentConfig.defaultFileType
             }
@@ -108,7 +101,6 @@ export const useConfig = create<State>()(
         set((state) => {
           state.currentConfigId = configId
           const currentConfig = getCurrentConfig(state)
-          state.currentTemplateId = currentConfig?.defaultTemplateId || ''
           state.fileType = currentConfig?.defaultFileType || fileType
         })
       }
@@ -121,45 +113,11 @@ export const useConfig = create<State>()(
       }
 
       /*** 模板 ***/
-      const addTemplate = (template: TemplateItem) => {
+      const setTemplateCode = (code: string) => {
         set((state) => {
           const currentConfig = getCurrentConfig(state)
           if (!currentConfig) return
-          currentConfig.templateList.push(template)
-          currentConfig.defaultTemplateId = template.id
-          state.currentTemplateId = template.id
-          updateConfigStorage(state)
-        })
-      }
-      const updateTemplate = (template: TemplateItem) => {
-        set((state) => {
-          const currentConfig = getCurrentConfig(state)
-          if (!currentConfig) return
-          const index = currentConfig.templateList.findIndex(
-            (item) => item.id === template.id
-          )
-          if (index === -1) return
-          currentConfig.templateList.splice(index, 1, template)
-          updateConfigStorage(state)
-        })
-      }
-      const deleteTemplate = (index: number) => {
-        if (index === -1) return
-        set((state) => {
-          const currentConfig = getCurrentConfig(state)
-          if (!currentConfig) return
-          currentConfig.templateList.splice(index, 1)
-          updateConfigStorage(state)
-        })
-      }
-
-      const currentTemplateId = ''
-      const setCurrentTemplateId = (templateId: string) => {
-        set((state) => {
-          const currentConfig = getCurrentConfig(state)
-          if (!currentConfig) return
-          state.currentTemplateId = templateId
-          currentConfig.defaultTemplateId = templateId
+          currentConfig.templateCode = code
           updateConfigStorage(state)
         })
       }
@@ -281,11 +239,7 @@ export const useConfig = create<State>()(
         deleteConfig,
         currentConfigId,
         setCurrentConfigId,
-        addTemplate,
-        updateTemplate,
-        deleteTemplate,
-        currentTemplateId,
-        setCurrentTemplateId,
+        setTemplateCode,
         fileType,
         setFileType,
         setTableColAttrList,
@@ -302,10 +256,7 @@ export const useConfig = create<State>()(
       const currentConfig = state.configList.find(
         (item) => item.id === state.currentConfigId
       )
-      const templateList = currentConfig?.templateList || []
-      const currentTemplate = templateList.find(
-        (item) => item.id === state.currentTemplateId
-      )
+      const templateCode = currentConfig?.templateCode || ''
       const tableColAttrList = currentConfig?.tableColAttrList || []
       const formItemList = currentConfig?.formItemList || []
       const formItemMap = listToMap(formItemList, 'id') as Record<
@@ -319,8 +270,7 @@ export const useConfig = create<State>()(
       >
       return {
         currentConfig,
-        currentTemplate,
-        templateList,
+        templateCode,
         tableColAttrList,
         formItemList,
         formItemMap,

@@ -1,18 +1,19 @@
 import ConfigList from '../config-list/index'
-import SelectTemplate from './components/SelectTemplate/index'
 import FileName from './components/FileName/index'
 import GenerateCode from './components/GenerateCode/index'
 import { useEffect, useRef, useState } from 'react'
-import { EditOutlined, SwapOutlined } from '@ant-design/icons'
+import { EditOutlined, FileTextOutlined, SwapOutlined } from '@ant-design/icons'
 import { ConfigType, useConfig } from '@/stores/config'
 import TableColumnList from './components/TableColumnList'
 import type { TableColumnListRef } from './components/TableColumnList'
 import FormItemList, { FormItemListRef } from './components/FormItemList'
 import { Button, Spin } from 'antd'
 import { useGlobalAttr } from './components/GlobalAttr'
+import EditTemplate from '../edit-template'
 
 function GeneratePage() {
   const [configListVisible, setConfigListVisible] = useState(false)
+  const [editTemplateVisible, setEditTemplateVisible] = useState(false)
   const { currentConfig, isLoaded } = useConfig()
   const {
     showModal: showGlobalAttr,
@@ -59,6 +60,10 @@ function GeneratePage() {
     <div key={currentConfig.id}>
       {configListDom}
       {globalAttrContext}
+      <EditTemplate
+        visible={editTemplateVisible}
+        onClose={() => setEditTemplateVisible(false)}
+      />
       <div className="h-100vh flex flex-col">
         <div className={blockStyle}>
           <div className="text-24px font-bold mb-15px flex items-center">
@@ -71,8 +76,16 @@ function GeneratePage() {
             />
             <Button
               type="primary"
-              icon={<EditOutlined />}
+              icon={<FileTextOutlined />}
               className="ml-auto mr-10px"
+              onClick={() => setEditTemplateVisible(true)}
+            >
+              编辑模板
+            </Button>
+            <Button
+              type="primary"
+              icon={<EditOutlined />}
+              className="mr-10px"
               onClick={() => showGlobalAttr()}
             >
               全局属性
@@ -84,7 +97,6 @@ function GeneratePage() {
             />
           </div>
           <div className="flex items-center color-black">
-            <SelectTemplate />
             <FileName />
           </div>
         </div>

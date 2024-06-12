@@ -102,7 +102,7 @@ function GenerateCode(props: {
 }) {
   const [messageApi, msgContext] = message.useMessage()
   const { fileName, filePath } = useAppStore()
-  const { currentTemplate, fileType } = useConfig()
+  const { templateCode, fileType } = useConfig()
   const exportData = useExportData(
     props.getTableColumnList(),
     props.getFormItemConfigList(),
@@ -116,23 +116,13 @@ function GenerateCode(props: {
       messageApi.error('请输入页面名称')
       return
     }
-    if (!currentTemplate?.templatePath) {
-      messageApi.error('请选择模板')
+    if (!templateCode) {
+      messageApi.error('请编辑模板')
       return
     }
 
-    const cmdResult = await nativeCommond<{ content: string }>({
-      command: 'readFile',
-      params: {
-        filePath: currentTemplate?.templatePath
-      }
-    })
-    if (!cmdResult) {
-      messageApi.error('读取模板失败')
-      return
-    }
     try {
-      const code = ejs.render(cmdResult.content, exportData)
+      const code = ejs.render(templateCode, exportData)
       nativeCommond({
         command: 'generateCode',
         params: {
@@ -145,7 +135,6 @@ function GenerateCode(props: {
         }
       })
     } catch (e) {
-      // setExportError(hljs.highlightAuto((e as any).message).value)
       setExportError((e as any).message)
       setExportErrorVisible(true)
     }

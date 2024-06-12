@@ -131,7 +131,6 @@ export default function ConfigList(props: {
 
   const exportConfig = (item: Config) => {
     const newItem = cloneDeep(item)
-    newItem.templateList = []
     nativeCommond({
       command: 'saveFile',
       params: {

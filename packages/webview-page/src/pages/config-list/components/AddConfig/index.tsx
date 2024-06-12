@@ -53,7 +53,7 @@ export const useAddConfig = () => {
         id: nanoid(),
         configName,
         configType,
-        templateList: [],
+        templateCode: '',
         defaultTemplateId: '',
         defaultFileType: '.vue',
         tableColAttrList: createDefaultTableAttrs(),
