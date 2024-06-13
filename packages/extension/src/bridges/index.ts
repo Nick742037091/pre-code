@@ -174,10 +174,9 @@ export const generateCode = async (
   message: Message,
   webview: vscode.Webview
 ) => {
-  const { fileName, fileType, code } = message.params || {}
-  let { filePath, line, character } = message.params || {}
+  let { filePath, code, line, character } = message.params || {}
+  code = new Array(character).fill(' ').join('') + code
   if (filePath) {
-    console.log('generateCode', filePath, line, character)
     // 插入
     fs.readFile(filePath, 'utf8', (err, data) => {
       if (err) {
@@ -213,28 +212,27 @@ export const generateCode = async (
       })
     })
   } else {
-    const uri = await vscode.window.showOpenDialog({
-      canSelectFolders: true,
-      canSelectFiles: false,
-      openLabel: '选择文件夹'
+    const uri = await vscode.window.showSaveDialog({
+      saveLabel: '保存文件'
     })
-    if (uri && uri[0]) {
-      filePath = `${uri[0].fsPath}/${fileName}${fileType}`
-    }
-    // 覆盖
-    fs.writeFile(filePath, code, {}, (err) => {
-      if (err) {
-        vscode.window.showErrorMessage('生成代码失败')
-      } else {
-        vscode.window.showInformationMessage('生成代码成功')
-      }
-      nativeCommandCallback({
-        webview,
-        commandId: message.commandId,
-        params: {
-          isSuccess: !err
+    if (uri) {
+      // 覆盖
+      fs.writeFile(uri.path, code, {}, (err) => {
+        if (err) {
+          vscode.window.showErrorMessage('生成代码失败')
+        } else {
+          vscode.window.showInformationMessage('生成代码成功')
         }
+        nativeCommandCallback({
+          webview,
+          commandId: message.commandId,
+          params: {
+            isSuccess: !err
+          }
+        })
       })
-    })
+    } else {
+      return
+    }
   }
 }

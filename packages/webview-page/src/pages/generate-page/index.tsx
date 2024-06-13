@@ -1,5 +1,4 @@
 import ConfigList from '../config-list/index'
-import FileName from './components/FileName/index'
 import GenerateCode from './components/GenerateCode/index'
 import { useEffect, useRef, useState } from 'react'
 import { EditOutlined, FileTextOutlined, SwapOutlined } from '@ant-design/icons'
@@ -66,7 +65,7 @@ function GeneratePage() {
       />
       <div className="h-100vh flex flex-col">
         <div className={blockStyle}>
-          <div className="text-24px font-bold mb-15px flex items-center">
+          <div className="text-24px font-bold flex items-center">
             {currentConfig?.configName}
             <SwapOutlined
               className="text-20px ml-20px cursor-pointer"
@@ -95,9 +94,6 @@ function GeneratePage() {
               getFormItemConfigList={getFormItemConfigList}
               globalAttrs={globalAttrs}
             />
-          </div>
-          <div className="flex items-center color-black">
-            <FileName />
           </div>
         </div>
         {currentConfig.configType === ConfigType.Table && (

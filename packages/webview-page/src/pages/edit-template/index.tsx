@@ -1,12 +1,26 @@
 import { CloseCircleOutlined } from '@ant-design/icons'
-import Editor from '@monaco-editor/react'
+import Editor, { useMonaco } from '@monaco-editor/react'
 import { useConfig } from '@/stores/config'
+import { useEffect } from 'react'
 
 export default function EditTemplate(props: {
   visible: boolean
   onClose: () => void
 }) {
   const { templateCode, setTemplateCode } = useConfig()
+  const monacoRef = useMonaco()
+  useEffect(() => {
+    monacoRef?.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: true,
+      noSyntaxValidation: true,
+      noSuggestionDiagnostics: true
+    })
+    monacoRef?.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: true,
+      noSyntaxValidation: true,
+      noSuggestionDiagnostics: true
+    })
+  }, [monacoRef])
   return (
     <div
       className="position-fixed flex flex-col h-100vh w-100vw box-border
@@ -27,12 +41,17 @@ export default function EditTemplate(props: {
             enabled: false
           }
         }}
+        defaultLanguage="typescript"
         theme="vs-dark"
         className="flex-1 mb-10px"
-        defaultLanguage="typescript"
         value={templateCode}
         onChange={(val) => {
           setTemplateCode(val || '')
+        }}
+        onValidate={(markers) => {
+          markers.forEach((marker) =>
+            console.log('onValidate:', marker.message)
+          )
         }}
       />
     </div>
