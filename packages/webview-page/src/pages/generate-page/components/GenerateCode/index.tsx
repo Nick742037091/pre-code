@@ -8,7 +8,7 @@ import {
   ColumnAttrType,
   FormItem
 } from 'pre-code/src/types/config'
-import { TableColumnProp } from '../TableColumnList/index'
+import { TableColumnProp } from '../TableColumnDataList/index'
 import { FormItemConfig } from '../FormItemList/index'
 import { useEffect, useState } from 'react'
 import JSONView from 'react-json-view'
@@ -98,7 +98,7 @@ function createExportData(
 }
 
 function GenerateCode(props: {
-  getTableColumnList: () => TableColumnProp[]
+  tableColAttrDataList: TableColumnProp[]
   getFormItemConfigList: () => FormItemConfig[]
   globalAttrs: Record<string, any>
 }) {
@@ -121,7 +121,7 @@ function GenerateCode(props: {
     if (exportDataVisible) {
       setPreviewExportData(
         createExportData(
-          props.getTableColumnList(),
+          props.tableColAttrDataList,
           props.getFormItemConfigList(),
           props.globalAttrs,
           tableColAttrList,
@@ -139,7 +139,7 @@ function GenerateCode(props: {
     }
     try {
       const exportData = createExportData(
-        props.getTableColumnList(),
+        props.tableColAttrDataList,
         props.getFormItemConfigList(),
         props.globalAttrs,
         tableColAttrList,

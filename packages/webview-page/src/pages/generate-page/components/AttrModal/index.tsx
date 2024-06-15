@@ -36,7 +36,7 @@ export const AttrTypeOptionsMap = listToMap(AttrTypeOptions, 'value', 'label')
 //
 // 通过hooks的方式封装弹窗，可以直接返回弹窗需要对外暴露的接口，同时暴露元素context用于嵌入父组件。
 // 这种模式下，父组件传递给子组件的props通过hook入参传入。
-export function useColumnAttr(props: {
+export function useAttrModal(props: {
   onConfirmAdd: (item: ColumnAttrItem) => boolean
   onConfirmUpdate: (item: ColumnAttrItem) => boolean
 }) {

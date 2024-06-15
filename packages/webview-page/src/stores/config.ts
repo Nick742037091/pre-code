@@ -45,6 +45,9 @@ interface State {
   updateFormItem: (formItem: FormItem) => void
   deleteFormItem: (index: number) => void
   setGlobalAttrList: (globalAttrList: ColumnAttrItem[]) => void
+  addGlobalAttr: (globalAttr: ColumnAttrItem) => void
+  updateGlobalAttr: (globalAttr: ColumnAttrItem) => void
+  deleteGlobalAttr: (index: number) => void
 }
 
 export const useConfig = create<State>()(
@@ -220,6 +223,39 @@ export const useConfig = create<State>()(
           updateConfigStorage(state)
         })
       }
+      const addGlobalAttr = (globalAttr: ColumnAttrItem) => {
+        set((state) => {
+          const currentConfig = getCurrentConfig(state)
+          if (!currentConfig) return
+          currentConfig.globalAttrList = [
+            ...currentConfig.globalAttrList,
+            globalAttr
+          ]
+          updateConfigStorage(state)
+        })
+      }
+
+      const updateGlobalAttr = (globalAttr: ColumnAttrItem) => {
+        set((state) => {
+          const currentConfig = getCurrentConfig(state)
+          if (!currentConfig) return
+          const index = currentConfig.globalAttrList.findIndex(
+            (item) => item.id === globalAttr.id
+          )
+          if (index === -1) return
+          currentConfig.globalAttrList.splice(index, 1, globalAttr)
+          updateConfigStorage(state)
+        })
+      }
+
+      const deleteGlobalAttr = (index: number) => {
+        set((state) => {
+          const currentConfig = getCurrentConfig(state)
+          if (!currentConfig) return
+          currentConfig.globalAttrList.splice(index, 1)
+          updateConfigStorage(state)
+        })
+      }
 
       // 更新配置项，触发本地保存
       const updateConfigStorage = (state: WritableDraft<State>) => {
@@ -249,7 +285,10 @@ export const useConfig = create<State>()(
         addFormItem,
         updateFormItem,
         deleteFormItem,
-        setGlobalAttrList
+        setGlobalAttrList,
+        addGlobalAttr,
+        updateGlobalAttr,
+        deleteGlobalAttr
       }
     }),
     (state) => {

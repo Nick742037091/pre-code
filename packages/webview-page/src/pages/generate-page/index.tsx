@@ -3,23 +3,35 @@ import GenerateCode from './components/GenerateCode/index'
 import { useEffect, useRef, useState } from 'react'
 import { EditOutlined, FileTextOutlined, SwapOutlined } from '@ant-design/icons'
 import { ConfigType, useConfig } from '@/stores/config'
-import TableColumnList from './components/TableColumnList'
-import type { TableColumnListRef } from './components/TableColumnList'
+import { useTableColumnDataList } from './components/TableColumnDataList'
 import FormItemList, { FormItemListRef } from './components/FormItemList'
 import { Button, Spin } from 'antd'
-import { useGlobalAttr } from './components/GlobalAttr'
 import EditTemplate from '../edit-template'
+import { useGlobalAttrDataList } from './components/GlobalAttrDataList'
+import { useTableAttrModal } from './components/TableAttrModal'
 
 function GeneratePage() {
   const [configListVisible, setConfigListVisible] = useState(false)
   const [editTemplateVisible, setEditTemplateVisible] = useState(false)
   const { currentConfig, isLoaded } = useConfig()
-  const {
-    showModal: showGlobalAttr,
-    context: globalAttrContext,
-    globalAttrs
-  } = useGlobalAttr()
+  const isTableConfig = currentConfig?.configType === ConfigType.Table
+  const isFormConfig = currentConfig?.configType === ConfigType.Form
+  const blockStyle =
+    'mt-10px mx-10px py-10px px-15px rounded-10px border-normal'
 
+  const { context: globalAttrContext, globalAttrs } =
+    useGlobalAttrDataList(blockStyle)
+  const { context: tableColumnListContext, tableColAttrDataList } =
+    useTableColumnDataList(blockStyle)
+  const { showModal: showTableAttr, context: tablaAttrContext } =
+    useTableAttrModal()
+
+  const showAttr = () => {
+    if (isTableConfig) {
+      showTableAttr()
+    } else if (isFormConfig) {
+    }
+  }
   // 当前未选中配置，需要弹出配置列表
   useEffect(() => {
     if (isLoaded && !currentConfig) {
@@ -27,7 +39,6 @@ function GeneratePage() {
     }
   }, [isLoaded])
 
-  const tableColuAttrListRef = useRef<TableColumnListRef>(null)
   const formItemListRef = useRef<FormItemListRef>(null)
   // 未加载完成时显示loading
   if (!isLoaded)
@@ -37,18 +48,12 @@ function GeneratePage() {
       </div>
     )
 
-  const blockStyle =
-    'mt-10px mx-10px py-10px px-15px rounded-10px border-normal'
   const configListDom = (
     <ConfigList visible={configListVisible} setVisible={setConfigListVisible} />
   )
 
   if (!currentConfig) {
     return configListDom
-  }
-
-  const getTableolumnList = () => {
-    return tableColuAttrListRef.current?.getTableColumnList() || []
   }
 
   const getFormItemConfigList = () => {
@@ -58,7 +63,8 @@ function GeneratePage() {
   return (
     <div key={currentConfig.id}>
       {configListDom}
-      {globalAttrContext}
+
+      {tablaAttrContext}
       <EditTemplate
         visible={editTemplateVisible}
         onClose={() => setEditTemplateVisible(false)}
@@ -85,20 +91,20 @@ function GeneratePage() {
               type="primary"
               icon={<EditOutlined />}
               className="mr-10px"
-              onClick={() => showGlobalAttr()}
+              onClick={() => showAttr()}
             >
-              全局属性
+              配置属性
             </Button>
             <GenerateCode
-              getTableColumnList={getTableolumnList}
+              tableColAttrDataList={tableColAttrDataList}
               getFormItemConfigList={getFormItemConfigList}
               globalAttrs={globalAttrs}
             />
           </div>
         </div>
-        {currentConfig.configType === ConfigType.Table && (
-          <TableColumnList blockStyle={blockStyle} ref={tableColuAttrListRef} />
-        )}
+        {globalAttrContext}
+        {currentConfig.configType === ConfigType.Table &&
+          tableColumnListContext}
         {currentConfig.configType === ConfigType.Form && (
           <FormItemList blockStyle={blockStyle} ref={formItemListRef} />
         )}

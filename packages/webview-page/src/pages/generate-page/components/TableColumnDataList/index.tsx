@@ -1,11 +1,9 @@
-import { forwardRef, useImperativeHandle } from 'react'
 import classNames from 'classnames'
 import { Button, Input, InputNumber, Select, Switch, Table } from 'antd'
 import { useImmer } from 'use-immer'
 import { nanoid } from 'nanoid'
 import { ColumnType } from 'antd/lib/table'
 import { useConfig } from '@/stores/config'
-import { useColumnAttrList } from './ColumnAttrList'
 import SortableTaleContext, {
   createSortableTableProps
 } from '@/components/SortableTaleContext'
@@ -18,26 +16,12 @@ export interface TableColumnProp {
   [prop: string]: any
 }
 
-export interface TableColumnListRef {
-  getTableColumnList: () => TableColumnProp[]
-}
-
-export default forwardRef(function TableColumnList(
-  props: { blockStyle: string },
-  ref: any
-) {
-  useImperativeHandle(ref, () => {
-    return {
-      getTableColumnList: () => {
-        return tableDataList
-      }
-    }
-  })
-  const { context: columnAttrListContext, showModal: showColumnAttrListModal } =
-    useColumnAttrList()
+export function useTableColumnDataList(blockStyle: string) {
   const { tableColAttrList } = useConfig()
 
-  const [tableDataList, setTableDataList] = useImmer<TableColumnProp[]>([])
+  const [tableColAttrDataList, setTableColAttrDataList] = useImmer<
+    TableColumnProp[]
+  >([])
 
   const columnMinWidth = 120
   const createInputRender = (prop: keyof TableColumnProp) => {
@@ -159,7 +143,7 @@ export default forwardRef(function TableColumnList(
     index: number,
     props: keyof TableColumnProp
   ) => {
-    setTableDataList((draft) => {
+    setTableColAttrDataList((draft) => {
       draft.splice(index, 1, {
         ...draft[index],
         [props]: value
@@ -168,7 +152,7 @@ export default forwardRef(function TableColumnList(
   }
 
   const handleAddCol = () => {
-    setTableDataList((draft) => {
+    setTableColAttrDataList((draft) => {
       draft.push({
         id: nanoid()
       })
@@ -176,33 +160,25 @@ export default forwardRef(function TableColumnList(
   }
 
   const handleDeleteCol = (index: number) => {
-    setTableDataList((draft) => {
+    setTableColAttrDataList((draft) => {
       draft.splice(index, 1)
     })
   }
 
-  return (
+  const context = (
     <>
-      {columnAttrListContext}
-      <div className={classNames(props.blockStyle)}>
+      <div className={classNames(blockStyle)}>
         <div className="flex items-center mb-10px">
-          表格列
-          <Button
-            className="ml-auto"
-            type="primary"
-            onClick={() => showColumnAttrListModal()}
-          >
-            属性列表
-          </Button>
-          <Button className="ml-10px" type="primary" onClick={handleAddCol}>
+          <div className="font-bold">表格列</div>
+          <Button className="ml-auto" type="primary" onClick={handleAddCol}>
             添加列
           </Button>
         </div>
         <SortableTaleContext
-          list={tableDataList}
+          list={tableColAttrDataList}
           rowKey="id"
           onDragEnd={(activeIndex, overIndex) => {
-            setTableDataList((draft) => {
+            setTableColAttrDataList((draft) => {
               return arrayMove(draft, activeIndex, overIndex)
             })
           }}
@@ -211,7 +187,7 @@ export default forwardRef(function TableColumnList(
             {...createSortableTableProps()}
             scroll={{ x: 500 }}
             rowKey="id"
-            dataSource={tableDataList}
+            dataSource={tableColAttrDataList}
             columns={columns}
             pagination={false}
           />
@@ -219,4 +195,9 @@ export default forwardRef(function TableColumnList(
       </div>
     </>
   )
-})
+
+  return {
+    tableColAttrDataList,
+    context
+  }
+}

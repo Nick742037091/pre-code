@@ -1,59 +1,47 @@
-import { Button, Modal, Table, Tag, message } from 'antd'
-import { AttrTypeOptionsMap, useColumnAttr } from './ColumnAttr'
+import { Button, Table, Tag, message } from 'antd'
 import { useConfig } from '@/stores/config'
 import { ColumnAttrItem, ColumnAttrType } from 'pre-code/src/types/config'
-import { useState } from 'react'
-import { useImmer } from 'use-immer'
-import { cloneDeep } from 'lodash'
 import SortableTaleContext, {
   createSortableTableProps
 } from '@/components/SortableTaleContext'
 import { arrayMove } from '@dnd-kit/sortable'
+import { AttrTypeOptionsMap, useAttrModal } from '../AttrModal/index'
 
-export function useColumnAttrList() {
-  const [visible, setVisible] = useState(false)
+export default function TableColumnAttr() {
   const [messageApi, msgContextHolder] = message.useMessage()
-  const [curTableColAttrList, setCurTableColumnList] = useImmer<
-    ColumnAttrItem[]
-  >([])
-  const { tableColAttrList, setTableColAttrList } = useConfig()
-  const showModal = () => {
-    setVisible(true)
-    setCurTableColumnList(cloneDeep(tableColAttrList))
-  }
+  const {
+    globalAttrList,
+    setGlobalAttrList,
+    addGlobalAttr,
+    updateGlobalAttr,
+    deleteGlobalAttr
+  } = useConfig()
   const handleConfirmAddColAttr = (info: ColumnAttrItem) => {
-    const exist = curTableColAttrList.some(
-      (item) => item.attrKey === info.attrKey
-    )
+    const exist = globalAttrList.some((item) => item.attrKey === info.attrKey)
     if (exist) {
       messageApi.error('该键值已存在')
       return false
     } else {
-      setCurTableColumnList((draft) => {
-        draft.push(info)
-      })
+      addGlobalAttr(info)
       return true
     }
   }
 
   const handleConfirmUpdateColAttr = (info: ColumnAttrItem) => {
-    const exist = curTableColAttrList
+    const exist = globalAttrList
       .filter((item) => item.id !== info.id)
       .some((item) => item.attrKey === info.attrKey)
     if (exist) {
       messageApi.error('该键值已存在')
       return false
     } else {
-      setCurTableColumnList((draft) => {
-        const index = draft.findIndex((item) => item.id === info.id)
-        draft.splice(index, 1, info)
-      })
+      updateGlobalAttr(info)
       return true
     }
   }
 
   const { context: columnAttrContext, showModal: showColumnAttrModal } =
-    useColumnAttr({
+    useAttrModal({
       onConfirmAdd: handleConfirmAddColAttr,
       onConfirmUpdate: handleConfirmUpdateColAttr
     })
@@ -63,9 +51,7 @@ export function useColumnAttrList() {
   }
 
   const handleDeleteAttr = (index: number) => {
-    setCurTableColumnList((draft) => {
-      draft.splice(index, 1)
-    })
+    deleteGlobalAttr(index)
   }
   const columns = [
     {
@@ -133,37 +119,26 @@ export function useColumnAttrList() {
       }
     }
   ]
-  const context = (
-    <Modal
-      title={
-        <div className="flex items-center">
-          <span>属性列表</span>
-          <Button className="ml-20px" type="primary" onClick={handleAddColAttr}>
-            添加属性
-          </Button>
-        </div>
-      }
-      open={visible}
-      onOk={() => {
-        setTableColAttrList(curTableColAttrList)
-        setVisible(false)
-      }}
-      onCancel={() => setVisible(false)}
-      width={900}
-    >
+
+  return (
+    <div>
+      <div className="flex items-center mb-10px">
+        <span className="font-bold">全局属性</span>
+        <Button className="ml-20px" type="primary" onClick={handleAddColAttr}>
+          添加属性
+        </Button>
+      </div>
       <SortableTaleContext
-        list={curTableColAttrList}
+        list={globalAttrList}
         rowKey="id"
         onDragEnd={(activeIndex, overIndex) => {
-          setCurTableColumnList((draft) => {
-            return arrayMove(draft, activeIndex, overIndex)
-          })
+          setGlobalAttrList(arrayMove(globalAttrList, activeIndex, overIndex))
         }}
       >
         <Table
           {...createSortableTableProps()}
           rowKey="id"
-          dataSource={curTableColAttrList}
+          dataSource={globalAttrList}
           columns={columns}
           pagination={false}
         />
@@ -171,10 +146,6 @@ export function useColumnAttrList() {
 
       {msgContextHolder}
       {columnAttrContext}
-    </Modal>
+    </div>
   )
-  return {
-    context,
-    showModal
-  }
 }
