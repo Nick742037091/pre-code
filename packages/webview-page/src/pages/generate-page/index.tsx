@@ -1,17 +1,17 @@
 import ConfigList from '../config-list/index'
 import GenerateCode from './components/GenerateCode/index'
-import { useEffect, useRef, useState } from 'react'
+
+import { useEffect, useState } from 'react'
 import { EditOutlined, FileTextOutlined, SwapOutlined } from '@ant-design/icons'
 import { ConfigType, useConfig } from '@/stores/config'
 import { useTableColumnDataList } from './components/TableAttr/TableColumnDataList'
-import FormItemList, {
-  FormItemListRef
-} from './components/FormAttr/FormAttrDataList'
+import { useFormAttrDataList } from './components/FormAttr/FormAttrDataList'
 import { Button, Spin } from 'antd'
 import EditTemplate from '../edit-template'
 import { useGlobalAttrDataList } from './components/GlobalAttr/GlobalAttrDataList'
 import { useTableAttrDrawer } from './components/TableAttr/TableAttrDrawer'
 import { useFormAttrDrawer } from './components/FormAttr/FormAttrDrawer'
+import { createExportData } from './components/PreviewData'
 
 function GeneratePage() {
   const [configListVisible, setConfigListVisible] = useState(false)
@@ -22,14 +22,31 @@ function GeneratePage() {
   const blockStyle =
     'mt-10px mx-10px py-10px px-15px rounded-10px border-normal'
 
-  const { context: globalAttrContext, globalAttrs } =
-    useGlobalAttrDataList(blockStyle)
-  const { context: tableColumnListContext, tableColAttrDataList } =
-    useTableColumnDataList(blockStyle)
   const { showModal: showTableAttrDrawer, context: tablaAttrDrawerContext } =
     useTableAttrDrawer()
   const { showModal: showFormAttrDrawer, context: formAttrDrawer } =
     useFormAttrDrawer()
+
+  const { context: globalAttrContext, globalAttrs } =
+    useGlobalAttrDataList(blockStyle)
+  const { context: tableColumnListContext, tableColAttrDataList } =
+    useTableColumnDataList(blockStyle)
+  const { context: formAttrDataListContext, formAttrDataList } =
+    useFormAttrDataList(blockStyle)
+
+  const {
+    tableColAttrList,
+    formItemMap,
+    globalAttrMap: globalAttrItemMap
+  } = useConfig()
+  const exportData = createExportData(
+    tableColAttrDataList,
+    formAttrDataList,
+    globalAttrs,
+    tableColAttrList,
+    formItemMap,
+    globalAttrItemMap
+  )
 
   const showAttr = () => {
     if (isTableConfig) {
@@ -45,7 +62,6 @@ function GeneratePage() {
     }
   }, [isLoaded])
 
-  const formItemListRef = useRef<FormItemListRef>(null)
   // 未加载完成时显示loading
   if (!isLoaded)
     return (
@@ -62,16 +78,13 @@ function GeneratePage() {
     return configListDom
   }
 
-  const getFormItemConfigList = () => {
-    return formItemListRef.current?.getFormItemList() || []
-  }
-
   return (
     <div key={currentConfig.id}>
       {configListDom}
       {tablaAttrDrawerContext}
       {formAttrDrawer}
       <EditTemplate
+        exportData={exportData}
         visible={editTemplateVisible}
         onClose={() => setEditTemplateVisible(false)}
       />
@@ -101,19 +114,14 @@ function GeneratePage() {
             >
               配置属性
             </Button>
-            <GenerateCode
-              tableColAttrDataList={tableColAttrDataList}
-              getFormItemConfigList={getFormItemConfigList}
-              globalAttrs={globalAttrs}
-            />
+            <GenerateCode exportData={exportData} />
           </div>
         </div>
         {globalAttrContext}
         {currentConfig.configType === ConfigType.Table &&
           tableColumnListContext}
-        {currentConfig.configType === ConfigType.Form && (
-          <FormItemList blockStyle={blockStyle} ref={formItemListRef} />
-        )}
+        {currentConfig.configType === ConfigType.Form &&
+          formAttrDataListContext}
       </div>
     </div>
   )

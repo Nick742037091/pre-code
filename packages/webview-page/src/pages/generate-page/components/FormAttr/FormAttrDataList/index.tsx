@@ -22,34 +22,14 @@ export interface FormItemConfig {
   elementAttrs: Record<string, any>
 }
 
-export interface FormItemListRef {
-  getFormItemList: () => FormItemConfig[]
-}
-
-export default forwardRef(function FormItemList(
-  props: {
-    blockStyle: string
-  },
-  ref: any
-) {
-  useImperativeHandle(ref, () => {
-    return {
-      getFormItemList: () => {
-        return formItemConfigList
-      }
-    }
-  })
+export function useFormAttrDataList(blockStyle: string) {
   const [dragId, setDragId] = useState('')
   const [activeId, setActiveId] = useState('')
-  const [formItemConfigList, setFormItemConfigList] = useImmer<
-    FormItemConfig[]
-  >([])
-  const activeFormConfig = formItemConfigList.find(
-    (item) => item.id === activeId
-  )
+  const [formAttrDataList, setFormAttrDataList] = useImmer<FormItemConfig[]>([])
+  const activeFormConfig = formAttrDataList.find((item) => item.id === activeId)
 
   // 是否正在对表单项排序
-  const isSorting = formItemConfigList.some((item) => item.id === dragId)
+  const isSorting = formAttrDataList.some((item) => item.id === dragId)
 
   function handleDragStart(event: DragStartEvent) {
     console.log('handleDragStart')
@@ -63,7 +43,7 @@ export default forwardRef(function FormItemList(
     const { active, over } = event
     if (isSorting) {
       // 拖拽排序
-      setFormItemConfigList((draft) => {
+      setFormAttrDataList((draft) => {
         // TODO 存在闪烁问题
         const activeIndex = draft.findIndex((item) => item.id === active.id)
         const overIndex = draft.findIndex((item) => item.id === over?.id)
@@ -73,7 +53,7 @@ export default forwardRef(function FormItemList(
       // 拖动表单组件进行添加
       if (!over) return
       if (over?.id === 'containier') {
-        setFormItemConfigList((draft) => {
+        setFormAttrDataList((draft) => {
           draft.push({
             id: nanoid(),
             componentId: active.id + '',
@@ -83,7 +63,7 @@ export default forwardRef(function FormItemList(
         })
       } else {
         const index = over?.data.current?.index as number
-        setFormItemConfigList((draft) => {
+        setFormAttrDataList((draft) => {
           draft.splice(index, 0, {
             id: nanoid(),
             componentId: active.id + '',
@@ -97,13 +77,13 @@ export default forwardRef(function FormItemList(
   }
 
   const handleDeleteConfig = (index: number) => {
-    setFormItemConfigList((draft) => {
+    setFormAttrDataList((draft) => {
       draft.splice(index, 1)
     })
   }
 
   const handleCopyConfig = (index: number) => {
-    setFormItemConfigList((draft) => {
+    setFormAttrDataList((draft) => {
       const config = draft[index]
       draft.push({
         ...config,
@@ -113,14 +93,14 @@ export default forwardRef(function FormItemList(
   }
 
   const handleSelectConfig = (index: number) => {
-    setActiveId(formItemConfigList[index].id)
+    setActiveId(formAttrDataList[index].id)
   }
 
   const handleUpdateAttrs = (
     attrs: Record<string, any>,
     key: 'attrs' | 'elementAttrs'
   ) => {
-    setFormItemConfigList((draft) => {
+    setFormAttrDataList((draft) => {
       const index = draft.findIndex((item) => item.id === activeId)
       draft.splice(index, 1, {
         ...draft[index],
@@ -135,10 +115,10 @@ export default forwardRef(function FormItemList(
       }
     })
   )
-  return (
+  const context = (
     <div
       className={classNames(
-        props.blockStyle,
+        blockStyle,
         'p-0px! mb-10px flex-1 flex items-stretch overflow-hidden'
       )}
       css={{ height: 'calc(100vh - 162px)' }}
@@ -152,11 +132,11 @@ export default forwardRef(function FormItemList(
         <Main
           isSorting={isSorting}
           activeId={activeId}
-          formConfigList={formItemConfigList}
+          formConfigList={formAttrDataList}
           onDelete={handleDeleteConfig}
           onCopy={handleCopyConfig}
           onSelect={handleSelectConfig}
-          onSetFormItemConfigList={(list) => setFormItemConfigList(list)}
+          onSetFormItemConfigList={(list) => setFormAttrDataList(list)}
         />
         <RightList
           key={activeFormConfig?.id || ''}
@@ -166,4 +146,8 @@ export default forwardRef(function FormItemList(
       </DndContext>
     </div>
   )
-})
+  return {
+    context,
+    formAttrDataList
+  }
+}
