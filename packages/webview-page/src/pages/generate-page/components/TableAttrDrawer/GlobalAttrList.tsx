@@ -7,7 +7,7 @@ import SortableTaleContext, {
 import { arrayMove } from '@dnd-kit/sortable'
 import { AttrTypeOptionsMap, useAttrModal } from '../AttrModal/index'
 
-export default function TableColumnAttr() {
+export default function GlobalAttrList() {
   const [messageApi, msgContextHolder] = message.useMessage()
   const {
     globalAttrList,

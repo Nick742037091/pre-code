@@ -44,6 +44,7 @@ interface State {
   addFormItem: (formItem: FormItem) => void
   updateFormItem: (formItem: FormItem) => void
   deleteFormItem: (index: number) => void
+  setFormItemList: (formItemList: FormItem[]) => void
   setGlobalAttrList: (globalAttrList: ColumnAttrItem[]) => void
   addGlobalAttr: (globalAttr: ColumnAttrItem) => void
   updateGlobalAttr: (globalAttr: ColumnAttrItem) => void
@@ -214,6 +215,15 @@ export const useConfig = create<State>()(
         })
       }
 
+      const setFormItemList = (formItemList: FormItem[]) => {
+        set((state) => {
+          const currentConfig = getCurrentConfig(state)
+          if (!currentConfig) return
+          currentConfig.formItemList = formItemList
+          updateConfigStorage(state)
+        })
+      }
+
       /*** 全局属性 ***/
       const setGlobalAttrList = (globalAttrList: ColumnAttrItem[]) => {
         set((state) => {
@@ -285,6 +295,7 @@ export const useConfig = create<State>()(
         addFormItem,
         updateFormItem,
         deleteFormItem,
+        setFormItemList,
         setGlobalAttrList,
         addGlobalAttr,
         updateGlobalAttr,

@@ -9,6 +9,7 @@ import { Button, Spin } from 'antd'
 import EditTemplate from '../edit-template'
 import { useGlobalAttrDataList } from './components/GlobalAttrDataList'
 import { useTableAttrDrawer } from './components/TableAttrDrawer'
+import { useFormAttrDrawer } from './components/FormAttrDrawer'
 
 function GeneratePage() {
   const [configListVisible, setConfigListVisible] = useState(false)
@@ -23,13 +24,16 @@ function GeneratePage() {
     useGlobalAttrDataList(blockStyle)
   const { context: tableColumnListContext, tableColAttrDataList } =
     useTableColumnDataList(blockStyle)
-  const { showModal: showTableAttr, context: tablaAttrContext } =
+  const { showModal: showTableAttrDrawer, context: tablaAttrDrawerContext } =
     useTableAttrDrawer()
+  const { showModal: showFormAttrDrawer, context: formAttrDrawer } =
+    useFormAttrDrawer()
 
   const showAttr = () => {
     if (isTableConfig) {
-      showTableAttr()
+      showTableAttrDrawer()
     } else if (isFormConfig) {
+      showFormAttrDrawer()
     }
   }
   // 当前未选中配置，需要弹出配置列表
@@ -63,7 +67,8 @@ function GeneratePage() {
   return (
     <div key={currentConfig.id}>
       {configListDom}
-      {tablaAttrContext}
+      {tablaAttrDrawerContext}
+      {formAttrDrawer}
       <EditTemplate
         visible={editTemplateVisible}
         onClose={() => setEditTemplateVisible(false)}
