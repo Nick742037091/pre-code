@@ -1,9 +1,9 @@
-import { Modal } from 'antd'
+import { Drawer } from 'antd'
 import { useState } from 'react'
 import GlobalAttrList from './GlobalAttrList'
 import { TableColumnAttrList } from './TableColumnAttrList'
 
-export function useTableAttrModal() {
+export function useTableAttrDrawer() {
   const [visible, setVisible] = useState(false)
 
   const showModal = () => {
@@ -11,20 +11,19 @@ export function useTableAttrModal() {
   }
 
   const context = (
-    <Modal
+    <Drawer
       title="编辑属性"
       open={visible}
       footer={null}
-      onOk={() => {
-        setVisible(false)
-      }}
-      onCancel={() => setVisible(false)}
-      width={900}
+      onClose={() => setVisible(false)}
+      placement="right"
+      width="95vw"
     >
       <GlobalAttrList />
+
       <div className="mt-10px" />
       <TableColumnAttrList />
-    </Modal>
+    </Drawer>
   )
   return {
     context,

@@ -1,4 +1,4 @@
-import { Button, Table, Tag, message } from 'antd'
+import { Button, Card, Table, Tag, message } from 'antd'
 import { useConfig } from '@/stores/config'
 import { ColumnAttrItem, ColumnAttrType } from 'pre-code/src/types/config'
 import SortableTaleContext, {
@@ -121,13 +121,14 @@ export default function TableColumnAttr() {
   ]
 
   return (
-    <div>
-      <div className="flex items-center mb-10px">
-        <span className="font-bold">全局属性</span>
-        <Button className="ml-20px" type="primary" onClick={handleAddColAttr}>
+    <Card
+      title="全局属性"
+      extra={
+        <Button type="primary" onClick={handleAddColAttr}>
           添加属性
         </Button>
-      </div>
+      }
+    >
       <SortableTaleContext
         list={globalAttrList}
         rowKey="id"
@@ -146,6 +147,6 @@ export default function TableColumnAttr() {
 
       {msgContextHolder}
       {columnAttrContext}
-    </div>
+    </Card>
   )
 }

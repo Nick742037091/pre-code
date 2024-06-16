@@ -1,4 +1,4 @@
-import { Button, Table, Tag, message } from 'antd'
+import { Button, Card, Table, Tag, message } from 'antd'
 import { AttrTypeOptionsMap, useAttrModal } from '../AttrModal/index'
 import { useConfig } from '@/stores/config'
 import { ColumnAttrItem, ColumnAttrType } from 'pre-code/src/types/config'
@@ -120,13 +120,14 @@ export function TableColumnAttrList() {
     }
   ]
   return (
-    <div>
-      <div className="flex items-center mb-10px">
-        <span className="font-bold">表格列属性</span>
-        <Button className="ml-20px" type="primary" onClick={handleAddColAttr}>
-          添加属性
+    <Card
+      title="表格列属性"
+      extra={
+        <Button type="primary" onClick={handleAddColAttr}>
+          添加
         </Button>
-      </div>
+      }
+    >
       <SortableTaleContext
         list={tableColAttrList}
         rowKey="id"
@@ -147,6 +148,6 @@ export function TableColumnAttrList() {
 
       {msgContextHolder}
       {columnAttrContext}
-    </div>
+    </Card>
   )
 }

@@ -8,7 +8,7 @@ import FormItemList, { FormItemListRef } from './components/FormItemList'
 import { Button, Spin } from 'antd'
 import EditTemplate from '../edit-template'
 import { useGlobalAttrDataList } from './components/GlobalAttrDataList'
-import { useTableAttrModal } from './components/TableAttrModal'
+import { useTableAttrDrawer } from './components/TableAttrDrawer'
 
 function GeneratePage() {
   const [configListVisible, setConfigListVisible] = useState(false)
@@ -24,7 +24,7 @@ function GeneratePage() {
   const { context: tableColumnListContext, tableColAttrDataList } =
     useTableColumnDataList(blockStyle)
   const { showModal: showTableAttr, context: tablaAttrContext } =
-    useTableAttrModal()
+    useTableAttrDrawer()
 
   const showAttr = () => {
     if (isTableConfig) {
@@ -63,7 +63,6 @@ function GeneratePage() {
   return (
     <div key={currentConfig.id}>
       {configListDom}
-
       {tablaAttrContext}
       <EditTemplate
         visible={editTemplateVisible}
