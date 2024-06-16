@@ -5,11 +5,11 @@ import SortableTaleContext, {
   createSortableTableProps
 } from '@/components/SortableTaleContext'
 import { arrayMove } from '@dnd-kit/sortable'
-import { useFormItemModal } from './FormIItemModal'
+import { useComponentModal } from './ComponentModal'
 
 export function FormAttrList() {
   const { showModal: showFormItemModal, context: formItemModalContext } =
-    useFormItemModal()
+    useComponentModal()
   const { formItemList, deleteFormItem, setFormItemList } = useConfig()
 
   const handleAddColAttr = () => {

@@ -9,7 +9,7 @@ import {
   FormItem
 } from 'pre-code/src/types/config'
 import { TableColumnProp } from '../TableColumnDataList/index'
-import { FormItemConfig } from '../FormItemList/index'
+import { FormItemConfig } from '../FormAttr/FormAttrDataList/index'
 import { useEffect, useState } from 'react'
 import JSONView from 'react-json-view'
 import { CheckOutlined, EyeOutlined } from '@ant-design/icons'

@@ -1,5 +1,5 @@
 import { useConfig } from '@/stores/config'
-import { FormItemConfig } from '../index'
+import { FormItemConfig } from './index'
 import { Form, Input, InputNumber, Select, Switch, Tabs } from 'antd'
 import type { TabsProps } from 'antd'
 import { ColumnAttrItem, ColumnAttrType } from 'pre-code/src/types/config'
@@ -74,14 +74,8 @@ export default function RightList(props: {
   config: FormItemConfig | undefined
   onUpdateAttrs: (attrs: Record<string, any>, key: AttrsKey) => void
 }) {
-  const [form] = Form.useForm<Record<string, any>>()
   const { formItemMap } = useConfig()
   const formItem = formItemMap[props.config?.componentId || '']
-  // 选择表单项时更新数据
-  useEffect(() => {
-    if (!props.config) return
-    form.setFieldsValue(props.config.attrs)
-  }, [props.config, form])
   const handleValuesChange = (values: Record<string, any>, key: AttrsKey) => {
     props.onUpdateAttrs(values, key)
   }

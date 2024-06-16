@@ -1,5 +1,5 @@
 import { useDroppable } from '@dnd-kit/core'
-import { FormItemConfig } from '../index'
+import { FormItemConfig } from './index'
 import { CloseCircleOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import classNames from 'classnames'
 import { useConfig } from '@/stores/config'

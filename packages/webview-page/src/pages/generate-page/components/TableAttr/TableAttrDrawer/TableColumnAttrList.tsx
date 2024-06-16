@@ -1,5 +1,5 @@
 import { Button, Card, Table, Tag, message } from 'antd'
-import { AttrTypeOptionsMap, useAttrModal } from '../AttrModal/index'
+import { AttrTypeOptionsMap, useAttrModal } from '../../AttrModal/index'
 import { useConfig } from '@/stores/config'
 import { ColumnAttrItem, ColumnAttrType } from 'pre-code/src/types/config'
 import SortableTaleContext, {

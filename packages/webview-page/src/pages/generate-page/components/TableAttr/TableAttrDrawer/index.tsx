@@ -1,6 +1,6 @@
 import { Drawer } from 'antd'
 import { useState } from 'react'
-import GlobalAttrList from './GlobalAttrList'
+import GlobalAttrList from '../../GlobalAttr/GlobalAttrList'
 import { TableColumnAttrList } from './TableColumnAttrList'
 
 export function useTableAttrDrawer() {

@@ -1,6 +1,6 @@
 import { Drawer } from 'antd'
 import { useState } from 'react'
-import GlobalAttrList from '../TableAttrDrawer/GlobalAttrList'
+import GlobalAttrList from '../../GlobalAttr/GlobalAttrList'
 import { FormAttrList } from './FormAttrList'
 
 export function useFormAttrDrawer() {

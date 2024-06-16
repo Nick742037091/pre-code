@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { forwardRef, useImperativeHandle, useState } from 'react'
-import LeftList from './Left/index'
+import LeftList from './Left'
 import RightList from './Right'
 import Main from './Main'
 import {

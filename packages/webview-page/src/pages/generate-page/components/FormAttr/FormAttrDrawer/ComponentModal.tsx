@@ -169,7 +169,7 @@ function useAttrTable(messageApi: MessageInstance) {
   }
 }
 
-export function useFormItemModal() {
+export function useComponentModal() {
   const [messageApi, msgContextHolder] = message.useMessage()
   const {
     context: itemAttrTableContext,

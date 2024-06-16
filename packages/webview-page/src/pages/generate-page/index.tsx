@@ -3,13 +3,15 @@ import GenerateCode from './components/GenerateCode/index'
 import { useEffect, useRef, useState } from 'react'
 import { EditOutlined, FileTextOutlined, SwapOutlined } from '@ant-design/icons'
 import { ConfigType, useConfig } from '@/stores/config'
-import { useTableColumnDataList } from './components/TableColumnDataList'
-import FormItemList, { FormItemListRef } from './components/FormItemList'
+import { useTableColumnDataList } from './components/TableAttr/TableColumnDataList'
+import FormItemList, {
+  FormItemListRef
+} from './components/FormAttr/FormAttrDataList'
 import { Button, Spin } from 'antd'
 import EditTemplate from '../edit-template'
-import { useGlobalAttrDataList } from './components/GlobalAttrDataList'
-import { useTableAttrDrawer } from './components/TableAttrDrawer'
-import { useFormAttrDrawer } from './components/FormAttrDrawer'
+import { useGlobalAttrDataList } from './components/GlobalAttr/GlobalAttrDataList'
+import { useTableAttrDrawer } from './components/TableAttr/TableAttrDrawer'
+import { useFormAttrDrawer } from './components/FormAttr/FormAttrDrawer'
 
 function GeneratePage() {
   const [configListVisible, setConfigListVisible] = useState(false)

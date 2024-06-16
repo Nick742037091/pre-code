@@ -1,4 +1,3 @@
-import { useFormItemModal } from './FormItemModal'
 import { useConfig } from '@/stores/config'
 import classNames from 'classnames'
 import { useDraggable, DragOverlay } from '@dnd-kit/core'
@@ -8,8 +7,6 @@ function Draggable(props: {
   isActive?: boolean
   item: FormItem
   iconClass: string
-  onEdit: () => void
-  onDelete: () => void
 }) {
   const { attributes, listeners, setNodeRef } = useDraggable({
     id: props.item.id
@@ -34,15 +31,13 @@ function Draggable(props: {
   )
 }
 export default function LeftList(props: { dragId: string | null }) {
-  const { formItemList, deleteFormItem } = useConfig()
+  const { formItemList } = useConfig()
   const dragFormItem = formItemList.find((item) => item.id === props.dragId)
-  const { showModal, context: formItemModalContext } = useFormItemModal()
 
   const iconClass =
     'text-16px p-5px rounded-full hover:bg-primary hover:color-white cursor-pointer'
   return (
     <div className="flex flex-col w-300px bg-white border-r-1px border-r-solid border-r-slate-200">
-      {formItemModalContext}
       <div
         className="font-18px text-center font-500 p-10px position-relative"
         css={{
@@ -53,27 +48,13 @@ export default function LeftList(props: { dragId: string | null }) {
       </div>
 
       <div className="flex-1 overflow-auto">
-        {formItemList.map((item, index) => {
-          return (
-            <Draggable
-              key={item.id}
-              item={item}
-              iconClass={iconClass}
-              onEdit={() => showModal('edit', item)}
-              onDelete={() => deleteFormItem(index)}
-            />
-          )
+        {formItemList.map((item) => {
+          return <Draggable key={item.id} item={item} iconClass={iconClass} />
         })}
       </div>
       <DragOverlay>
         {dragFormItem ? (
-          <Draggable
-            isActive
-            item={dragFormItem}
-            iconClass={iconClass}
-            onEdit={() => {}}
-            onDelete={() => {}}
-          />
+          <Draggable isActive item={dragFormItem} iconClass={iconClass} />
         ) : null}
       </DragOverlay>
     </div>
