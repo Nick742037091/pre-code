@@ -1,10 +1,11 @@
 import { CloseCircleOutlined, DatabaseOutlined } from '@ant-design/icons'
 import Editor, { useMonaco } from '@monaco-editor/react'
 import { useConfig } from '@/stores/config'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { LanguageSelect } from './components/LanguageSelect'
 import { ExportData } from '../generate-page/components/PreviewData'
 import JSONView from 'react-json-view'
+import { throttle } from 'lodash'
 
 export default function EditTemplate(props: {
   visible: boolean
@@ -14,6 +15,13 @@ export default function EditTemplate(props: {
   const { templateCode, setTemplateCode } = useConfig()
   const [language, setLanguage] = useState('html')
   const monacoRef = useMonaco()
+  const { moveStart } = useMoveHorizontal({
+    onMove: (x: number) => {
+      setPreviewDataWidth((nexVal) => {
+        return nexVal - x
+      })
+    }
+  })
   useEffect(() => {
     if (!monacoRef) return
     monacoRef.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
@@ -81,9 +89,13 @@ export default function EditTemplate(props: {
           }}
         />
         <div
-          className="transition-all flex-shrink-0"
+          className="transition-all flex-shrink-0 flex pos-relative"
           css={{ width: previewDataWidth + 'px' }}
         >
+          <div
+            className="hover:bg-primary w-8px h-100% cursor-move pos-absolute left-0px top-0px"
+            onMouseDown={(e) => moveStart(e.clientX)}
+          />
           <div className="m-10px">
             <JSONView src={props.exportData} displayDataTypes={false} />
           </div>
@@ -91,4 +103,30 @@ export default function EditTemplate(props: {
       </div>
     </div>
   )
+}
+
+// 水平拖动hoook
+const useMoveHorizontal = (oprions: { onMove: (x: number) => void }) => {
+  const currentX = useRef(0)
+  const moveStart = (clientX: number) => {
+    currentX.current = clientX
+    window.addEventListener('mousemove', onMouseMove)
+    window.addEventListener('mouseup', onMouseUp)
+  }
+
+  const onMouseMove = throttle((e: MouseEvent) => {
+    e.preventDefault()
+    oprions.onMove(e.clientX - currentX.current)
+    currentX.current = e.clientX
+  }, 30)
+
+  const onMouseUp = () => {
+    currentX.current = 0
+    window.removeEventListener('mousemove', onMouseMove)
+    window.removeEventListener('mouseup', onMouseUp)
+  }
+
+  return {
+    moveStart
+  }
 }
