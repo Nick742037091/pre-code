@@ -91,7 +91,9 @@ function GeneratePage() {
       <div className="h-100vh flex flex-col">
         <div className={blockStyle}>
           <div className="text-24px font-bold flex items-center">
-            {currentConfig?.configName}
+            <div className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
+              {currentConfig?.configName}
+            </div>
             <SwapOutlined
               className="text-20px ml-20px cursor-pointer"
               onClick={() => {

@@ -2,6 +2,7 @@ import {
   defineConfig,
   presetIcons,
   presetMini,
+  presetWind,
   presetAttributify
 } from 'unocss'
 import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders'
@@ -23,8 +24,9 @@ export default defineConfig({
     'border-normal': 'border-1px border-solid border-slate-200'
   },
   presets: [
-    presetMini(),
     // 内置样式
+    presetMini(),
+    presetWind(),
     // 支持iconify
     presetIcons({
       collections: {
